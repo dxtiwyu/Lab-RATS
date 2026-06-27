@@ -8,10 +8,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <color name="primary">#E94560</color>
-    <color name="primary_dark">#C73E54</color>
-    <color name="background_dark">#1a1a2e</color>
-    <color name="surface_dark">#16213e</color>
-    <color name="text_primary">#FFFFFF</color>
+    <color name="primary">#00f2ff</color>
+    <color name="primary_dark">#00b8c4</color>
+    <color name="background_dark">#050505</color>
+    <color name="bg_dark">#050505</color>
+    <color name="surface_dark">#0f0f19</color>
+    <color name="neon_cyan">#00f2ff</color>
+    <color name="neon_magenta">#ff00ff</color>
+    <color name="neon_green">#39ff14</color>
+    <color name="neon_red">#ff3131</color>
+    <color name="text_primary">#e0e0e0</color>
     <color name="text_secondary">#888888</color>
 </resources>

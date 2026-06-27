@@ -9,7 +9,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import com.google.android.material.button.MaterialButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +46,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvStatus;
     private TextView tvIpAddress;
     private TextView tvServerUrl;
-    private Button btnStartStop;
+    private MaterialButton btnStartStop;
+    private MaterialButton btnCopyUrl;
+    private MaterialButton btnBatteryOptimization;
     private boolean isServerRunning = false;
 
     @Override
@@ -57,6 +66,17 @@ public class MainActivity extends AppCompatActivity {
         tvIpAddress = findViewById(R.id.tvIpAddress);
         tvServerUrl = findViewById(R.id.tvServerUrl);
         btnStartStop = findViewById(R.id.btnStartStop);
+        btnCopyUrl = findViewById(R.id.btnCopyUrl);
+        btnBatteryOptimization = findViewById(R.id.btnBatteryOptimization);
+
+        // Explicitly set colors to override potential theme defaults
+        btnStartStop.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.neon_cyan)));
+        btnStartStop.setTextColor(getColor(R.color.bg_dark));
+        
+        btnCopyUrl.setStrokeColor(android.content.res.ColorStateList.valueOf(getColor(R.color.neon_cyan)));
+        btnCopyUrl.setTextColor(getColor(R.color.neon_cyan));
+        
+        btnBatteryOptimization.setTextColor(getColor(R.color.neon_cyan));
 
         btnStartStop.setOnClickListener(v -> toggleServer());
 
@@ -74,6 +94,42 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnBatteryOptimization).setOnClickListener(v -> {
             requestBatteryOptimization();
         });
+
+        startGlitchAnimation();
+    }
+
+    private void startGlitchAnimation() {
+        TextView tvDevelopedBy = findViewById(R.id.tvDevelopedBy);
+        
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(5000); // 5 second cycle
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setInterpolator(new LinearInterpolator());
+        
+        animator.addUpdateListener(animation -> {
+            float progress = (float) animation.getAnimatedValue();
+            
+            // Slow down the glitch by updating transformations only at certain intervals
+            // This prevents the "way too fast" flickering
+            int frame = (int)(progress * 100); 
+            
+            if (progress < 0.15f) { // Active Glitch Phase
+                if (frame % 3 == 0) { // Only update every 3rd "frame" to slow it down
+                    tvDevelopedBy.setTextColor(frame % 2 == 0 ? 0xFFFFFFFF : 0xFF00f2ff);
+                    tvDevelopedBy.setTranslationX((float) (Math.random() * 8 - 4));
+                    tvDevelopedBy.setAlpha(Math.random() > 0.5 ? 1.0f : 0.7f);
+                    tvDevelopedBy.setScaleX(1.0f + (float)(Math.random() * 0.2));
+                }
+            } 
+            else { // Steady state
+                tvDevelopedBy.setTextColor(0xFF00f2ff);
+                tvDevelopedBy.setTranslationX(0);
+                tvDevelopedBy.setAlpha(1.0f);
+                tvDevelopedBy.setScaleX(1.0f);
+            }
+        });
+        
+        animator.start();
     }
 
     private void requestPermissions() {
@@ -235,52 +291,49 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI() {
         if (isServerRunning) {
-            tvStatus.setText("🟢 Server Running");
-            tvStatus.setTextColor(getColor(android.R.color.holo_green_dark));
-            btnStartStop.setText("Stop Server");
-            btnStartStop.setBackgroundColor(getColor(android.R.color.holo_red_light));
+            tvStatus.setText("🟢 SERVER_ONLINE");
+            tvStatus.setTextColor(getColor(R.color.neon_green));
+            btnStartStop.setText("TERMINATE UPLINK");
+            // Force the button to turn RED when the server is running
+            btnStartStop.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.neon_red)));
+            btnStartStop.setTextColor(getColor(R.color.white));
 
-            tvIpAddress.setText("Fetching IPs...");
-            tvServerUrl.setText("Please wait...");
+            tvIpAddress.setText("SYNCING_NETWORK_DATA...");
+            tvServerUrl.setText("GENERATING_BRIDGE...");
 
             getPublicIPv6Async(publicIp -> {
                 String localIp = getLocalIpAddress();
                 runOnUiThread(() -> {
                     StringBuilder ipText = new StringBuilder();
                     if (localIp != null) {
-                        ipText.append("Local: ").append(localIp);
+                        ipText.append("LOCAL: ").append(localIp);
                     }
                     if (publicIp != null && !publicIp.equals(localIp)) {
                         if (ipText.length() > 0) ipText.append("\n");
-                        ipText.append("Public: ").append(publicIp);
+                        ipText.append("GLOBAL: ").append(publicIp);
                     }
                     
                     if (ipText.length() == 0) {
-                        tvIpAddress.setText("IP: Not available");
-                        tvServerUrl.setText("Check network connection");
+                        tvIpAddress.setText("ADDR: NO_CONNECTION");
+                        tvServerUrl.setText("RETRYING_HANDSHAKE...");
                     } else {
                         tvIpAddress.setText(ipText.toString());
-                        // If we are on mobile data (Public IP available but different from Local), 
-                        // local IP is usually the one assigned by the carrier and MIGHT be reachable 
-                        // if the carrier doesn't block incoming traffic.
                         String displayIp = (localIp != null) ? localIp : publicIp;
                         String formattedUrl = isIPv6(displayIp) ? "http://[" + displayIp + "]:8080" : "http://" + displayIp + ":8080";
                         tvServerUrl.setText(formattedUrl);
-                        
-                        if (publicIp != null && !publicIp.equals(localIp)) {
-                            Toast.makeText(this, "Note: Public IPv6 might be blocked by carrier firewall.", Toast.LENGTH_LONG).show();
-                        }
                     }
                 });
             });
 
         } else {
-            tvStatus.setText("🔴 Server Stopped");
-            tvStatus.setTextColor(getColor(android.R.color.holo_red_dark));
-            btnStartStop.setText("Start Server");
-            btnStartStop.setBackgroundColor(getColor(android.R.color.holo_green_dark));
-            tvServerUrl.setText("Not running");
-            tvIpAddress.setText("IP: Service Stopped");
+            tvStatus.setText("🔴 SERVER_OFFLINE");
+            tvStatus.setTextColor(getColor(R.color.neon_red));
+            btnStartStop.setText("INITIALIZE SERVER");
+            // Force the button to turn CYAN when the server is offline
+            btnStartStop.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.neon_cyan)));
+            btnStartStop.setTextColor(getColor(R.color.bg_dark));
+            tvServerUrl.setText("UPLINK_INACTIVE");
+            tvIpAddress.setText("ADDR: STANDBY_MODE");
         }
     }
 

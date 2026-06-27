@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #################################################
-#          K4N3CO APK BUILDER - Linux/Mac       #
+#          Lab-RATS APK BUILDER - Linux/Mac       #
 #                   v2.0                        #
 #                                               #
 #  Developed by: K4N3CO.LABS         #
@@ -39,7 +39,7 @@ print_banner() {
     echo "║  ██║  ██╗     ██║██║ ╚████║██████╔╝╚██████╗╚██████╔╝         ║"
     echo "║  ╚═╝  ╚═╝     ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝ ╚═════╝          ║"
     echo "║                                                              ║"
-    echo "║                    K4N3CO.LABS APK BUILDER                   ║"
+    echo "║                    Lab-RATS APK BUILDER                   ║"
     echo "║                                                              ║"
     echo "╠══════════════════════════════════════════════════════════════╣"
     echo "║  Developed by: K4N3CO.LABS                                   ║"
@@ -316,7 +316,7 @@ configure_logo() {
     RES_DIR="$PROJECT_DIR/app/src/main/res"
     
     echo -e "${PURPLE}[>] Logo options:${NC}"
-    echo "    1. Use default K4N3CO logo (k4n3co.png)"
+    echo "    1. Use default Lab-RATS logo (k4n3co.png)"
     echo "    2. Use custom logo (provide image path)"
     echo "    3. Keep current logo (no change)"
     echo ""
@@ -329,7 +329,7 @@ configure_logo() {
         1)
             if [ -f "$DEFAULT_LOGO" ]; then
                 LOGO_PATH="$DEFAULT_LOGO"
-                echo -e "${GREEN}[✓] Using default K4N3CO logo${NC}"
+                echo -e "${GREEN}[✓] Using default Lab-RATS logo${NC}"
             else
                 echo -e "${RED}[!] Default logo not found at: $DEFAULT_LOGO${NC}"
                 return
@@ -428,12 +428,12 @@ configure_app() {
     RAND_VER_CODE=$((10 + RANDOM % 990))
     
     # Package Name
-    read -p "    Enter Package Name (Application ID) [com.labs.k4n3co]: " PKG_NAME
-    PKG_NAME=${PKG_NAME:-com.labs.k4n3co}
+    read -p "    Enter Package Name (Application ID) [com.labrats.remote]: " PKG_NAME
+    PKG_NAME=${PKG_NAME:-com.labrats.remote}
     
     # App name
-    read -p "    Enter App Name [K4N3CO.LABS]: " APP_NAME
-    APP_NAME=${APP_NAME:-K4N3CO.LABS}
+    read -p "    Enter App Name [Lab-RATS]: " APP_NAME
+    APP_NAME=${APP_NAME:-Lab-RATS}
     
     # Min SDK
     read -p "    Enter Min SDK [26]: " MIN_SDK
@@ -545,7 +545,7 @@ build_apk() {
     mkdir -p "$OUTPUT_DIR"
     
     TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-    APP_NAME_SAFE=$(echo "${APP_NAME:-K4N3CO}" | tr ' ' '_')
+    APP_NAME_SAFE=$(echo "${APP_NAME:-Lab-RATS}" | tr ' ' '_')
     VERSION="${VERSION_NAME:-2.0}"
     
     APK_FOUND=false

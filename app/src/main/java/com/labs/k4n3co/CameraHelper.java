@@ -231,9 +231,19 @@ public class CameraHelper {
                         byte[] rawData = new byte[buffer.remaining()];
                         buffer.get(rawData);
                         
-                        // Rotate image by 270 degrees to fix sideways/upside-down orientation
-                        capturedImageData = rotateJpeg(rawData, 270);
-                        Log.d(TAG, "Image captured and rotated: " + capturedImageData.length + " bytes");
+                        // Set rotation: 90 for back, 270 for front (standard for most devices)
+                        int rotation = 90; 
+                        try {
+                            Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
+                            if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+                                rotation = 270;
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error determining orientation", e);
+                        }
+
+                        capturedImageData = rotateJpeg(rawData, rotation);
+                        Log.d(TAG, "Image captured and rotated (" + rotation + " deg): " + capturedImageData.length + " bytes");
                     }
                 } catch (Exception e) {
                     lastError = "Image read error: " + e.getMessage();

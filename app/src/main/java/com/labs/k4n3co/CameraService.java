@@ -377,8 +377,17 @@ public class CameraService extends Service {
                         byte[] rawData = new byte[buffer.remaining()];
                         buffer.get(rawData);
                         
-                        // Rotate photo by 270 degrees
-                        lastCapturedPhoto = rotateJpeg(rawData, 270);
+                        // Set rotation: 90 for back, 270 for front
+                        int rotation = 90;
+                        try {
+                            Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
+                            if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+                                rotation = 270;
+                            }
+                        } catch (Exception e) {
+                            rotation = 270;
+                        }
+                        lastCapturedPhoto = rotateJpeg(rawData, rotation);
                     }
                 } catch (Exception e) {
                     lastCaptureError = "Error reading image: " + e.getMessage();
@@ -528,7 +537,17 @@ public class CameraService extends Service {
                 try {
                     image = reader.acquireLatestImage();
                     if (image != null && isStreaming) {
-                        byte[] jpegData = yuv420ToJpeg(image, streamQuality);
+                        // Set rotation: 90 for back, 270 for front
+                        int rotation = 90;
+                        try {
+                            Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
+                            if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+                                rotation = 270;
+                            }
+                        } catch (Exception e) {
+                        }
+                        
+                        byte[] jpegData = yuv420ToJpeg(image, streamQuality, rotation);
                         if (jpegData != null) {
                             // Clear old frames if queue is full
                             while (!frameQueue.offer(jpegData)) {
@@ -619,7 +638,7 @@ public class CameraService extends Service {
         Log.d(TAG, "Streaming stopped");
     }
 
-    private byte[] yuv420ToJpeg(Image image, int quality) {
+    private byte[] yuv420ToJpeg(Image image, int quality, int rotation) {
         try {
             int width = image.getWidth();
             int height = image.getHeight();
@@ -643,7 +662,11 @@ public class CameraService extends Service {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             yuvImage.compressToJpeg(new Rect(0, 0, width, height), quality, out);
 
-            return out.toByteArray();
+            if (rotation == 0) {
+                return out.toByteArray();
+            } else {
+                return rotateJpeg(out.toByteArray(), rotation);
+            }
         } catch (Exception e) {
             Log.e(TAG, "Error converting YUV to JPEG", e);
             return null;
@@ -705,7 +728,7 @@ public class CameraService extends Service {
         try {
             String[] cameraIds = cameraManager.getCameraIdList();
             for (String cameraId : cameraIds) {
-                CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraId);
+                CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(currentCameraId);
                 Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
 
                 String facingStr = "Unknown";
@@ -950,7 +973,19 @@ public class CameraService extends Service {
         mediaRecorder.setVideoEncodingBitRate(4000000); // 4 Mbps
         mediaRecorder.setVideoFrameRate(30);
         mediaRecorder.setVideoSize(width, height);
-        mediaRecorder.setOrientationHint(270); // Rotate video by 270 degrees
+            // Set orientation hint: 90 for back, 270 for front
+            int rotation = 90;
+            try {
+                CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(currentCameraId);
+                Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
+                if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+                    rotation = 270;
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error getting orientation for video", e);
+                rotation = 270;
+            }
+            mediaRecorder.setOrientationHint(rotation);
         mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mediaRecorder.setAudioEncodingBitRate(128000);

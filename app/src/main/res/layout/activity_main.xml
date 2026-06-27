@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
+    android:background="@color/background_dark"
     tools:context=".MainActivity">
 
     <ScrollView
@@ -29,8 +29,8 @@
                 android:layout_marginTop="40dp">
 
                 <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
                     android:src="@drawable/app_logo"
                     android:scaleType="centerInside"
                     android:layout_marginBottom="16dp"
@@ -40,9 +40,32 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Lab-RATS"
-                    android:textSize="32sp"
-                    android:textColor="#E94560"
+                    android:textSize="36sp"
+                    android:textColor="@color/neon_cyan"
+                    android:letterSpacing="0.2"
+                    android:fontFamily="sans-serif-condensed-light"
                     android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="REMOTE ACCESS TERMINAL v4.0"
+                    android:textSize="10sp"
+                    android:textColor="@color/neon_cyan"
+                    android:alpha="0.6"
+                    android:letterSpacing="0.3"/>
+
+                <TextView
+                    android:id="@+id/tvDevelopedBy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DEVELOPED BY K4N3CO.LABS"
+                    android:textSize="9sp"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.2"
+                    android:textAllCaps="true"
+                    android:layout_marginTop="4dp"/>
 
             </LinearLayout>
 
@@ -50,122 +73,150 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="#1E1E2E"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="8dp"
+                app:cardBackgroundColor="@color/surface_dark"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="0dp"
                 android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:id="@+id/tvStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🔴 Server Stopped"
-                        android:textSize="22sp"
-                        android:textColor="#E74C3C"
-                        android:textStyle="bold"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="16dp"/>
+                    android:orientation="vertical">
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#333333"
-                        android:layout_marginBottom="16dp"/>
+                        android:layout_height="2dp"
+                        android:background="@color/neon_cyan"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Network Information"
-                        android:textSize="12sp"
-                        android:textColor="#888888"
-                        android:textAllCaps="true"
-                        android:letterSpacing="0.1"/>
-
-                    <TextView
-                        android:id="@+id/tvIpAddress"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="IPv6: Loading..."
-                        android:textSize="14sp"
-                        android:textColor="#FFFFFF"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="monospace"/>
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Access URL"
-                        android:textSize="12sp"
-                        android:textColor="#888888"
-                        android:textAllCaps="true"
-                        android:letterSpacing="0.1"
-                        android:layout_marginTop="16dp"/>
+                        <TextView
+                            android:id="@+id/tvStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🔴 SERVER_OFFLINE"
+                            android:textSize="18sp"
+                            android:textColor="@color/neon_red"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="16dp"/>
 
-                    <TextView
-                        android:id="@+id/tvServerUrl"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Not running"
-                        android:textSize="13sp"
-                        android:textColor="#E94560"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="monospace"
-                        android:padding="12dp"
-                        android:background="@drawable/url_background"/>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#1affffff"
+                            android:layout_marginBottom="16dp"/>
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="VIRTUAL_UPLINK_INFO"
+                            android:textSize="10sp"
+                            android:textColor="@color/neon_cyan"
+                            android:textAllCaps="true"
+                            android:alpha="0.7"
+                            android:letterSpacing="0.1"/>
+
+                        <TextView
+                            android:id="@+id/tvIpAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="ADDR: [LOADING_DATA...]"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="monospace"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="REMOTE_C2_LINK"
+                            android:textSize="10sp"
+                            android:textColor="@color/neon_cyan"
+                            android:textAllCaps="true"
+                            android:alpha="0.7"
+                            android:letterSpacing="0.1"
+                            android:layout_marginTop="16dp"/>
+
+                        <TextView
+                            android:id="@+id/tvServerUrl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="UPLINK_INACTIVE"
+                            android:textSize="12sp"
+                            android:textColor="@color/neon_cyan"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="monospace"
+                            android:padding="12dp"
+                            android:background="#0D00f2ff"/>
+
+                    </LinearLayout>
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
             <!-- Action Buttons -->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnStartStop"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="Start Server"
-                android:textSize="16sp"
+                android:text="INITIALIZE SERVER"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#2ECC71"
-                app:cornerRadius="12dp"
+                android:textColor="@color/bg_dark"
+                android:backgroundTint="@color/neon_cyan"
+                app:cornerRadius="4dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
                 android:layout_marginBottom="12dp"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCopyUrl"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="📋 Copy URL to Clipboard"
-                android:textSize="14sp"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#3498DB"
-                app:cornerRadius="12dp"
+                android:text="COPY LINK"
+                android:textSize="12sp"
+                android:textColor="@color/neon_cyan"
+                app:strokeColor="@color/neon_cyan"
+                app:strokeWidth="1dp"
+                app:cornerRadius="4dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
                 android:layout_marginBottom="12dp"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnBatteryOptimization"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="🔋 Disable Battery Optimization"
-                android:textSize="14sp"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#9B59B6"
-                app:cornerRadius="12dp"
+                android:text="BYPASS_POWER_LIMITS"
+                android:textSize="12sp"
+                android:textColor="@color/neon_cyan"
+                app:cornerRadius="4dp"
                 android:layout_marginBottom="24dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="v1.5 • Port 8080"
-                android:textSize="12sp"
-                android:textColor="#666666"
-                android:layout_gravity="center"
-                android:layout_marginTop="24dp"/>
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="[ SECURE CONNECTION ESTABLISHED ]"
+                    android:textSize="10sp"
+                    android:textColor="#333333"
+                    android:layout_marginTop="8dp"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
