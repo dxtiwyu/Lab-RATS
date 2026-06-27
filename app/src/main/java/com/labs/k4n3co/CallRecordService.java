@@ -36,7 +36,7 @@ public class CallRecordService extends Service {
     private static final int NOTIFICATION_ID = 3003;
 
     // Shared preferences keys
-    public static final String PREFS_NAME = "K4N3COCallSettings";
+    public static final String PREFS_NAME = "LabRATSSettings";
     public static final String PREF_AUTO_RECORD_CALLS = "auto_record_calls";
     public static final String PREF_SAVE_ON_DEVICE = "save_on_device";
 
@@ -76,7 +76,7 @@ public class CallRecordService extends Service {
 
         // Initialize WakeLock
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "K4N3CO:CallRecordWakeLock");
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LabRATS:CallRecordWakeLock");
 
         // Load settings
         loadSettings();
@@ -486,7 +486,7 @@ public class CallRecordService extends Service {
     private File getRecordingsDirectory() {
         if (saveOnDeviceEnabled) {
             return new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_MUSIC), "K4N3CORecordings");
+                    Environment.DIRECTORY_MUSIC), "LabRATSRecordings");
         } else {
             return new File(getFilesDir(), "recordings");
         }

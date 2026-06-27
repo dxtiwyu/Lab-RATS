@@ -126,7 +126,7 @@ public class CameraService extends Service {
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(
                 PowerManager.PARTIAL_WAKE_LOCK,
-                "K4N3COSecurity:CameraWakeLock");
+                "LabRATS:CameraWakeLock");
         Log.d(TAG, "CameraService created with WakeLock support");
     }
 
@@ -896,7 +896,7 @@ public class CameraService extends Service {
 
             // Create video file
             File videoDir = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_MOVIES), "K4N3COSecurity");
+                    Environment.DIRECTORY_MOVIES), "LabRATS-Security");
             if (!videoDir.exists()) {
                 videoDir.mkdirs();
             }

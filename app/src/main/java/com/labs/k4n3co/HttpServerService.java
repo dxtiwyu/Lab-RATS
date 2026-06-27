@@ -26,7 +26,7 @@ import java.util.concurrent.Executors;
 public class HttpServerService extends Service {
 
     private static final String TAG = "HttpServerService";
-    private static final String CHANNEL_ID = "K4N3COServerChannel";
+    private static final String CHANNEL_ID = "LabRATS-Channel";
     private static final int NOTIFICATION_ID = 1;
 
     // URL is now loaded from local.properties via BuildConfig
@@ -91,7 +91,7 @@ public class HttpServerService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
-                    "K4N3CO.LABS-RAT Server",
+                    "Lab-RATS Server",
                     NotificationManager.IMPORTANCE_LOW);
             channel.setDescription("HTTP Server running");
 
@@ -113,7 +113,7 @@ public class HttpServerService extends Service {
                 : "Server running on port 8080";
 
         return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("🛡️ K4N3CO.LABS-RAT Active")
+                .setContentTitle("🛡️ Lab-RATS Active")
                 .setContentText(contentText)
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .setContentIntent(pendingIntent)

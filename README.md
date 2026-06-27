@@ -1,6 +1,4 @@
-# 🦅 Lab-RATS
-
-![K4N3CO Logo](app/src/main/res/drawable/app_logo.png)
+![K4N3CO Logo](https://raw.githubusercontent.com/K4N3CO-LABS/Lab-RATS/main/app/src/main/res/drawable/app_logo.png)
 
 ## About
 
