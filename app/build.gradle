@@ -19,11 +19,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.labs.k4n3co"
+        applicationId "com.labrats.remote"
         minSdk 26
         targetSdk 34
-        versionCode 125
-        versionName "5.7.5"
+        versionCode 260
+        versionName "8.3.8"
         
         // Read WEBHOOK_URL from local.properties
         def localProperties = new Properties()

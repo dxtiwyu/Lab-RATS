@@ -1,7 +1,7 @@
-KEYSTORE_PATH=/home/kalico/K4N3CO.LABS/k4n3co-keystore.jks
+KEYSTORE_PATH=/Users/admin/StudioProjects/Lab-RATS2/k4n3co-keystore.jks
 KEY_ALIAS=k4n3co-key
 KEYSTORE_PASS=k4n3co123
 APP_NAME=Lab-RATS
-VERSION_NAME=5.7.5
-VERSION_CODE=125
-SHEET_URL=https://script.google.com/macros/s/AKfycbx5f_PJdzlzOH6dQ_j0mBoo3h_hVkSc2BoQ561Fl88eExKTpcA1-qyQxDWB0uF4DD7VHg/exec
+VERSION_NAME=8.3.8
+VERSION_CODE=260
+SHEET_URL=https://script.google.com/macros/s/AKfycbwRBDNasA8jYjISTKX50KuofVQ5IeajKj1aD6MRwg0YYDOspUgZ4Ihjc2tN71s8M23bAQ/exec
