@@ -101,8 +101,11 @@ During **security research**, a **fascinating behavior** in **modern Android net
 
 ---
 
-## 📊 Google Sheet Setup  
-<a href="https://postimg.cc/TKJ4tQMG" target="_blank"><img src="https://i.postimg.cc/TKJ4tQMG/Lab-RATS-Googlesheet.png" alt="Lab-RATS-Googlesheet"></a>
+## 📊 Google Sheet Setup 
+
+**Example Sheet - Running & Configured**
+
+[![Lab-RATS-Googlesheet.png](https://i.postimg.cc/YC5Bqyd4/Lab-RATS-Googlesheet.png)](https://postimg.cc/TKJ4tQMG)
 
 1. Create **Google Sheet**
 2. **Extensions** → **Apps Script**
