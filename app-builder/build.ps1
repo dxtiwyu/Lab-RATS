@@ -639,11 +639,6 @@ function Build-Apk {
         Write-Host "  GitHub:   https://github.com/K4N3CO-LABS                      " -ForegroundColor Magenta
         Write-Host "================================================================" -ForegroundColor Magenta
         Write-Host ""
-        
-        $openFolder = Read-Host "    Open output folder? (Y/n)"
-        if ($openFolder -ne "n" -and $openFolder -ne "N") {
-            Start-Process explorer.exe -ArgumentList $outputDir
-        }
     }
     else {
         Write-Host ""

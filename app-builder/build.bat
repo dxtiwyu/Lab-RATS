@@ -517,11 +517,6 @@ echo [95m║  Developed by: K4N3CO.LABS                                   ║[0m
 echo [95m║  GitHub:   https://github.com/K4N3CO-LABS                    ║[0m
 echo [95m╚══════════════════════════════════════════════════════════════╝[0m
 echo.
-
-set /p "OPEN_FOLDER=    Open output folder? (Y/n): "
-if /i not "!OPEN_FOLDER!"=="n" (
-    explorer "!OUTPUT_DIR!"
-)
 goto :eof
 
 :main_menu

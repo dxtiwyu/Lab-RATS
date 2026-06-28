@@ -637,15 +637,6 @@ build_apk() {
         echo -e "${GREEN}[✓] APKs saved to: $OUTPUT_DIR${NC}"
         echo ""
         
-        # Popup output folder and Google Sheet on Mac
-        if [[ "$OSTYPE" == "darwin"* ]]; then
-            open "$OUTPUT_DIR"
-            if [ -n "$SHEET_URL" ]; then
-                echo -e "${CYAN}[*] Opening Google Sheet Webhook (C2 Terminal)...${NC}"
-                open "$SHEET_URL"
-            fi
-        fi
-
         echo -e "${PURPLE}╔══════════════════════════════════════════════════════════════╗${NC}"
         echo -e "${PURPLE}║  Developed by: K4N3CO.LABS                                   ║${NC}"
         echo -e "${PURPLE}║  GitHub:   https://github.com/K4N3CO-LABS                    ║${NC}"
