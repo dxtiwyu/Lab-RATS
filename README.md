@@ -22,7 +22,6 @@
 -   **View SMS/Text Messages & Send SMS/Text Messages**:
 -   -   **Browse** & **Copy ANY SMS/Text Messages** that the **Target Device** has ever **Sent** or **Received**.
 -   -   **Send Text Messages From Target Phone** to **ANY Number**.
--   -   The "**MMS/SMS Received From Address**" will display as a **Saved Contact Name** if the **Name** is **Saved** on the **Targets Device** in the **Contacts App**.*(If not, will just  show the Phone Number the message is from)*.
 -   **Live Screen Capture, Stream, & Record**: *(Work In Progress)*
 -   -   Take **Live Screenshots**. *(WIP)*
 -   -   Capture **Live Screen** Recordings. *(WIP)*
