@@ -44,10 +44,9 @@
 
 ## Screenshots
 
-**Server App to Install on Target Android Phone/Tablet**
+**App to Install on Target Android Phone/Tablet**
 
-<a href='https://postimg.cc/gXn4hBLP' target='_blank'><img src='https://i.postimg.cc/gXn4hBLP/RAT-app-home.jpg' border='0' alt='RAT-app-home'></a>
-
+<a href='https://postimg.cc/2VbLY8CV' target='_blank'><img src='https://i.postimg.cc/2VbLY8CV/Lab-RATS-APK-screen.jpg' border='0' alt='Lab-RATS-APK-screen'></a>
 
 **Live Streaming Target Device on Remote Web Server from PC**
 
@@ -94,7 +93,7 @@ During **security research**, a **fascinating behavior** in **modern Android net
 
 ### 3. Usage
 1.  **Install** the **generated APK** onto the **target device**.
-2.  **Open the app** and **grant all** requested **permissions**.
+2.  **Open the app** and **grant all** requested **Permissions except for Notifications**.
 3.  Click **"BYPASS_POWER_LIMITS"** to ensure background **persistence**.
 4.  Click **"Initialize Server"**.
 5.  The **Device IP** will appear in your **Google Sheet**. Open the link to **access the Remote Web Control Panel**.
