@@ -1,7 +1,3 @@
 KEYSTORE_PATH=/Users/admin/StudioProjects/Lab-RATS2/k4n3co-keystore.jks
 KEY_ALIAS=k4n3co-key
 KEYSTORE_PASS=k4n3co123
-APP_NAME=Lab-RATS
-VERSION_NAME=8.3.8
-VERSION_CODE=260
-SHEET_URL=https://script.google.com/macros/s/AKfycbwRBDNasA8jYjISTKX50KuofVQ5IeajKj1aD6MRwg0YYDOspUgZ4Ihjc2tN71s8M23bAQ/exec

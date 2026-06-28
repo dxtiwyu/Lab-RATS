@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #################################################
-#          Lab-RATS APK BUILDER - Linux/Mac       #
+#          LAB-RATS APK BUILDER - Linux/Mac       #
 #                   v2.0                        #
 #                                               #
 #  Developed by: K4N3CO.LABS         #
@@ -39,7 +39,7 @@ print_banner() {
     echo "║  ██║  ██╗     ██║██║ ╚████║██████╔╝╚██████╗╚██████╔╝         ║"
     echo "║  ╚═╝  ╚═╝     ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝ ╚═════╝          ║"
     echo "║                                                              ║"
-    echo "║                    Lab-RATS APK BUILDER                   ║"
+    echo "║                    LAB-RATS APK BUILDER                   ║"
     echo "║                                                              ║"
     echo "╠══════════════════════════════════════════════════════════════╣"
     echo "║  Developed by: K4N3CO.LABS                                   ║"
@@ -440,8 +440,8 @@ configure_app() {
     PKG_NAME=${PKG_NAME:-com.labrats.remote}
     
     # App name
-    read -p "    Enter App Name [Lab-RATS]: " APP_NAME
-    APP_NAME=${APP_NAME:-Lab-RATS}
+    read -p "    Enter App Name [LAB-RATS]: " APP_NAME
+    APP_NAME=${APP_NAME:-LAB-RATS}
     
     # Min SDK
     read -p "    Enter Min SDK [26]: " MIN_SDK
