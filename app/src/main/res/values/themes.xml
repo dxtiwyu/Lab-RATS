@@ -8,11 +8,4 @@
         <item name="android:navigationBarColor">@color/background_dark</item>
         <item name="android:windowBackground">@color/background_dark</item>
     </style>
-
-    <style name="Theme_LabRATS_Dialog" parent="Theme.MaterialComponents.DayNight.Dialog">
-        <item name="android:windowBackground">@color/surface_dark</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">#888888</item>
-        <item name="colorAccent">@color/neon_cyan</item>
-    </style>
 </resources>

@@ -53,9 +53,9 @@ k4n3co-keystore.jks
 keystore.properties
 
 # Builder config (contains passwords)
-builder/build_config.txt
-builder/build_config.json
-builder/output/*.apk
+app-builder/build_config.txt
+app-builder/build_config.json
+app-builder/output/*.apk
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
