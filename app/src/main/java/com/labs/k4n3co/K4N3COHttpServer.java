@@ -220,14 +220,14 @@ public class K4N3COHttpServer extends NanoHTTPD {
             ".file-icon-doc { background: rgba(46, 204, 113, 0.2); border: 1px solid #2ecc71; color: #2ecc71; }" +
             ".watermark {" +
             "  position: absolute;" +
-            "  top: 2px;" +
-            "  left: 20px;" +
+            "  top: 0;" +
+            "  left: 0;" +
             "  width: 242px;" +
             "  height: 182px;" +
             "  background: url('/logo') no-repeat left center;" +
             "  background-size: contain;" +
             "  opacity: 0.10;" +
-            "  z-index: -1;" +
+            "  z-index: 0;" +
             "  pointer-events: none;" +
             "  filter: grayscale(100%) brightness(200%);" +
             "}" +
@@ -346,7 +346,9 @@ public class K4N3COHttpServer extends NanoHTTPD {
                 buffer.write(data, 0, nRead);
             }
             byte[] bytes = buffer.toByteArray();
-            return newFixedLengthResponse(Response.Status.OK, "image/png", new java.io.ByteArrayInputStream(bytes), bytes.length);
+            Response response = newFixedLengthResponse(Response.Status.OK, "image/png", new java.io.ByteArrayInputStream(bytes), bytes.length);
+            response.addHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
+            return response;
         } catch (Exception e) {
             return serveError("Logo error: " + e.getMessage());
         }

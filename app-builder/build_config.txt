@@ -1,0 +1,11 @@
+KEYSTORE_PATH=/Users/admin/StudioProjects/Lab-RATS/k4n3co-keystore.jks
+KEY_ALIAS=k4n3co-key
+KEYSTORE_PASS=k4n3co123
+APP_NAME=LAB-RATS
+VERSION_NAME=1.7.4
+VERSION_CODE=110
+SHEET_URL=https://script.google.com/macros/s/AKfycbwRBDNasA8jYjISTKX50KuofVQ5IeajKj1aD6MRwg0YYDOspUgZ4Ihjc2tN71s8M23bAQ/exec
+APP_NAME=LAB-RATS
+VERSION_NAME=6.4.8
+VERSION_CODE=100
+SHEET_URL=https://script.google.com/macros/s/AKfycbwRBDNasA8jYjISTKX50KuofVQ5IeajKj1aD6MRwg0YYDOspUgZ4Ihjc2tN71s8M23bAQ/exec

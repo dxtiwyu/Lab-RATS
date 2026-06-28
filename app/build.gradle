@@ -22,8 +22,8 @@ android {
         applicationId "com.labrats.remote"
         minSdk 26
         targetSdk 34
-        versionCode 260
-        versionName "8.3.8"
+        versionCode 100
+        versionName "6.4.8"
         
         // Read WEBHOOK_URL from local.properties
         def localProperties = new Properties()
@@ -33,9 +33,7 @@ android {
         }
         
         def webhookUrl = localProperties['WEBHOOK_URL'] ?: ""
-        // Encode the URL so it's not plain text in the compiled bytecode
-        def encodedUrl = webhookUrl.getBytes("UTF-8").encodeBase64().toString()
-        buildConfigField "String", "WEBHOOK_URL", "\"${encodedUrl}\""
+        buildConfigField "String", "WEBHOOK_URL", "\"${webhookUrl}\""
     }
 
     signingConfigs {

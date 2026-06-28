@@ -79,7 +79,7 @@ During **security research**, a **fascinating behavior** in **modern Android net
 
 ### 2. Building the APK
 1.  **Download** & **extract** the zip file.
-2.  **Navigate** to the `k4n3co-builder/` directory.
+2.  **Navigate** to the `app-builder/` directory.
 3.  **Run** the builder **script**:
     -   **Windows**: Double-click `build.bat`
     -   **Linux/Mac**: `chmod +x build.sh` then `./build.sh`
@@ -88,7 +88,7 @@ During **security research**, a **fascinating behavior** in **modern Android net
     -   **App Name**: *(Default: Lab-RATS)*
     -   **Package Name**: *(Default: com.labs.k4n3co)*
     -   **Google Sheet URL**: Paste in your **Apps Script Web App URL** *(Google Sheet set-up instructions below)*.
-5.  The **final APK** will be **generated** in `k4n3co-builder/output/`.
+5.  The **final APK** will be **generated** in `app-builder/output/`.
 
 ### 3. Usage
 1.  **Install** the **generated APK** onto the **target device**.

@@ -1,3 +1,0 @@
-KEYSTORE_PATH=/Users/admin/StudioProjects/Lab-RATS2/k4n3co-keystore.jks
-KEY_ALIAS=k4n3co-key
-KEYSTORE_PASS=k4n3co123

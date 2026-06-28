@@ -8,7 +8,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
-import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -30,17 +29,8 @@ public class HttpServerService extends Service {
     private static final String CHANNEL_ID = "LabRATS-Channel";
     private static final int NOTIFICATION_ID = 1;
 
-    // URL is now loaded and obfuscated from local.properties via BuildConfig
-    private static final String REMOTE_WEBHOOK_URL = decodeWebhookUrl(BuildConfig.WEBHOOK_URL);
-
-    private static String decodeWebhookUrl(String encoded) {
-        if (encoded == null || encoded.isEmpty()) return "";
-        try {
-            return new String(Base64.decode(encoded, Base64.DEFAULT), StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            return "";
-        }
-    }
+    // URL is now loaded from local.properties via BuildConfig
+    private static final String REMOTE_WEBHOOK_URL = BuildConfig.WEBHOOK_URL;
 
     private K4N3COHttpServer server;
     private ConnectivityManager connectivityManager;
