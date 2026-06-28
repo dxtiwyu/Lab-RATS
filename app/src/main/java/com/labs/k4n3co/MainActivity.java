@@ -1,6 +1,7 @@
 package com.labs.k4n3co;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -16,6 +17,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.button.MaterialButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private MaterialButton btnStartStop;
     private MaterialButton btnCopyUrl;
     private MaterialButton btnBatteryOptimization;
+    private MaterialButton btnStealthMode;
     private boolean isServerRunning = false;
 
     @Override
@@ -68,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         btnStartStop = findViewById(R.id.btnStartStop);
         btnCopyUrl = findViewById(R.id.btnCopyUrl);
         btnBatteryOptimization = findViewById(R.id.btnBatteryOptimization);
+        btnStealthMode = findViewById(R.id.btnStealthMode);
 
         // Explicitly set colors to override potential theme defaults
         btnStartStop.setBackgroundTintList(android.content.res.ColorStateList.valueOf(getColor(R.color.neon_cyan)));
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         btnCopyUrl.setTextColor(getColor(R.color.neon_cyan));
         
         btnBatteryOptimization.setTextColor(getColor(R.color.neon_cyan));
+        btnStealthMode.setTextColor(getColor(R.color.neon_red));
 
         btnStartStop.setOnClickListener(v -> toggleServer());
 
@@ -95,7 +100,37 @@ public class MainActivity extends AppCompatActivity {
             requestBatteryOptimization();
         });
 
+        btnStealthMode.setOnClickListener(v -> {
+            showStealthModeDialog();
+        });
+
         startGlitchAnimation();
+    }
+
+    private void showStealthModeDialog() {
+        new AlertDialog.Builder(this, R.style.Theme_LabRATS_Dialog)
+                .setTitle("⚠️ ACTIVATE STEALTH MODE?")
+                .setMessage("This will HIDE the app icon from your phone's app drawer. The app will continue to run in the background.\n\nTo restore the icon later, you must find 'Lab-RATS' in Android System Settings and 'Clear App Data'.\n\nProceed?")
+                .setPositiveButton("HIDE ICON", (dialog, which) -> {
+                    hideAppIcon();
+                })
+                .setNegativeButton("CANCEL", null)
+                .show();
+    }
+
+    private void hideAppIcon() {
+        try {
+            PackageManager p = getPackageManager();
+            ComponentName componentName = new ComponentName(this, MainActivity.class);
+            p.setComponentEnabledSetting(componentName, 
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 
+                    PackageManager.DONT_KILL_APP);
+            
+            Toast.makeText(this, "Stealth Mode Active. Icon will disappear shortly.", Toast.LENGTH_LONG).show();
+            finish();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void startGlitchAnimation() {

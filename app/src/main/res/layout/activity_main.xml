@@ -199,6 +199,17 @@
                 android:textSize="12sp"
                 android:textColor="@color/neon_cyan"
                 app:cornerRadius="4dp"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnStealthMode"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="ACTIVATE_STEALTH_MODE"
+                android:textSize="12sp"
+                android:textColor="@color/neon_red"
+                app:cornerRadius="4dp"
                 android:layout_marginBottom="24dp"/>
 
             <LinearLayout
