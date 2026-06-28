@@ -140,7 +140,7 @@ function setupSheet() {
 5. **Copy URL** → **Paste** into **APK builder** when asked.
 
 
--------------------------------------------*Example Google Sheet - Running & Properly Configured*----------------------------------------
+--------------------------------*Example Google Sheet - Running & Properly Configured*------------------------------------
 
 [![Lab-RATS-Googlesheet.png](https://i.postimg.cc/YC5Bqyd4/Lab-RATS-Googlesheet.png)](https://postimg.cc/TKJ4tQMG)
 
