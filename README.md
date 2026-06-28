@@ -22,7 +22,7 @@
 -   **View SMS/Text Messages & Send SMS/Text Messages**:
 -   -   **Browse** & **Copy ANY SMS/Text Messages** that were **Sent** or **Received** by **Target Device**. *(Unless deleted off device)*
 -   -   **Send Text Messages From Target Phone** to **ANY Number**.
--   **Live Screen Capture, Stream, & Record**: *(Work In Progress)*
+-   **Live Screen Capture, Stream, & Record**: *(Work In Progress. All other features are working as of June,28th/2026)*
 -   -   Take **Live Screenshots**. *(WIP)*
 -   -   Capture **Live Screen** Recordings. *(WIP)*
     -   View **User Screen Activity** in **Real-Time**. *(WIP)*
