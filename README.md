@@ -6,33 +6,43 @@
 
 ---
 
-## 🚀 New Features
+## Features
 
-- **Signed & Unsigned APKs**: Automatically generates both `signed.apk` *(for release)* and `unsigned.apk`.
+- **Signed & Unsigned APKs**: **Automatically** generates both `signed.apk` *(for release)* and `unsigned.apk`.
 - **Advanced Identity**: Customize **App Name, Package Name** *(ID)*, and **Min SDK**.
 - **Stealth Mode**: Randomly **generates Version Name** and **Version Code** to look like **legitimate updates**.
 - **Smart Logo**:
-  - **Automatically resizes** any image to all Android densities.
+  - **Automatically resizes** any image to all **Android densities**.
   - Optional **Transparency Generation** *(removes white backgrounds)*.
   - Forces "**Legacy Mode**" to **bypass** adaptive icons on newer Androids.
--   **Live Camera Streaming**: View **real-time camera feed** from both **front and back cameras** directly in your browser.
+
+## 🚀 The Fun Stuff
+
+-   **SMS Message Viewer & Sender**:
+-   -   View **ALL Text Messages** on **Target Phone**
+-   -   Send **Text Messages From Target Phone** to **ANY Number**.
+-   **Live Screen Capture, Stream, & Record**:
+-   -   Take **Live Screenshots**.
+-   -   Capture **Live Screen** Recordings
+    -   View **User Screen Activity** in **Real-Time**
+-   **Live Camera Streaming**: View **real-time camera feed** from both **front and back cameras** directly in your **browser**.
 -   **Background Video Recording**: **Record high-quality video** in the background **without** user knowledge.
 -   **Photo Capture**: Take **instant photos** from **any** available camera.
 -   **Audio Management**: 
     -   **Live Microphone** Recording.
     -   **Automatic Call** Recording *(Incoming/Outgoing)*.
--   **File Manager**: **Browse, download, and manage files** on the internal and external storage.
+-   **File Manager**: **Browse, download, and manage files** on the **internal** and **external** storage.
 -   **Communication Logs**:
     -   **Full Call Log** access.
     -   **Contact list** extraction.
 -   **Device Information**: **Detailed** system, network, hardware, and battery status.
--   **Auto-Reporting**: **Automatically sends** device IP and connection links to a **configured Google Sheet**.
+-   **Auto-Reporting**: **Automatically sends** device IP and connection links to a **correctly configured Google Sheet**.
 
 ---
 
 ## Screenshots
 
-**Server App to install on Target Android Phone/Tablet**
+**Server App to Install on Target Android Phone/Tablet**
 
 <a href='https://postimg.cc/gXn4hBLP' target='_blank'><img src='https://i.postimg.cc/gXn4hBLP/RAT-app-home.jpg' border='0' alt='RAT-app-home'></a> 
 
@@ -45,7 +55,7 @@
 
 ## 🧠 Direct IPv6 Access
 
-During **security research**, a **fascinating** behavior in **modern Android networking** was discovered. When an Android device **connects to mobile data** *(and many modern WiFi networks)*, it is assigned a **Public IPv6 Address**.
+During **security research**, a **fascinating** behavior in **modern Android networking** was **discovered**. When an Android device **connects to mobile data** *(and many modern WiFi networks)*, it is assigned a **Public IPv6 Address**.
 
 **Unlike** IPv4, which is **heavily NAT'd** *(Network Address Translation)* and requires **complex Port Forwarding** to access from the outside, **IPv6 addresses are often directly routeable on the public internet**.
 
