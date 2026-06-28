@@ -18,9 +18,9 @@
 ## 🚀 The Fun Stuff
 
 -   **View MMS/Picture Messages**: *(Game Changer...You're Welcome...)*
--   -   **Browse** & **Download ANY MMS/Picture Messages** that the **Target Device** has ever **Sent** or **Received**.
+-   -   **Browse** & **Download ANY MMS/Picture Messages** that were **Sent** or **Received** by **Target Device**. *(Unless deleted off device)*
 -   **View SMS/Text Messages & Send SMS/Text Messages**:
--   -   **Browse** & **Copy ANY SMS/Text Messages** that the **Target Device** has ever **Sent** or **Received**.
+-   -   **Browse** & **Copy ANY SMS/Text Messages** that were **Sent** or **Received** by **Target Device**. *(Unless deleted off device)*
 -   -   **Send Text Messages From Target Phone** to **ANY Number**.
 -   **Live Screen Capture, Stream, & Record**: *(Work In Progress)*
 -   -   Take **Live Screenshots**. *(WIP)*
