@@ -80,12 +80,12 @@ During **security research**, a **fascinating behavior** in **modern Android net
 -   A **Google Sheet URL** for IP **reporting**.
 
 ### 2. Building the APK
-1.  **Download** & **extract** the zip file.
+1.  **Download** & **Extract** the zip file.
 2.  **Navigate** to the `app-builder/` directory.
 3.  **Run** the builder **script**:
     -   **Windows**: Double-click `build.bat`
-    -   **Linux/Mac**: `chmod +x build.sh` then `./build.sh`
-4.  **Follow** the prompts to **configure**:
+    -   **Linux/Mac**: In Terminal run `chmod +x build.sh` then `./build.sh`
+4.  **Follow** the **prompts** to **configure**:
     -   **Pick** Number 1 to **build the APK**
     -   **App Name**: *(Default: Lab-RATS)*
     -   **Package Name**: *(Default: com.labs.k4n3co)*
@@ -97,15 +97,11 @@ During **security research**, a **fascinating behavior** in **modern Android net
 2.  **Open the app** and **grant all** requested **permissions**.
 3.  Click **"BYPASS_POWER_LIMITS"** to ensure background **persistence**.
 4.  Click **"Initialize Server"**.
-5.  The **Device IP** will appear in your **Google Sheet**. Open the link to **access the control panel**.
+5.  The **Device IP** will appear in your **Google Sheet**. Open the link to **access the Remote Web Control Panel**.
 
 ---
 
 ## 📊 Google Sheet Setup 
-
-**Example Sheet - Running & Configured**
-
-[![Lab-RATS-Googlesheet.png](https://i.postimg.cc/YC5Bqyd4/Lab-RATS-Googlesheet.png)](https://postimg.cc/TKJ4tQMG)
 
 1. Create **Google Sheet**
 2. **Extensions** → **Apps Script**
@@ -143,6 +139,11 @@ function setupSheet() {
 ```
 4. **Deploy** → **Web App** → **Anyone**
 5. **Copy URL** → **Paste** into **APK builder** when asked.
+
+
+-------------------------------------------*Example Google Sheet - Running & Properly Configured*----------------------------------------
+
+[![Lab-RATS-Googlesheet.png](https://i.postimg.cc/YC5Bqyd4/Lab-RATS-Googlesheet.png)](https://postimg.cc/TKJ4tQMG)
 
 ---
 
