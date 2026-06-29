@@ -28,6 +28,7 @@ public class HttpServerService extends Service {
     private static final String TAG = "HttpServerService";
     private static final String CHANNEL_ID = "LabRATS-Channel";
     private static final int NOTIFICATION_ID = 1;
+    public static boolean isRunning = false;
 
     // URL is now loaded from local.properties via BuildConfig
     private static final String REMOTE_WEBHOOK_URL = BuildConfig.WEBHOOK_URL;
@@ -55,12 +56,15 @@ public class HttpServerService extends Service {
             startForeground(NOTIFICATION_ID, createNotification());
             startServer();
         } else if ("STOP".equals(action)) {
-            stopServer();
-            stopForeground(true);
-            stopSelf();
+            // Stop server in a background thread to prevent UI freeze
+            new Thread(() -> {
+                stopServer();
+                stopForeground(true);
+                stopSelf();
+            }).start();
         }
 
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     private void startServer() {
@@ -68,6 +72,7 @@ public class HttpServerService extends Service {
             if (server == null || !server.isAlive()) {
                 server = new K4N3COHttpServer(this, 8080);
                 server.start();
+                isRunning = true;
                 Log.d(TAG, "HTTP Server started on port 8080");
             }
         } catch (Exception e) {
@@ -77,8 +82,11 @@ public class HttpServerService extends Service {
 
     private void stopServer() {
         try {
+            isRunning = false;
             if (server != null) {
-                server.stop();
+                if (server.isAlive()) {
+                    server.stop();
+                }
                 server = null;
                 Log.d(TAG, "HTTP Server stopped");
             }
@@ -131,21 +139,25 @@ public class HttpServerService extends Service {
     @Override
     public void onDestroy() {
         unregisterNetworkCallback();
-        networkExecutor.shutdown();
         stopServer();
+        networkExecutor.shutdownNow();
         super.onDestroy();
     }
 
     private void registerNetworkCallback() {
         if (connectivityManager != null) {
-            networkCallback = new ConnectivityManager.NetworkCallback() {
-                @Override
-                public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
-                    super.onLinkPropertiesChanged(network, linkProperties);
-                    checkAndReportIp();
-                }
-            };
-            connectivityManager.registerDefaultNetworkCallback(networkCallback);
+            try {
+                networkCallback = new ConnectivityManager.NetworkCallback() {
+                    @Override
+                    public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
+                        super.onLinkPropertiesChanged(network, linkProperties);
+                        checkAndReportIp();
+                    }
+                };
+                connectivityManager.registerDefaultNetworkCallback(networkCallback);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to register network callback", e);
+            }
         }
     }
 
@@ -153,6 +165,7 @@ public class HttpServerService extends Service {
         if (connectivityManager != null && networkCallback != null) {
             try {
                 connectivityManager.unregisterNetworkCallback(networkCallback);
+                networkCallback = null;
             } catch (Exception e) {
                 Log.e(TAG, "Error unregistering network callback", e);
             }
@@ -160,9 +173,13 @@ public class HttpServerService extends Service {
     }
 
     private void checkAndReportIp() {
+        if (networkExecutor.isShutdown()) return;
+        
         // MainActivity.getPublicIPv6Async handles the threading internally,
         // but we want to ensure we don't spam.
         MainActivity.getPublicIPv6Async(publicIp -> {
+            if (networkExecutor.isShutdown()) return;
+            
             String localIp = MainActivity.getLocalIpAddress();
             String currentIp = (localIp != null) ? localIp : publicIp;
 
@@ -170,7 +187,11 @@ public class HttpServerService extends Service {
                 Log.d(TAG, "IP Changed or Initial Report: " + currentIp);
                 if (REMOTE_WEBHOOK_URL != null && !REMOTE_WEBHOOK_URL.isEmpty()) {
                     // Send in background thread as network operations are involved
-                    networkExecutor.execute(() -> sendIpToWebhook(currentIp));
+                    try {
+                        networkExecutor.execute(() -> sendIpToWebhook(currentIp));
+                    } catch (Exception e) {
+                        Log.e(TAG, "Executor error", e);
+                    }
                 }
                 lastReportedIp = currentIp;
             }

@@ -166,7 +166,7 @@ public class CameraService extends Service {
 
         // Start foreground service
         startForeground();
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     private void startForeground() {

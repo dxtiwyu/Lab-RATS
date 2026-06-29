@@ -171,6 +171,16 @@ public class MainActivity extends AppCompatActivity {
             permissionsNeeded.add(Manifest.permission.READ_CONTACTS);
         }
 
+        // Location permissions
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+
         // SMS permissions
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
@@ -301,13 +311,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isServerRunning() {
-        android.app.ActivityManager manager = (android.app.ActivityManager) getSystemService(android.content.Context.ACTIVITY_SERVICE);
-        for (android.app.ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (HttpServerService.class.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
+        return HttpServerService.isRunning;
     }
 
     private void updateUI() {
