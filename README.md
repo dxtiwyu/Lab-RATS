@@ -61,7 +61,7 @@
 
 ## 🧠 Direct IPv6 Access
 
-During **security research**, a **fascinating behavior** in **modern Android networking** was **discovered**. When an Android device **connects to mobile data** *(and many modern WiFi networks)*, it is assigned a **Public IPv6 Address**.
+During **security research**, an **interesting behavior** in **modern Android networking** was **discovered**. When an Android device **connects to mobile data** *(and some modern WiFi networks)*, it is assigned a **Public IPv6 Address**.
 
 **Unlike** IPv4, which is **heavily NAT'd** *(Network Address Translation)* and requires **complex Port Forwarding** to access from the outside, **IPv6 addresses are often directly routeable on the public internet**.
 
@@ -78,15 +78,15 @@ During **security research**, a **fascinating behavior** in **modern Android net
 
 ## 🛠️ Getting Started
 
-### 1. Requirements
+### 1. Prerequisites 
 -   **Java 11 or 21** installed on your **PC**.
 -   An **Android** device *(target)*.
--   A **Google Sheet URL** for IP **reporting**.
+-   A **Google Sheet URL** for **IP reporting**.
 
 ### 2. Building the APK
 1.  **Download** & **Extract** the zip file.
 2.  **Navigate** to the `app-builder/` directory.
-3.  **Run** the builder **script**:
+3.  **Run** the app-builder **script**:
     -   **Windows**: Double-click `build.bat`
     -   **Linux/Mac**: In terminal from `/Lab-RATS/app-builder/` run `chmod +x build.sh` then `./build.sh`
 4.  **Follow** the **on-screen prompts** to **configure APK**:
@@ -109,7 +109,7 @@ During **security research**, a **fascinating behavior** in **modern Android net
 
 1. Create **Google Sheet**
 2. Go to **Extensions** → **Apps Script**
-3. **Paste** this **Code** in:
+3. **Paste** in **Code** below:
 
 ```javascript
 // Lab-RATS Remote Reporting Script
