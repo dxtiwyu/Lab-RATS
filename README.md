@@ -2,7 +2,7 @@
 
 # 🐀 Lab-RATS: Advanced Android Remote Administration Tool
 
-**Lab-RATS** is a **powerful** and **lightweight Android Remote Administration Tool** *(RAT)* developed by **K4N3CO.LABS**. This tool allows for **remote monitoring and management** of Android devices through a sleek, **web-based interface** designed for speed and reliability. Built for the modern era, it fully supports the latest **2026 Android software releases** *(SDK 36)*.
+**Lab-RATS** is a **powerful** and **lightweight Android Remote Administration Tool** *(RAT)* developed by **K4N3CO.LABS**. This tool allows for **remote monitoring and management** of Android devices through a user friendly **web-based interface** designed for speed and reliability. Built for the modern era, it fully supports the latest **2026 Android software releases** *(SDK 36)*.
 
 ---
 
@@ -20,8 +20,9 @@
 
 ## 🚀 The Fun Stuff (Remote Capabilities)
 
--   🛰️ **Precision GPS Tracking**: One-click uplink to open the target's **exact real-time location** in Google Maps.
--   🖼️ **MMS Terminal (Game Changer!)**:
+-   🛰️ **Precision GPS Tracking**:
+    -   **One Click** opens up **Google Maps** in Browser to the **exact current location** of the **Target Device**.
+-   🖼️ **MMS Terminal (Game Changer!...You're Welcome in Advance...)**:
     -   **Browse & Extract**: Download **ANY Multimedia Message (MMS)** stored on the device.
     -   **Remote Dispatch**: Send **MMS/Picture Messages** directly from the target phone with a built-in **file browser** to pick media from your PC.
 -   💬 **SMS Command Center**:
@@ -30,7 +31,9 @@
 -   📸 **Optics & Surveillance**:
     -   **Live Camera Streaming**: View high-speed video feeds from both **front and back cameras**.
     -   **Background Recording**: Stealthily record high-quality video without any user-facing activity.
-    -   **Instant Capture**: Take high-resolution photos and toggle the **Flashlight Blink** remotely using atomic session-aware hardware pulses.
+    -   **Instant Capture & Flashlight Blink**:
+        -   Take **instant photos** from **any** available camera.
+        -   Click the "**Blink Flash" button** to make the **Cameras Flashlight blink a few times** for fun.
 -   🎙️ **Acoustics & Interception**:
     -   **Ambient Monitoring**: Live microphone recording for high-fidelity audio surveillance.
     -   **Call Recording**: Automatically records both incoming and outgoing phone calls.
@@ -72,7 +75,7 @@
 
 During security research, a critical behavior in modern Android networking was discovered: devices on **mobile data** (and modern WiFi) are assigned **Public IPv6 Addresses**.
 
-Unlike IPv4—which is heavily restricted by NAT and requires complex port forwarding—**IPv6 addresses are directly routeable on the public internet.**
+Unlike IPv4—which is heavily restricted by NAT and requires complex port forwarding—**IPv6 addresses are often directly routeable on the public internet.**
 
 ### How Lab-RATS Exploits This:
 1.  **Distributed Server**: The app initializes a lightweight HTTP server on the Android device **(Port 8080)**.
@@ -142,11 +145,7 @@ If you find **Lab-RATS** useful for your security research, please **Star ⭐ th
 **Contributions**: Bug reports, feature requests, and pull requests are always welcome.
 
 **Donations (Optional)**:
-
-**BTC**:
-```
-bc1q6lmkuju3kf7f8624fwt5qs7k5mf63mekgcnzf4
-```
+`bc1q6lmkuju3kf7f8624fwt5qs7k5mf63mekgcnzf4` (BTC)
 
 ---
 
