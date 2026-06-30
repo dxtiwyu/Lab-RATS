@@ -1,16 +1,16 @@
 # 🔥 Lab-RATS APK Builder
 
 <p align="center">
-  <a href="https://github.com/Lab-RATS-LABS"><img src="https://img.shields.io/badge/Author-Lab-RATS.LABS-red?style=for-the-badge" alt="Author"></a>
+  <a href="https://github.com/Lab-RATS-LABS"><img src="https://img.shields.io/badge/K4N3CO.LABS-RAT-red?style=for-the-badge" alt="Author"></a>
 </p>
 
 ---
 
 ## 👨‍💻 Developer
 
-**Lab-RATS.LABS**
+**K4N3CO.LABS**
 
-- 🔗 GitHub: [github.com/Lab-RATS-LABS](https://github.com/Lab-RATS-LABS)
+- 🔗 GitHub: [github.com/K4N3CO.LABS](https://github.com/K4N3CO.LABS)
 
 ---
 
@@ -333,6 +333,6 @@ MIT License
 ---
 
 <p align="center">
-  <b>Created by Lab-RATS.LABS</b><br>
-  <a href="https://github.com/Lab-RATS-LABS">GitHub</a>
+  <b>Created by K4N3CO.LABS</b><br>
+  <a href="https://github.com/K4N3CO.LABS">GitHub</a>
 </p>
