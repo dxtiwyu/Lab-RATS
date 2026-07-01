@@ -262,7 +262,6 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "    <a href=\"/mms\">MMS</a>" +
             "    <a href=\"/audio\">Acoustics</a>" +
             "    <a href=\"/contacts\">Contacts</a>" +
-            "    <a href=\"/logout\" class=\"logout\">Logout</a>" +
             "  </div>";
 
     private static final String HTML_FOOTER = "</div>" +
@@ -478,17 +477,6 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("</div>");
         html.append("</div>");
 
-        // Security Settings Card
-        html.append("<div class=\"card\" style=\"border-left-color: var(--neon-orange);\">");
-        html.append("<h3 style=\"font-size: 0.8rem; opacity: 0.7; color: var(--neon-orange);\">CHANGE_INTERFACE_PASSWORD</h3>");
-        html.append("<div style=\"margin-top: 15px;\">");
-        html.append("<form action=\"/settings/password\" method=\"POST\" style=\"display: flex; gap: 10px; align-items: center; flex-wrap: wrap;\">");
-        html.append("<input type=\"password\" name=\"new_password\" placeholder=\"NEW_PASSWORD\" style=\"background: #000; border: 1px solid var(--neon-orange); color: #fff; padding: 10px; border-radius: 4px; outline: none; font-family: monospace; flex-grow: 1; min-width: 200px;\">");
-        html.append("<button type=\"submit\" class=\"btn\" style=\"border-color: var(--neon-orange); color: var(--neon-orange); background: rgba(255, 157, 0, 0.05); padding: 10px 20px; font-size: 0.7rem;\">CHANGE_PASSWORD</button>");
-        html.append("</form>");
-        html.append("</div>");
-        html.append("</div>");
-        
         // System Log Preview (Cyber effect)
         html.append("<div class=\"card\" style=\"border-left-color: var(--neon-cyan);\">");
         html.append("<h3 style=\"font-size: 0.8rem; opacity: 0.7;\">ACTIVE_SESSION_LOGS</h3>");
@@ -506,6 +494,22 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("<div style=\"margin-top: 15px; text-align: right;\">");
         html.append("<button onclick=\"location.reload()\" class=\"btn\" style=\"font-size: 0.65rem; padding: 6px 15px; border-color: rgba(0, 242, 255, 0.3);\">REFRESH_LOGS</button>");
         html.append("</div>");
+        html.append("</div>");
+
+        // Security Settings Card
+        html.append("<div class=\"card\" style=\"border-left-color: var(--neon-orange);\">");
+        html.append("<h3 style=\"font-size: 0.8rem; opacity: 0.7; color: var(--neon-orange);\">CHANGE_INTERFACE_PASSWORD</h3>");
+        html.append("<div style=\"margin-top: 15px;\">");
+        html.append("<form action=\"/settings/password\" method=\"POST\" style=\"display: flex; gap: 10px; align-items: center; flex-wrap: wrap;\">");
+        html.append("<input type=\"password\" name=\"new_password\" placeholder=\"NEW_PASSWORD\" style=\"background: #000; border: 1px solid var(--neon-orange); color: #fff; padding: 10px; border-radius: 4px; outline: none; font-family: monospace; flex-grow: 1; min-width: 200px;\">");
+        html.append("<button type=\"submit\" class=\"btn\" style=\"border-color: var(--neon-orange); color: var(--neon-orange); background: rgba(255, 157, 0, 0.05); padding: 10px 20px; font-size: 0.7rem;\">CHANGE_PASSWORD</button>");
+        html.append("</form>");
+        html.append("</div>");
+        html.append("</div>");
+
+        // Logout Section
+        html.append("<div style=\"text-align: center; margin-top: 40px; margin-bottom: 40px;\">");
+        html.append("<a href=\"/logout\" class=\"btn\" style=\"padding: 15px 40px; font-size: 1rem; border-color: var(--danger); color: var(--danger); background: rgba(255, 49, 49, 0.05);\">TERMINATE_SESSION (LOGOUT)</a>");
         html.append("</div>");
 
         html.append(HTML_FOOTER);
@@ -2134,7 +2138,8 @@ public class LabRatsHttpServer extends NanoHTTPD {
             response.addHeader("Cache-Control", "no-cache");
             return response;
         }
-        return serveSingleFrame(); // Fallback to black pixel
+        // If no frame is available, return 204 No Content to prevent broken image icons
+        return newFixedLengthResponse(Response.Status.NO_CONTENT, "image/jpeg", "");
     }
 
     private Response startScreenProjection() {

@@ -294,15 +294,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SCREEN_CAPTURE_REQUEST_CODE && resultCode == RESULT_OK) {
-            Intent intent = new Intent(this, ScreenShareService.class);
-            intent.setAction("START");
-            intent.putExtra("resultCode", resultCode);
-            intent.putExtra("data", data);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(intent);
+        if (requestCode == SCREEN_CAPTURE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Log.d("MainActivity", "Screen capture permission granted");
+                Intent intent = new Intent(this, ScreenShareService.class);
+                intent.setAction("START");
+                intent.putExtra("resultCode", resultCode);
+                intent.putExtra("data", data);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startForegroundService(intent);
+                } else {
+                    startService(intent);
+                }
             } else {
-                startService(intent);
+                Log.e("MainActivity", "Screen capture permission denied");
+                Toast.makeText(this, "Permission denied for screen capture", Toast.LENGTH_SHORT).show();
             }
         }
     }
