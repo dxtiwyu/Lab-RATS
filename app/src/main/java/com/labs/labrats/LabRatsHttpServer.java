@@ -53,9 +53,6 @@ public class LabRatsHttpServer extends NanoHTTPD {
     private void loadPersistentData() {
         SharedPreferences prefs = context.getSharedPreferences("LabRATSSettings", Context.MODE_PRIVATE);
         
-        // Generate a fresh session token every time the server starts
-        this.sessionToken = java.util.UUID.randomUUID().toString();
-
         // Load System Logs
         if (!logsLoaded) {
             String logsJson = prefs.getString("system_logs", "[]");
@@ -324,158 +321,202 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "<br><button type=\"submit\">UPLINK</button>" +
             "</form></div></body></html>";
 
-    private String sessionToken = "";
+    private static final String LOGOUT_HTML = "<!DOCTYPE html><html><head><title>Lab-RATS | LOGOUT</title>" +
+            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
+            "<style>" +
+            "body { background: #050505; color: #ff3131; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }" +
+            ".logout-card { background: rgba(15,15,25,0.9); border: 1px solid #ff3131; padding: 40px; border-radius: 12px; box-shadow: 0 0 30px rgba(255,49,49,0.2); }" +
+            "p { color: #888; font-family: monospace; margin-top: 20px; }" +
+            "</style></head><body>" +
+            "<div class=\"logout-card\">" +
+            "<h1>SESSION_TERMINATED</h1>" +
+            "<p>Uplink severed. Disconnecting...</p>" +
+            "</div>" +
+            "<script>" +
+            "  // Nuclear Session Wipe\n" +
+            "  document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';\n" +
+            "  localStorage.clear();\n" +
+            "  sessionStorage.clear();\n" +
+            "  setTimeout(() => { window.location.href = '/login'; }, 1500);\n" +
+            "</script></body></html>";
+
+    private static volatile String sessionToken = "";
 
     public LabRatsHttpServer(Context context, int port) {
         super(port);
         this.context = context;
         staticContext = context.getApplicationContext();
+        
+        // Generate a fresh session token for this server lifetime
+        sessionToken = java.util.UUID.randomUUID().toString();
+
         loadPersistentData();
     }
 
     @Override
     public Response serve(IHTTPSession session) {
         String uri = session.getUri();
+        Response response = null;
+        CookieHandler cookies = session.getCookies();
         
         try {
-            // Handle Login POST
+            // 1. Handle Login POST (Always available)
             if (uri.equals("/login") && session.getMethod() == Method.POST) {
                 session.parseBody(new HashMap<>());
                 String pass = session.getParms().get("password");
                 
                 if (pass != null && getStoredPassword().equals(pass.trim())) {
                     logActivity("AUTHENTICATION_SUCCESS: Uplink authorized");
-                    Response r = newFixedLengthResponse(Response.Status.REDIRECT, "text/html", "");
-                    r.addHeader("Location", "/");
-                    r.addHeader("Set-Cookie", "token=" + sessionToken + "; Path=/; HttpOnly; Max-Age=31536000");
-                    return r;
+                    response = newFixedLengthResponse(Response.Status.FOUND, "text/html", "");
+                    response.addHeader("Location", "/?auth=" + System.currentTimeMillis());
+                    // Use direct header for path control
+                    response.addHeader("Set-Cookie", "token=" + sessionToken + "; Path=/; HttpOnly; Max-Age=31536000");
+                } else {
+                    response = newFixedLengthResponse(Response.Status.OK, "text/html", LOGIN_HTML.replace("ACCESS_RESTRICTED", "INVALID_CREDENTIALS"));
                 }
-                return newFixedLengthResponse(Response.Status.OK, "text/html", LOGIN_HTML.replace("ACCESS_RESTRICTED", "INVALID_CREDENTIALS"));
-            }
-
-            // Auth Check
-            String cookie = session.getCookies().read("token");
-            boolean isLoggedIn = (cookie != null && cookie.equals(sessionToken) && !sessionToken.isEmpty());
-
-            if (!isLoggedIn) {
-                return newFixedLengthResponse(Response.Status.OK, "text/html", LOGIN_HTML);
-            }
-
-            // Redirect away from login if already logged in
-            if (uri.equals("/login")) {
-                Response r = newFixedLengthResponse(Response.Status.REDIRECT, "text/html", "");
-                r.addHeader("Location", "/");
-                return r;
-            }
-
-            Map<String, String> params = session.getParms();
-
-            if (uri.equals("/") || uri.isEmpty()) {
-                return serveHome();
-            } else if (uri.equals("/logo")) {
-                return serveLogo();
-            } else if (uri.equals("/device")) {
-                return serveDeviceInfo();
-            } else if (uri.equals("/files") || uri.startsWith("/files/")) {
-                return serveFiles(uri, params);
-            } else if (uri.equals("/calls")) {
-                return serveCallLogs(params);
-            } else if (uri.equals("/sms")) {
-                return serveSmsMessages(params);
-            } else if (uri.equals("/mms")) {
-                return serveMmsMessages(params);
-            } else if (uri.equals("/mms/send")) {
-                return sendMms(session);
-            } else if (uri.startsWith("/mms/media/")) {
-                return serveMmsMedia(uri.substring(11));
-            } else if (uri.equals("/sms/send")) {
-                return sendSms(params);
-            } else if (uri.equals("/contacts")) {
-                return serveContacts(params);
-            } else if (uri.equals("/camera")) {
-                return serveCameraPage();
-            } else if (uri.equals("/camera/capture")) {
-                return serveCameraCapture(params);
-            } else if (uri.equals("/camera/photo")) {
-                return serveCameraPhoto(params);
-            } else if (uri.equals("/camera/live")) {
-                return serveLiveStreamPage(params);
-            } else if (uri.equals("/camera/stream")) {
-                return serveMJPEGStream(params);
-            } else if (uri.equals("/camera/frame")) {
-                return serveSingleFrame();
-            } else if (uri.equals("/camera/start-stream")) {
-                return startCameraStream(params);
-            } else if (uri.equals("/camera/stop-stream")) {
-                return stopCameraStream();
-            } else if (uri.equals("/camera/record")) {
-                return startVideoRecording(params);
-            } else if (uri.equals("/camera/stop-record")) {
-                return stopVideoRecording();
-            } else if (uri.equals("/camera/status")) {
-                return serveCameraStatus();
-            } else if (uri.equals("/terminal/clear-logs")) {
-                systemLogs.clear();
-                saveLogsInternal(); // Clear persistent logs too
-                logActivity("SYSTEM_MAINTENANCE: Session logs cleared");
-                return newFixedLengthResponse(Response.Status.OK, "application/json", "{\"success\": true}");
-            } else if (uri.equals("/camera/screen-frame")) {
-                return serveScreenFrame();
-            } else if (uri.equals("/camera/screen-start")) {
-                return startScreenProjection();
-            } else if (uri.equals("/gps")) {
-                return serveGpsPage();
-            } else if (uri.equals("/gps/locate")) {
-                return serveGpsLocate(params);
-            } else if (uri.equals("/intel")) {
-                return serveIntel();
-            } else if (uri.equals("/intel/clear")) {
-                NotificationSniffer.clearHistory(context);
-                logActivity("SYSTEM_MAINTENANCE: Intel history purged");
-                return newFixedLengthResponse(Response.Status.OK, "application/json", "{\"success\": true}");
-            } else if (uri.startsWith("/files/edit/")) {
-                return serveFileEdit(uri.substring(12));
-            } else if (uri.equals("/files/save")) {
-                return saveFile(session);
-            } else if (uri.equals("/camera/night-mode")) {
-                return toggleNightMode();
-            } else if (uri.equals("/stealth")) {
-                return toggleStealthMode();
-            } else if (uri.equals("/settings/password")) {
-                return updatePassword(session);
-            } else if (uri.startsWith("/download/")) {
-                return serveDownload(uri);
-            } else if (uri.equals("/audio")) {
-                return serveAudioPage();
-            } else if (uri.equals("/audio/mic/start")) {
-                return startMicRecording(params);
-            } else if (uri.equals("/audio/mic/stop")) {
-                return stopMicRecording();
-            } else if (uri.equals("/audio/call/start")) {
-                return startCallRecording(params);
-            } else if (uri.equals("/audio/call/stop")) {
-                return stopCallRecording();
-            } else if (uri.equals("/audio/status")) {
-                return serveAudioStatus();
-            } else if (uri.equals("/audio/settings")) {
-                return updateAudioSettings(params);
-            } else if (uri.equals("/audio/recordings")) {
-                return serveAudioRecordings();
-            } else if (uri.equals("/logout")) {
-                logActivity("AUTHENTICATION_TERMINATED: Session closed by user");
-                // Reset internal session token so any existing cookies on other devices fail
-                this.sessionToken = java.util.UUID.randomUUID().toString(); 
+            } 
+            // 2. Handle Logout
+            else if (uri.equals("/logout")) {
+                logActivity("AUTHENTICATION_TERMINATED: Session closed");
+                // Cycle the token on server side immediately to kill all active sessions
+                sessionToken = java.util.UUID.randomUUID().toString(); 
                 
-                Response r = newFixedLengthResponse(Response.Status.REDIRECT, "text/html", "");
-                r.addHeader("Location", "/login");
-                r.addHeader("Set-Cookie", "token=deleted; Path=/; Max-Age=0; HttpOnly");
-                return r;
-            } else {
-                return serve404();
+                response = newFixedLengthResponse(Response.Status.OK, "text/html", LOGOUT_HTML);
+                // Kill cookie on client side
+                response.addHeader("Set-Cookie", "token=deleted; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Strict");
+            }
+            // 3. Auth Check for all other pages
+            else {
+                String token = cookies.read("token");
+                // Strict equality check against the CURRENT server-side UUID
+                boolean isLoggedIn = (token != null && !token.isEmpty() && token.equals(sessionToken));
+
+                if (!isLoggedIn) {
+                    logActivity("UPLINK_DENIED: Unauthorized access attempt to " + uri);
+                    if (uri.equals("/logo")) {
+                        response = serveLogo();
+                    } else {
+                        // For assets, return 401. For pages, return login wall.
+                        if (uri.contains(".") && !uri.equals("/")) {
+                            response = newFixedLengthResponse(Response.Status.UNAUTHORIZED, "text/plain", "ACCESS_DENIED_REAUTHENTICATE");
+                        } else {
+                            response = newFixedLengthResponse(Response.Status.OK, "text/html", LOGIN_HTML);
+                        }
+                    }
+                } else {
+                    // Logged in: Process standard routes
+                    Map<String, String> params = session.getParms();
+                    
+                    if (uri.equals("/login")) {
+                        response = newFixedLengthResponse(Response.Status.FOUND, "text/html", "");
+                        response.addHeader("Location", "/");
+                    } else if (uri.equals("/") || uri.isEmpty()) {
+                        response = serveHome();
+                    } else if (uri.equals("/logo")) {
+                        response = serveLogo();
+                    } else if (uri.equals("/device")) {
+                        response = serveDeviceInfo();
+                    } else if (uri.equals("/files") || uri.startsWith("/files/")) {
+                        response = serveFiles(uri, params);
+                    } else if (uri.equals("/calls")) {
+                        response = serveCallLogs(params);
+                    } else if (uri.equals("/sms")) {
+                        response = serveSmsMessages(params);
+                    } else if (uri.equals("/mms")) {
+                        response = serveMmsMessages(params);
+                    } else if (uri.equals("/mms/send")) {
+                        response = sendMms(session);
+                    } else if (uri.startsWith("/mms/media/")) {
+                        response = serveMmsMedia(uri.substring(11));
+                    } else if (uri.equals("/sms/send")) {
+                        response = sendSms(params);
+                    } else if (uri.equals("/contacts")) {
+                        response = serveContacts(params);
+                    } else if (uri.equals("/camera")) {
+                        response = serveCameraPage();
+                    } else if (uri.equals("/camera/capture")) {
+                        response = serveCameraCapture(params);
+                    } else if (uri.equals("/camera/photo")) {
+                        response = serveCameraPhoto(params);
+                    } else if (uri.equals("/camera/live")) {
+                        response = serveLiveStreamPage(params);
+                    } else if (uri.equals("/camera/stream")) {
+                        response = serveMJPEGStream(params);
+                    } else if (uri.equals("/camera/frame")) {
+                        response = serveSingleFrame();
+                    } else if (uri.equals("/camera/start-stream")) {
+                        response = startCameraStream(params);
+                    } else if (uri.equals("/camera/stop-stream")) {
+                        response = stopCameraStream();
+                    } else if (uri.equals("/camera/record")) {
+                        response = startVideoRecording(params);
+                    } else if (uri.equals("/camera/stop-record")) {
+                        response = stopVideoRecording();
+                    } else if (uri.equals("/camera/status")) {
+                        response = serveCameraStatus();
+                    } else if (uri.equals("/terminal/clear-logs")) {
+                        systemLogs.clear();
+                        saveLogsInternal();
+                        logActivity("SYSTEM_MAINTENANCE: Session logs cleared");
+                        response = newFixedLengthResponse(Response.Status.OK, "application/json", "{\"success\": true}");
+                    } else if (uri.equals("/camera/screen-frame")) {
+                        response = serveScreenFrame();
+                    } else if (uri.equals("/camera/screen-start")) {
+                        response = startScreenProjection();
+                    } else if (uri.equals("/gps")) {
+                        response = serveGpsPage();
+                    } else if (uri.equals("/gps/locate")) {
+                        response = serveGpsLocate(params);
+                    } else if (uri.equals("/intel")) {
+                        response = serveIntel();
+                    } else if (uri.equals("/intel/clear")) {
+                        NotificationSniffer.clearHistory(context);
+                        logActivity("SYSTEM_MAINTENANCE: Intel history purged");
+                        response = newFixedLengthResponse(Response.Status.OK, "application/json", "{\"success\": true}");
+                    } else if (uri.startsWith("/files/edit/")) {
+                        response = serveFileEdit(uri.substring(12));
+                    } else if (uri.equals("/files/save")) {
+                        response = saveFile(session);
+                    } else if (uri.equals("/camera/night-mode")) {
+                        response = toggleNightMode();
+                    } else if (uri.equals("/stealth")) {
+                        response = toggleStealthMode();
+                    } else if (uri.equals("/settings/password")) {
+                        response = updatePassword(session);
+                    } else if (uri.startsWith("/download/")) {
+                        response = serveDownload(uri);
+                    } else if (uri.equals("/audio")) {
+                        response = serveAudioPage();
+                    } else if (uri.equals("/audio/mic/start")) {
+                        response = startMicRecording(params);
+                    } else if (uri.equals("/audio/mic/stop")) {
+                        response = stopMicRecording();
+                    } else if (uri.equals("/audio/call/start")) {
+                        response = startCallRecording(params);
+                    } else if (uri.equals("/audio/call/stop")) {
+                        response = stopCallRecording();
+                    } else if (uri.equals("/audio/status")) {
+                        response = serveAudioStatus();
+                    } else if (uri.equals("/audio/settings")) {
+                        response = updateAudioSettings(params);
+                    } else if (uri.equals("/audio/recordings")) {
+                        response = serveAudioRecordings();
+                    } else {
+                        response = serve404();
+                    }
+                }
             }
         } catch (Exception e) {
-            return serveError(e.getMessage());
+            response = serveError(e.getMessage());
         }
+
+        // Global Anti-Cache Lockdown
+        if (response != null) {
+            response.addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.addHeader("Pragma", "no-cache");
+            response.addHeader("Expires", "0");
+        }
+        return response;
     }
 
     private Response serveLogo() {
@@ -499,13 +540,14 @@ public class LabRatsHttpServer extends NanoHTTPD {
     private Response serveHome() {
         String ip = MainActivity.getLocalIpAddress();
         String ipDisplay = (ip != null ? ip : "NOT_DETECTED");
+        String sessionId = sessionToken.substring(0, 4).toUpperCase();
 
         StringBuilder html = new StringBuilder(HTML_HEADER);
         
         // Status Monitor Card
         html.append("<div class=\"card\">");
         html.append("<div style=\"display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;\">");
-        html.append("<h2 style=\"margin-bottom:0;\">SYSTEM_MONITOR v1.3.2</h2>");
+        html.append("<h2 style=\"margin-bottom:0;\">SYSTEM_MONITOR [" + sessionId + "]</h2>");
         String snifferStatus = NotificationSniffer.isServiceRunning() ? 
             "<span style=\"color:var(--neon-green); font-size:0.7rem; font-family:monospace;\">&#9679; INTEL_ACTIVE</span>" : 
             "<span style=\"color:var(--danger); font-size:0.7rem; font-family:monospace;\">&#9675; INTEL_DISCONNECTED</span>";
@@ -574,7 +616,9 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
         // Logout Section
         html.append("<div style=\"text-align: center; margin-top: 40px; margin-bottom: 40px;\">");
-        html.append("<a href=\"/logout\" class=\"btn\" style=\"padding: 15px 40px; font-size: 1rem; border-color: var(--danger); color: var(--danger); background: rgba(255, 49, 49, 0.05);\">TERMINATE_SESSION (LOGOUT)</a>");
+        html.append("<form action=\"/logout\" method=\"POST\">");
+        html.append("<button type=\"submit\" class=\"btn\" style=\"padding: 15px 40px; font-size: 1rem; border-color: var(--danger); color: var(--danger); background: rgba(255, 49, 49, 0.05);\">TERMINATE_SESSION (LOGOUT)</button>");
+        html.append("</form>");
         html.append("</div>");
 
         html.append(HTML_FOOTER);
