@@ -10,54 +10,54 @@
 
 -   📦 **Automated APK Generation**: Instantly build both `signed.apk` *(for production)* and `unsigned.apk`.
 -   🆔 **Advanced Identity Control**: Fully customize **App Name**, **Package ID**, and **Minimum SDK**.
--   🔐 **C2 Security Layer**: The web dashboard is protected by a secure login wall (**Default Password: admin1337**). The password can be updated directly from the Terminal home page for enhanced security.
+-   🔐 **C2 Security Layer**: The web dashboard is protected by a **secure login** wall (**Default Password: admin1337**). The password can be updated directly from the Terminal home page for enhanced security.
 -   🎨 **Smart Branding Engine**:
-    -   **Auto-Density Scaling**: Resizes logos automatically for all Android screen densities.
-    -   **Transparency Fixer**: Removes white backgrounds from logo assets automatically.
--   📱 **PC/Mobile-Responsive**: The remote web interface is fully optimized for both PC and smartphone browsers, featuring a touch-friendly layout, adaptive navigation tabs, and scalable UI elements for monitoring from any device. *(ALL remote capabilities are available on both interfaces)*
+    -   **Auto-Density Scaling**: Resizes logos **automatically** for all Android screen densities.
+    -   **Transparency Fixer**: Removes white backgrounds from logo assets **automatically**.
+-   📱 **PC/Mobile-Responsive**: The remote web interface is fully optimized for both PC and smartphone browsers, featuring a **touch-friendly layout**, **adaptive navigation tabs**, and scalable UI elements for monitoring from any device. *(ALL remote capabilities are available on both interfaces)*
 
 ---
 
 ## 🕵️ Covert & Stealth Operations
 
--   🎭 **Launcher Masquerade**: **Remotely swap the app icon and name** with a generic **"System Update"** name and standard **sprocket gear app icon**.
--   🛠️ **Interactive Decoy UI**: When stealth mode active, the app launches a convincing **Fake System Update** screen. This interface includes a functional **"Check for update"** button, **realistic progress animations**, and **system-style notifications** to bypass **manual inspection**.
--   🌓 **Adaptive Stealth Theme**: The decoy interface **automatically** syncs with the device's **Light/Dark Mode** settings, including **status bar color-switching**, to maintain a perfect native appearance.
--   ☎️ **Dial-Pad Recovery**: If the icon is hidden in stealth mode, **dial `*#1337#` on the phone's keypad** to instantly restore the original Lab-RATS identity and app icon.
--   🚪 **Backdoor Access**: While in stealth mode, **rapidly tapping the sprocket gear** on the **Fake Update screen 10 times** bypasses the decoy and opens the **primary Lab-RATS** app server screen. *(returns to stealth mode once closed.)*
--   👻 **Task-List Stealth**: The app is hard-coded to be invisible in the Android **"Recent Apps"** list, preventing discovery during multitasking.
--   🎲 **Version Camouflage**: Dynamically generates random **Version Names** and **Codes** that mimic legitimate OTA updates.
--   📡 **Notification Hijacking**: When stealth is active, all background service notifications are rebranded as "System Update" with matching assets to ensure zero branding leaks in the notification tray.
+-   🎭 **Launcher Masquerade**: **Remotely swap the app icon and name** with a generic **"System Update"** name and standard **gear app icon**. *(Located at the bottom of the Hardware tab)*
+-   🛠️ **Interactive Decoy UI**: When **stealth mode** is activated, the app launches a **very** convincing **Fake System Update** interface. This interface includes a functional **"Check for update"** button, **realistic progress animations**, and **system-style notifications** to bypass **manual inspections**.
+-   🌓 **Adaptive Stealth Theme**: The **decoy interface automatically** syncs with the device's **Light/Dark Mode** settings, including **status bar color-switching**, to maintain a **perfect native appearance**.
+-   ☎️ **Dial-Pad Recovery**: If the icon is hidden in **stealth mode**, **dial `*#1337#` on the phone's keypad** to instantly restore the **original Lab-RATS identity and app icon**.
+-   🚪 **Backdoor Access**: While in **stealth mode**, **rapidly tapping the sprocket gear** on the **Fake Update screen 10 times** bypasses the decoy and opens the **primary Lab-RATS** app server screen. *(Returns to stealth mode once closed.)*
+-   👻 **Task-List Stealth**: The app is **hard-coded to be invisible** in the Android **"Recent Apps"** list, preventing discovery during multitasking.
+-   🎲 **Version Camouflage**: Dynamically generates random **Version Names** and **Codes** that mimic **legitimate OTA updates**.
+-   📡 **Notification Hijacking**: When **stealth mode** is active, all background service notifications are **rebranded as "System Updates"** with matching assets to **ensure zero branding leaks** in the notification tray.
 
 ---
 
 ## 🚀 The Fun Stuff (Remote Capabilities)
 
 -   🛰️ **Precision GPS Tracking**: One-click uplink to open the target's **exact real-time location** in Google Maps.
--   📱 **Remote Screen Projection (Gold Standard)**: Stream the device's screen in **real-time** directly to your web browser with a single click. Built with a specialized **Android 16** compatibility layer for flawless performance on the latest hardware.
--   ⚡  **Intel Stream (Notification Sniffer)**: Intercept every notification that hits the device (*WhatsApp, Telegram, RCS, System*) and view them in a **live** chronological feed.
+-   📱 **Remote Screen Projection (Gold Standard)**: Stream the device's screen in **real-time** directly to your web browser with a single click. Built with a specialized **Android 16** compatibility layer for **flawless performance on the latest hardware**.
+-   ⚡  **Intel Stream (Notification Sniffer)**: Intercept **every notification** that hits the device (*WhatsApp, Telegram, RCS, System*) and view them in a **live** chronological feed.
 -   🖼️ **MMS Terminal (Game Changer!)**:
     -   **Browse & Extract**: Download and view **ANY Multimedia Message (MMS)** including **Images and Videos** stored on the device.
-    -   **Remote Dispatch**: Send **MMS/Picture Messages** directly from the target phone with a built-in **file browser** to pick media from your PC.
+    -   **Remote Dispatch**: Send **MMS/Picture Messages** directly from the target phone with a **built-in file browser** to pick media from your PC.
 -   💬 **SMS Command Center**:
-    -   **Full Interception**: Browse and copy every sent/received text message.
-    -   **Remote Texting**: Send SMS from the target's number to any destination worldwide.
+    -   **Full Interception**: Browse and copy **every sent/received text message**.
+    -   **Remote Texting**: Send SMS from the **target's number** to any destination worldwide.
 -   📸 **Optics & Surveillance**:
-    -   **Live Camera Streaming**: View high-speed video feeds from both **front and back cameras**.
-    -   **🌙 Night Vision Mode**: Sensor-boosted low-light mode for visibility in near-total darkness.
-    -   **Hardware Stability Engine**: Unified camera management **prevents resource conflicts**, ensuring reliable background capture and streaming even on high-security Android 15/16 devices.
-    -   **Background Recording**: Stealthily record high-quality video without any user-facing activity.
-    -   **Instant Capture**: Take high-resolution photos remotely.
+    -   **Live Camera Streaming**: View **high-speed** video feeds from **both front and back cameras**.
+    -   **🌙 Night Vision Mode**: Sensor-boosted **low-light** mode for **visibility in near-total darkness**.
+    -   **Hardware Stability Engine**: Unified camera management **prevents resource conflicts**, ensuring **reliable background capture and streaming** even on high-security **Android 15/16 devices**.
+    -   **Background Recording**: Stealthily **record high-quality video** without any **user-facing activity**.
+    -   **Instant Capture**: Take **high-resolution** photos **remotely**.
 -   🎙️ **Acoustics & Interception**:
-    -   **Ambient Monitoring**: Live microphone recording for high-fidelity audio surveillance.
-    -   **Call Recording**: Automatically records both incoming and outgoing phone calls.
+    -   **Ambient Monitoring**: Live **microphone recording** for high-fidelity **audio surveillance**.
+    -   **Call Recording**: Automatically records both **incoming and outgoing** phone calls.
 -   📂 **Advanced Data Uplink**:
     -   **Integrated File Manager**: Navigate, download, and manage files across internal and external storage.
-    -   **📝 Direct File Editor**: Live-edit text, JSON, and log files directly on the device from your browser.
+    -   **📝 Direct File Editor**: Live-edit **text, JSON**, and **log files** directly on the device from your browser.
 -   📊 **Telemetry & Reporting**:
-    -   **Full System Extraction**: Detailed hardware, network, and battery analytics.
-    -   **Contact & Call Logs**: Instant extraction of the target's full contact list and communication history.
-    -   **C2 Auto-Reporting**: Discrete reporting of device IP and status to a centralized **Google Sheet**.
+    -   **Full System Extraction**: Detailed **hardware, network**, and **battery analytics**.
+    -   **Contact & Call Logs**: Instant extraction of the **target's full contact list** and **communication history**.
+    -   **C2 Auto-Reporting**: Discrete **reporting of device IP** and status to a centralized **Google Sheet**.
 
 ---
 
@@ -69,7 +69,7 @@
 </p>
 
 <p align="center">
-<b>--- &gt; Covert App Icon Changed & Fake Update Overlay Using Masquerade Mode &lt; ---</b><br>
+<b>--- &gt; Covert App Icon in Stealth Mode & Fake Update Overlay Using Stealth/Masquerade Mode &lt; ---</b><br>
 <a href="https://postimg.cc/063h6QNL" target="_blank"><img src="https://i.postimg.cc/063h6QNL/SYS-Update-icon.png" alt="SYS-Update-icon"></a> <a href="https://postimg.cc/v1jC1BmJ" target="_blank"><img src="https://i.postimg.cc/v1jC1BmJ/Fake-update.png" alt="Fake-update"></a>
 
 <p align="center">
@@ -97,13 +97,13 @@
 
 ## 🧠 Direct IPv6 Access (The "Backdoor" Protocol)
 
-During security research, a **critical behavior** in modern Android networking was discovered: devices on **mobile data** (and modern WiFi) are assigned **Public IPv6 Addresses**.
+During security research, a **critical behavior** in modern Android networking was **discovered**: devices on **mobile data** (and modern WiFi) are assigned **Public IPv6 Addresses**.
 
 Unlike IPv4—which is **heavily restricted by NAT** and requires complex port forwarding—**IPv6 addresses are **directly routeable** on the public internet.**
 
 ### How Lab-RATS Exploits This:
 1.  **Distributed Server**: The app initializes a **lightweight HTTP server** on the Android device **(Port 8080)**.
-2.  **Zero Configuration**: Because the device uses Public IPv6, you can access the terminal **directly from anywhere in the world** without router setup, firewalls, or tunnels (*Ngrok/Pinggy*).
+2.  **Zero Configuration**: Because the device uses **Public IPv6**, you can access the terminal **directly from anywhere in the world** **without** router setup, firewalls, or tunnels (*Ngrok/Pinggy*).
 3.  **Dynamic IP Solution**: Mobile networks rotate IPs frequently. Lab-RATS solves this by using a **Google Sheet as a "Command & Control (C2) Phonebook"**.
 4.  **Stealth Uplink**: The app **silently detects** its current IPv6 and posts the live link to your sheet. You simply open the sheet and click the latest link to regain control.
 
@@ -114,7 +114,7 @@ Unlike IPv4—which is **heavily restricted by NAT** and requires complex port f
 ## 🛠️ Getting Started
 
 ### 1. Requirements
-*   **Java 11 or 21** installed on your workstation.
+*   **Java 11 or 21** installed on your **workstation**.
 *   A target **Android** device.
 *   A **Google Sheet Webhook URL** for IP tracking.
 
@@ -125,8 +125,8 @@ Unlike IPv4—which is **heavily restricted by NAT** and requires complex port f
     *   **Windows**: `build.bat`
     *   **Linux/Mac**: `chmod +x build.sh && ./build.sh`
 4.  Select **Option 1** and provide your configuration:
-    *   **App Name**: (Default: LAB-RATS)
-    *   **Google Sheet URL**: Your Apps Script URL (*instructions below*).
+    *   **App Name**: *(Default: LAB-RATS)*
+    *   **Google Sheet URL**: Your Apps Script URL *(instructions below)*.
 5.  Retrieve your `signed.apk` from the `output/` directory.
 
 ---
@@ -135,7 +135,7 @@ Unlike IPv4—which is **heavily restricted by NAT** and requires complex port f
 
 1.  Create a new **Google Sheet**.
 2.  Go to **Extensions** → **Apps Script**.
-3.  **Replace** the **default code** with this snippet:
+3.  **Replace** the **default code** with this **snippet**:
 
 ```javascript
 // Lab-RATS C2 Tracking Script
@@ -169,9 +169,9 @@ function setupSheet() {
 
 ## ⭐ Support the Development
 
-If you find **Lab-RATS** useful for your security research, please **Star ⭐ the project**—it drives further development!
+If you find **Lab-RATS** useful for your security research, please **Star ⭐ the project**—it drives **further development**!
 
-**Contributions**: Bug reports, feature requests, and pull requests are always welcome.
+**Contributions**: Bug reports, feature requests, and pull requests are **always welcome**.
 
 **Donations (Optional)**:
 
@@ -183,7 +183,7 @@ bc1q6lmkuju3kf7f8624fwt5qs7k5mf63mekgcnzf4
 ---
 
 ## ⚠️ Disclaimer
-**This tool is strictly for educational and authorized security testing purposes.** The developers assume **NO responsibility** for any misuse or damage caused by this software. Use it responsibly.
+**This tool is strictly for educational and authorized security testing purposes.** The developers assume **NO responsibility** for any misuse or damage caused by this software. **Please use it responsibly**.
 
 ---
 
