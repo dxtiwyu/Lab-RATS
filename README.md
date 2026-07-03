@@ -20,12 +20,12 @@
 
 ## 🕵️ Covert & Stealth Operations
 
--   🎭 **Launcher Masquerade**: Remotely swap the app icon and name with a generic "System Update" sprocket gear.
--   🛠️ **Interactive Decoy UI**: When hidden, the app launches a convincing **Fake System Update** screen. This interface includes a functional "Check for update" button, realistic progress animations, and system-style notifications to bypass manual inspection.
--   🌓 **Adaptive Stealth Theme**: The decoy interface automatically syncs with the device's **Light/Dark Mode** settings, including status bar color-switching, to maintain a perfect native appearance.
--   ☎️ **Dial-Pad Recovery**: If the icon is hidden, **dial `*#1337#` on the phone's keypad** to instantly restore the original Lab-RATS identity and launch the dashboard.
--   🚪 **Backdoor Access**: Rapidly tapping the sprocket gear on the Fake Update screen **10 times** bypasses the decoy and opens the primary C2 dashboard.
--   👻 **Task-List Stealth**: The app is hard-coded to be invisible in the Android "Recent Apps" list, preventing discovery during multitasking.
+-   🎭 **Launcher Masquerade**: **Remotely swap the app icon and name** with a generic **"System Update"** name and standard **sprocket gear app icon**.
+-   🛠️ **Interactive Decoy UI**: When stealth mode active, the app launches a convincing **Fake System Update** screen. This interface includes a functional **"Check for update"** button, **realistic progress animations**, and **system-style notifications** to bypass **manual inspection**.
+-   🌓 **Adaptive Stealth Theme**: The decoy interface **automatically** syncs with the device's **Light/Dark Mode** settings, including **status bar color-switching**, to maintain a perfect native appearance.
+-   ☎️ **Dial-Pad Recovery**: If the icon is hidden in stealth mode, **dial `*#1337#` on the phone's keypad** to instantly restore the original Lab-RATS identity and app icon.
+-   🚪 **Backdoor Access**: While in stealth mode, **rapidly tapping the sprocket gear** on the **Fake Update screen 10 times** bypasses the decoy and opens the **primary Lab-RATS** app server screen. *(returns to stealth mode once closed.)*
+-   👻 **Task-List Stealth**: The app is hard-coded to be invisible in the Android **"Recent Apps"** list, preventing discovery during multitasking.
 -   🎲 **Version Camouflage**: Dynamically generates random **Version Names** and **Codes** that mimic legitimate OTA updates.
 -   📡 **Notification Hijacking**: When stealth is active, all background service notifications are rebranded as "System Update" with matching assets to ensure zero branding leaks in the notification tray.
 
@@ -69,7 +69,7 @@
 </p>
 
 <p align="center">
-<b>--- &gt; Covert App Icon & Fake Update Overlay Using Masquerade Mode &lt; ---</b><br>
+<b>--- &gt; Covert App Icon Changed & Fake Update Overlay Using Masquerade Mode &lt; ---</b><br>
 <a href="https://postimg.cc/063h6QNL" target="_blank"><img src="https://i.postimg.cc/063h6QNL/SYS-Update-icon.png" alt="SYS-Update-icon"></a> <a href="https://postimg.cc/v1jC1BmJ" target="_blank"><img src="https://i.postimg.cc/v1jC1BmJ/Fake-update.png" alt="Fake-update"></a>
 
 <p align="center">

