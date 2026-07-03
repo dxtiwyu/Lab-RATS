@@ -46,7 +46,6 @@
 -   📂 **Advanced Data Uplink**:
     -   **Integrated File Manager**: Navigate, download, and manage files across internal and external storage.
     -   **📝 Direct File Editor**: Live-edit text, JSON, and log files directly on the device from your browser.
-    -   **Standardized Navigation**: Every sub-page features a "Back to Terminal" node for rapid command switching.
 -   📊 **Telemetry & Reporting**:
     -   **Full System Extraction**: Detailed hardware, network, and battery analytics.
     -   **Contact & Call Logs**: Instant extraction of the target's full contact list and communication history.
