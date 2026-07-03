@@ -45,11 +45,13 @@ public class HttpServerService extends Service {
     private String lastReportedIp = "";
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
     private ContentObserver messageObserver;
+    private boolean isForeground = false;
 
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
+        ensureForeground();
         connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         registerNetworkCallback();
         registerMessageObserver();
@@ -135,29 +137,55 @@ public class HttpServerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent != null ? intent.getAction() : null;
 
-        if ("START".equals(action)) {
-            // Check if we have location permissions before attempting to start as location FGS
-            boolean hasFineLocation = androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED;
-            boolean hasCoarseLocation = androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED;
+        if (!isForeground) {
+            ensureForeground();
+        }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                int serviceType = android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
-                // Only add location type if we actually have the permissions, otherwise it will crash on Android 14+
-                if (hasFineLocation || hasCoarseLocation) {
-                    serviceType |= android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION;
-                }
-                startForeground(NOTIFICATION_ID, createNotification(), serviceType);
-            } else {
-                startForeground(NOTIFICATION_ID, createNotification());
-            }
+        if ("START".equals(action)) {
             startServer();
-        } else if ("STOP".equals(action)) {
+        }
+else if ("STOP".equals(action)) {
             stopServer();
             stopForeground(true);
             stopSelf();
         }
 
         return START_NOT_STICKY;
+    }
+
+    private void ensureForeground() {
+        // Check if we have location permissions before attempting to start as location FGS
+        boolean hasFineLocation = androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED;
+        boolean hasCoarseLocation = androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED;
+
+        Notification notification = createNotification();
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                int serviceType = android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
+                // Only add location type if we actually have the permissions, otherwise it will crash on Android 14+
+                if (hasFineLocation || hasCoarseLocation) {
+                    serviceType |= android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION;
+                }
+                startForeground(NOTIFICATION_ID, notification, serviceType);
+                isForeground = true;
+            } else {
+                startForeground(NOTIFICATION_ID, notification);
+                isForeground = true;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error starting foreground: " + e.getMessage());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                try {
+                    startForeground(NOTIFICATION_ID, notification, android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+                    isForeground = true;
+                } catch (Exception e2) {
+                    Log.e(TAG, "Critical failure starting foreground", e2);
+                    isForeground = false;
+                }
+            } else {
+                isForeground = false;
+            }
+        }
     }
 
     private synchronized void startServer() {
@@ -225,7 +253,7 @@ public class HttpServerService extends Service {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("🛡️ LAB-RATS Active")
                 .setContentText(contentText)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)

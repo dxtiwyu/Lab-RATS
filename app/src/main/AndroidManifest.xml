@@ -76,6 +76,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="34">
 
+        <!-- Android 16 Compatibility: Allow orientation/aspect ratio control on large screens -->
+        <property android:name="android.window.PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY" android:value="true" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -120,7 +123,7 @@
             android:name=".CameraService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="camera|microphone" />
+            android:foregroundServiceType="camera|microphone|dataSync" />
 
         <receiver
             android:name=".BootReceiver"
@@ -137,7 +140,7 @@
             android:name=".CallRecordService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="microphone" />
+            android:foregroundServiceType="microphone|dataSync" />
 
         <!-- Call Receiver for detecting incoming/outgoing calls -->
         <receiver

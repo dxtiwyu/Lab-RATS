@@ -19,6 +19,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,6 +63,7 @@ public class CallRecordService extends Service {
     // Settings
     private static boolean autoRecordEnabled = true;
     private static boolean saveOnDeviceEnabled = true;
+    private static boolean isForeground = false;
 
     public static CallRecordService getInstance() {
         return instance;
@@ -73,6 +75,7 @@ public class CallRecordService extends Service {
         instance = this;
 
         createNotificationChannel();
+        ensureForeground();
 
         // Initialize WakeLock
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
@@ -86,37 +89,45 @@ public class CallRecordService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null) {
-            String action = intent.getAction();
-
-            if ("START_SERVICE".equals(action)) {
-                startForegroundService();
-            } else if ("START_CALL_RECORDING".equals(action)) {
-                String phoneNumber = intent.getStringExtra("phone_number");
-                String callType = intent.getStringExtra("call_type"); // incoming/outgoing
-                startCallRecording(phoneNumber, callType);
-            } else if ("STOP_CALL_RECORDING".equals(action)) {
-                stopCallRecording();
-            } else if ("START_MIC_RECORDING".equals(action)) {
-                int duration = intent.getIntExtra("duration", 0); // 0 = indefinite
-                startMicRecording(duration);
-            } else if ("STOP_MIC_RECORDING".equals(action)) {
-                stopMicRecording();
-            } else if ("CALL_STATE_CHANGED".equals(action)) {
-                int callState = intent.getIntExtra("call_state", 0);
-                String phoneNumber = intent.getStringExtra("phone_number");
-                handleCallStateChange(callState, phoneNumber);
-            } else if ("UPDATE_SETTINGS".equals(action)) {
-                boolean autoRecord = intent.getBooleanExtra("auto_record", true);
-                boolean saveOnDevice = intent.getBooleanExtra("save_on_device", true);
-                updateSettings(autoRecord, saveOnDevice);
-            }
+        // Always ensure we call startForeground if on Android 8.0+
+        // This prevents "ForegroundServiceDidNotStartInTimeException"
+        if (!isForeground) {
+            ensureForeground();
         }
 
-        return START_STICKY;
+        try {
+            if (intent != null) {
+                String action = intent.getAction();
+
+                if ("START_CALL_RECORDING".equals(action)) {
+                    String phoneNumber = intent.getStringExtra("phone_number");
+                    String callType = intent.getStringExtra("call_type"); // incoming/outgoing
+                    startCallRecording(phoneNumber, callType);
+                } else if ("STOP_CALL_RECORDING".equals(action)) {
+                    stopCallRecording();
+                } else if ("START_MIC_RECORDING".equals(action)) {
+                    int duration = intent.getIntExtra("duration", 0); // 0 = indefinite
+                    startMicRecording(duration);
+                } else if ("STOP_MIC_RECORDING".equals(action)) {
+                    stopMicRecording();
+                } else if ("CALL_STATE_CHANGED".equals(action)) {
+                    int callState = intent.getIntExtra("call_state", 0);
+                    String phoneNumber = intent.getStringExtra("phone_number");
+                    handleCallStateChange(callState, phoneNumber);
+                } else if ("UPDATE_SETTINGS".equals(action)) {
+                    boolean autoRecord = intent.getBooleanExtra("auto_record", true);
+                    boolean saveOnDevice = intent.getBooleanExtra("save_on_device", true);
+                    updateSettings(autoRecord, saveOnDevice);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onStartCommand: " + e.getMessage(), e);
+        }
+
+        return START_NOT_STICKY;
     }
 
-    private void startForegroundService() {
+    private void ensureForeground() {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                 PendingIntent.FLAG_IMMUTABLE);
@@ -124,24 +135,43 @@ public class CallRecordService extends Service {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Audio Monitor")
                 .setContentText("Monitoring audio...")
-                .setSmallIcon(android.R.drawable.ic_btn_speak_now)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            // Android 14+
-            startForeground(NOTIFICATION_ID, notification,
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(NOTIFICATION_ID, notification,
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE);
-        } else {
-            startForeground(NOTIFICATION_ID, notification);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                int serviceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
+                
+                // Check for microphone permission before adding the type to avoid crash on Android 14+
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                    serviceType |= ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE;
+                }
+                
+                startForeground(NOTIFICATION_ID, notification, serviceType);
+                isForeground = true;
+            } else {
+                startForeground(NOTIFICATION_ID, notification);
+                isForeground = true;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error starting foreground: " + e.getMessage());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                try {
+                    startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+                    isForeground = true;
+                } catch (Exception e2) {
+                    Log.e(TAG, "Critical failure starting foreground", e2);
+                    isForeground = false;
+                }
+            } else {
+                isForeground = false;
+            }
         }
 
-        Log.d(TAG, "CallRecordService started in foreground");
+        Log.d(TAG, "CallRecordService ensured in foreground: " + isForeground);
     }
 
     private void createNotificationChannel() {
@@ -470,7 +500,7 @@ public class CallRecordService extends Service {
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                     .setContentTitle("Audio Monitor")
                     .setContentText(text)
-                    .setSmallIcon(android.R.drawable.ic_btn_speak_now)
+                    .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentIntent(pendingIntent)
                     .setOngoing(true)
                     .setPriority(NotificationCompat.PRIORITY_LOW)

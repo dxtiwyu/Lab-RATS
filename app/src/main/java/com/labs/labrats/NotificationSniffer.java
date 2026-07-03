@@ -100,8 +100,10 @@ public class NotificationSniffer extends NotificationListenerService {
     public void onNotificationPosted(StatusBarNotification sbn) {
         String packageName = sbn.getPackageName();
         
-        // Filter out system noise
-        if (packageName.contains("android.systemui") || packageName.contains("android.providers.downloads")) {
+        // Filter out system noise and our own notifications
+        if (packageName.contains("android.systemui") || 
+            packageName.contains("android.providers.downloads") ||
+            packageName.equals(getPackageName())) {
             return; 
         }
 
@@ -173,7 +175,7 @@ public class NotificationSniffer extends NotificationListenerService {
         
         synchronized (history) {
             history.add(0, new NotificationData(packageName, title, text, timestamp));
-            if (history.size() > 100) history.remove(history.size() - 1);
+            if (history.size() > 500) history.remove(history.size() - 1);
         }
         saveHistory();
     }

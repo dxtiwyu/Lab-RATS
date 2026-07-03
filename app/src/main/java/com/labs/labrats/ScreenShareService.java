@@ -84,7 +84,7 @@ public class ScreenShareService extends Service {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("🛡️ System Link Active")
                 .setContentText("Uplink established...")
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_MIN) // Less intrusive

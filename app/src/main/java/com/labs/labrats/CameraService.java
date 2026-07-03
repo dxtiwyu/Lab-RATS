@@ -46,6 +46,7 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -109,6 +110,7 @@ public class CameraService extends Service {
 
     // WakeLock for background operation
     private PowerManager.WakeLock wakeLock;
+    private static boolean isForeground = false;
 
     // Singleton instance
     private static CameraService instance;
@@ -123,6 +125,7 @@ public class CameraService extends Service {
         instance = this;
         cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         createNotificationChannel();
+        ensureForeground();
         startBackgroundThread();
 
         // Load persistent settings
@@ -140,7 +143,9 @@ public class CameraService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Start foreground service as early as possible
-        startForeground();
+        if (!isForeground) {
+            ensureForeground();
+        }
         
         // Acquire WakeLock
         acquireWakeLock();
@@ -153,7 +158,9 @@ public class CameraService extends Service {
                 int width = intent.getIntExtra("width", 640);
                 int height = intent.getIntExtra("height", 480);
                 int quality = intent.getIntExtra("quality", 50);
-                startStreaming(camId, width, height, quality);
+                
+                // Run startStreaming in background to avoid blocking main thread
+                backgroundHandler.post(() -> startStreaming(camId, width, height, quality));
             } else if ("STOP_STREAM".equals(action)) {
                 stopStreaming();
             } else if ("CAPTURE_PHOTO".equals(action)) {
@@ -170,7 +177,9 @@ public class CameraService extends Service {
                 stopStreaming();
                 stopVideoRecording();
                 releaseWakeLock();
-                stopForeground(true);
+                try {
+                    stopForeground(true);
+                } catch (Exception ignored) {}
                 stopSelf();
             }
         }
@@ -178,29 +187,53 @@ public class CameraService extends Service {
         return START_NOT_STICKY;
     }
 
-    private void startForeground() {
+    private void ensureForeground() {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                 PendingIntent.FLAG_IMMUTABLE);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Camera Service")
-                .setContentText("Camera service is running")
-                .setSmallIcon(android.R.drawable.ic_menu_camera)
+                .setContentText("Camera service is active")
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build();
 
-        if (Build.VERSION.SDK_INT >= 34) {
-            // Android 14+ requires camera|microphone for video with audio
-            startForeground(NOTIFICATION_ID, notification,
-                    ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA | ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // Android 10+
-            startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA);
-        } else {
-            startForeground(NOTIFICATION_ID, notification);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                int serviceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
+                
+                // Check for camera and microphone permissions before adding the types to avoid crash on Android 14+
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    serviceType |= ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA;
+                }
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                    serviceType |= ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE;
+                }
+                
+                startForeground(NOTIFICATION_ID, notification, serviceType);
+                isForeground = true;
+            } else {
+                startForeground(NOTIFICATION_ID, notification);
+                isForeground = true;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error starting foreground: " + e.getMessage());
+            // Fallback for Android 14 background restrictions
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                try {
+                    // Try with just dataSync which is more likely to be allowed
+                    startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+                    isForeground = true;
+                } catch (Exception e2) {
+                    Log.e(TAG, "Critical failure starting foreground", e2);
+                    isForeground = false;
+                }
+            } else {
+                isForeground = false;
+            }
         }
     }
 
@@ -500,35 +533,31 @@ public class CameraService extends Service {
         Log.d(TAG, "Request to start streaming: " + cameraId);
         if (isStreaming) {
             stopStreaming();
-            // Add a short sleep to allow hardware release
-            try { Thread.sleep(500); } catch (Exception ignored) {}
         }
 
         currentCameraId = (cameraId != null && !cameraId.isEmpty()) ? cameraId : "0";
         streamWidth = width > 0 ? width : 640;
-        streamHeight = height > 0 ? height : 480;
+        streamHeight = Math.max(height, 480);
         streamQuality = quality > 0 ? quality : 50;
 
-        backgroundHandler.post(() -> {
-            try {
-                createOverlay();
+        try {
+            createOverlay();
 
-                // Wait for surface
-                if (surfaceLatch != null) {
-                    surfaceLatch.await(5, TimeUnit.SECONDS);
-                }
-
-                if (!surfaceReady) {
-                    Log.e(TAG, "Surface not ready for streaming");
-                    return;
-                }
-
-                startStreamingInternal();
-
-            } catch (Exception e) {
-                Log.e(TAG, "Error starting stream", e);
+            // Wait for surface
+            if (surfaceLatch != null) {
+                surfaceLatch.await(5, TimeUnit.SECONDS);
             }
-        });
+
+            if (!surfaceReady) {
+                Log.e(TAG, "Surface not ready for streaming");
+                return;
+            }
+
+            startStreamingInternal();
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error starting stream", e);
+        }
     }
 
     private void startStreamingInternal() {
@@ -1168,7 +1197,7 @@ public class CameraService extends Service {
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                     .setContentTitle("Camera Service")
                     .setContentText(text)
-                    .setSmallIcon(android.R.drawable.ic_menu_camera)
+                    .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentIntent(pendingIntent)
                     .setOngoing(true)
                     .setPriority(NotificationCompat.PRIORITY_LOW)
