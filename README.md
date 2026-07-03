@@ -1,4 +1,3 @@
-<p align="center">
 [![Screenshot-2026-07-03-at-2-55-28-AM.png](https://i.postimg.cc/2S1JKdt7/Screenshot-2026-07-03-at-2-55-28-AM.png)](https://postimg.cc/xXStkmnX)
 
 # 🐀 Lab-RATS: Advanced Android Remote Administration Tool (v1.3.2)
