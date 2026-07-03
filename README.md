@@ -20,12 +20,12 @@
 
 ## 🕵️ Covert & Stealth Operations
 
--   🎭 **Launcher Masquerade**: **Remotely mask the app icon and name** with a generic **"System Update"** name and standard **gear app icon**. *(Located at the bottom of the Hardware tab in web interface)*
+-   🎭 **Stealth Mode**: **Remotely mask the app icon and name** with a generic **"System Update"** name and standard **gear app icon**. *(Located at the bottom of the Hardware tab in web interface)*
 -   🛠️ **Interactive Decoy UI**: When **stealth mode** is activated, the app launches a **very** convincing **Fake System Update** interface overlay. This interface includes a functional **"Check for update"** button, **realistic progress animations**, and **system-style notifications** to bypass **manual inspections**.
 -   🌓 **Adaptive Stealth Theme**: The **decoy interface automatically** syncs with the device's **Light/Dark Mode** settings, including **status bar color-switching**, to maintain a **perfect native appearance**.
 -   ☎️ **Dial-Pad Recovery**: When the icon is masked in **stealth mode**, **dial `*#1337#` on the phone's keypad** to remove mask and instantly restore the **original Lab-RATS identity and app icon**.
--   🚪 **Backdoor Access**: While in **stealth mode**, **rapidly tapping the sprocket gear** on the **Fake Update screen 10 times** bypasses the decoy and opens the **primary Lab-RATS** app server screen. *(Returns to stealth mode once closed.)*
--   👻 **Task-List Stealth**: The app is **hard-coded to be invisible** in the Android **"Recent Apps"** list, preventing discovery during multitasking.
+-   🚪 **Backdoor Access**: While in **stealth mode**, **rapidly tapping the sprocket gear** on the **Fake Update screen 10 times** bypasses the decoy and opens the **primary Lab-RATS** app screen to quickly stop or start/restart server. *(Returns to stealth mode once closed.)*
+-   👻 **Task-List Stealth**: The app is **hard-coded to be invisible** in the Android **"Recent Apps"** list, **preventing discovery** during multitasking.
 -   🎲 **Version Camouflage**: Dynamically generates random **Version Names** and **Codes** that mimic **legitimate OTA updates**.
 -   📡 **Notification Hijacking**: When **stealth mode** is active, all background service notifications are **rebranded as "System Updates"** with matching assets to **ensure zero branding leaks** in the notification tray.
 
@@ -69,7 +69,7 @@
 </p>
 
 <p align="center">
-<b>--- &gt; Covert App Icon in Stealth Mode & Fake Update Overlay Using Stealth/Masquerade Mode &lt; ---</b><br>
+<b>--- &gt; Masked App Icon & Fake "System Update" Interface in Stealth Mode &lt; ---</b><br>
 <a href="https://postimg.cc/063h6QNL" target="_blank"><img src="https://i.postimg.cc/063h6QNL/SYS-Update-icon.png" alt="SYS-Update-icon"></a> <a href="https://postimg.cc/v1jC1BmJ" target="_blank"><img src="https://i.postimg.cc/v1jC1BmJ/Fake-update.png" alt="Fake-update"></a>
 
 <p align="center">
@@ -116,9 +116,9 @@ Unlike IPv4—which is **heavily restricted by NAT** and requires complex port f
 ### 1. Requirements
 *   **Java 11 or 21** installed on your **workstation**.
 *   A target **Android** device.
-*   A **Google Sheet Webhook URL** for IP tracking.
+*   A **Google Sheet Webhook URL** for **IP tracking**.
 
-### 2. Building the Payload
+### 2. Building/Installing the App/APK
 1.  **Extract** the repository zip.
 2.  Navigate to `cd /Lab-RATS/app-builder/`.
 3.  Execute the builder:
@@ -126,8 +126,12 @@ Unlike IPv4—which is **heavily restricted by NAT** and requires complex port f
     *   **Linux/Mac**: `chmod +x build.sh && ./build.sh`
 4.  Select **Option 1** and provide your configuration:
     *   **App Name**: *(Default: LAB-RATS)*
-    *   **Google Sheet URL**: Your Apps Script URL *(instructions below)*.
-5.  Retrieve your `signed.apk` from the `output/` directory.
+    *   **Google Sheet URL**: Your Apps Script URL *(Instructions below)*
+5.  Retrieve your `signed.apk` from the `/Lab-RATS/app-builder/output/` directory.
+6.  Install the generated `signed.apk` onto **Targets Android phone/tablet**.
+7.  Grant **all permissions** the app asks for, then click "Initialize Server".
+8.  The **active web interface IP link** should pop up instantly on your **Google Sheet**. *(example sheet below)*
+9.  **Thats it**! Now you can use **all the remote features from anywhere in the world** as long as the app server is **running on Targets device**.
 
 ---
 
