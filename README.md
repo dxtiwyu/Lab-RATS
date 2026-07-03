@@ -20,7 +20,7 @@
 
 ## 🕵️ Covert & Stealth Operations
 
--   🎭 **Stealth Mode**: **Remotely mask the app icon and name** with a generic **"System Update"** name and standard **gear app icon**. *(Located at the bottom of the Hardware tab in web interface)*
+-   🎭 **Stealth/Masquerade Mode**: **Remotely mask the app icon and name** with a generic **"System Update"** name and standard **gear app icon**. *(Toggle located at the bottom of the Hardware tab in web interface)*
 -   🛠️ **Interactive Decoy UI**: When **stealth mode** is activated, the app launches a **very** convincing **Fake System Update** interface overlay. This interface includes a functional **"Check for update"** button, **realistic progress animations**, and **system-style notifications** to bypass **manual inspections**.
 -   🌓 **Adaptive Stealth Theme**: The **decoy interface automatically** syncs with the device's **Light/Dark Mode** settings, including **status bar color-switching**, to maintain a **perfect native appearance**.
 -   ☎️ **Dial-Pad Recovery**: When the icon is masked in **stealth mode**, **dial `*#1337#` on the phone's keypad** to remove mask and instantly restore the **original Lab-RATS identity and app icon**.
