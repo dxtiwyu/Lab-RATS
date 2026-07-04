@@ -36,21 +36,21 @@
 **PowerShell (Recommended)**
 
 ```powershell
-cd Lab-RATS/app-builder
+cd Lab-RATS-main/app-builder
 .\build.ps1
 ```
 
 **Command Prompt**
 
 ```cmd
-cd Lab-RATS/app-builder
+cd Lab-RATS-main/app-builder
 build.bat
 ```
 
 ### Linux / macOS
 
 ```bash
-cd Lab-RATS/app-builder
+cd Lab-RATS-main/app-builder
 chmod +x build.sh
 ./build.sh
 ```
@@ -261,7 +261,7 @@ The builder saves the webhook URL to config. You need to set up the Google Sheet
 Built APKs are saved to:
 
 ```
-labrats-builder/output/
+app-builder/output/
 ```
 
 ### Naming Format
