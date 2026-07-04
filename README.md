@@ -131,7 +131,7 @@ Unlike IPv4—which is **heavily restricted by NAT** and requires complex port f
 
 ### 3. Install App on Target/Test Device
 1. Install the `signed.apk` onto the **Target/Test Android phone or tablet** *(If you have access to the device, turn on USB debugging in developer settings, plug into your PC and use `adb install signed.apk`, otherwise get creative on "how to" install  `.apk` methods)*. 
-2.  Once installed on **Target/Test Device**, **grant ALL permissions** the app asks for, then tap the **"Initialize Server"**button.
+2.  Once installed on **Target/Test Device**, **grant ALL permissions** the app asks for, then tap the **"Initialize Server"** button.
 3.  The **Active Web Interface IP Link** should **pop up instantly** in your **Google Sheet**. *(Example Sheet below)*
 4.  **Thats it**! Now you can use **ALL the remote features from anywhere in the world** as long as the app server is **running on Target/Test device**.
 
