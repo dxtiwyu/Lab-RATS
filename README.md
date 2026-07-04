@@ -73,7 +73,7 @@
 </p>
 
 <p align="center">
-  <b>--- &gt; Remotely Transform Lab-RATS into a working Calculator, Weather App, System Update, or Settings Menu. &lt; ---</b><br>
+  <b>--- &gt; Remotely Transform Lab-RATS into a Calculator, Weather App, System Update, or Settings Menu. &lt; ---</b><br>
 <p align="center">
 <a href='https://postimg.cc/hhrzqMBt' target='_blank'><img src='https://i.postimg.cc/hhrzqMBt/Stealth-Icons.jpg' border='0' alt='Stealth-Icons'></a> 
 
