@@ -65,7 +65,7 @@
 
 ---
 
-## 📸 Screenshots
+## 📸 Screenshots Pt.1
 
 <p align="center">
 <b>--- &gt; The APP/APK Building Tool in Terminal &lt; ---</b><br><b>--- &gt; A Built APP/APK (C2 Server) Installed on Android Device &lt; ---</b><br>
@@ -79,26 +79,6 @@
 
 <p align="center">
  <a href="https://postimg.cc/jnqpNR2N" target="_blank"><img src="https://i.postimg.cc/jnqpNR2N/Stealth-Overlays.jpg" alt="Stealth-Overlays"></a>
-
-<p align="center">
-  <b>--- &gt; The Remote Web Control Panel (Mobile Interface) &lt; ---</b><br>
-<a href='https://postimg.cc/Jt74MHjh' target='_blank'><img src='https://i.postimg.cc/Jt74MHjh/Mobile-interface-Home.png' border='0' alt='Mobile-interface-Home'></a> <a href="https://postimg.cc/dLpyhj9S" target="_blank"><img src="https://i.postimg.cc/dLpyhj9S/Mobile-cam-menu.png" alt="Mobile-cam-menu"></a> <a href="https://postimg.cc/ZC2dWxLs" target="_blank"><img src="https://i.postimg.cc/ZC2dWxLs/Mobile-cam-menu1.png" alt="Mobile-cam-menu1"></a> <a href="https://postimg.cc/F78LYVxW" target="_blank"><img src="https://i.postimg.cc/F78LYVxW/Mobile-interface-GPS.png" alt="Mobile-interface-GPS"></a> <a href="https://postimg.cc/r0VdBn8X" target="_blank"><img src="https://i.postimg.cc/r0VdBn8X/Mobile-interface-SMS.png" alt="Mobile-interface-SMS"></a>
-</p>
-
-<p align="center">
-  <b>--- &gt; The Remote Web Control Panel (PC Interface) &lt; ---</b><br> 
-<a href="https://postimg.cc/VdVFmKWK" target="_blank"><img src="https://i.postimg.cc/VdVFmKWK/1-Terminal-Tab.png" alt="1-Terminal-Tab"></a>
-<a href="https://postimg.cc/xc4Pn63s" target="_blank"><img src="https://i.postimg.cc/xc4Pn63s/2-Ghost-Tab.png" alt="2-Ghost-Tab"></a>
-<a href="https://postimg.cc/RNDT4gLD" target="_blank"><img src="https://i.postimg.cc/RNDT4gLD/3-Optics-Tab.png" alt="3-Optics-Tab"></a>
-<a href="https://postimg.cc/JG2QMpQV" target="_blank"><img src="https://i.postimg.cc/JG2QMpQV/4-GPS-Tab.png" alt="4-GPS-Tab"></a>
-<a href="https://postimg.cc/fVSfLYHh" target="_blank"><img src="https://i.postimg.cc/fVSfLYHh/5-Data-Tab.png" alt="5-Data-Tab"></a>
-<a href="https://postimg.cc/gxLHJ3gC" target="_blank"><img src="https://i.postimg.cc/gxLHJ3gC/6-Intel-Tab.png" alt="6-Intel-Tab"></a>
-<a href="https://postimg.cc/BjPB62h9" target="_blank"><img src="https://i.postimg.cc/BjPB62h9/7-SMS-Tab.png" alt="7-SMS-Tab"></a>
-<a href="https://postimg.cc/xXN3CLsn" target="_blank"><img src="https://i.postimg.cc/xXN3CLsn/8-MMS-Tab.png" alt="8-MMS-Tab"></a>
-<a href="https://postimg.cc/RWJLFwPZ" target="_blank"><img src="https://i.postimg.cc/RWJLFwPZ/9-Acoustics-Tab.png" alt="9-Acoustics-Tab"></a>
-<a href="https://postimg.cc/jDn45y8d" target="_blank"><img src="https://i.postimg.cc/jDn45y8d/10-Call-Logs-Tab.png" alt="10-Call-Logs-Tab"></a>
-<a href="https://postimg.cc/RWJLFwP6" target="_blank"><img src="https://i.postimg.cc/RWJLFwP6/11-Contacts-Tab.png" alt="11-Contacts-Tab"></a>
-<a href="https://postimg.cc/zyHFBTdh" target="_blank"><img src="https://i.postimg.cc/zyHFBTdh/12-Hardware-Tab.png" alt="12-Hardware-Tab"></a>
 
 ---
 
@@ -192,6 +172,23 @@ If you find **Lab-RATS** useful for your **security research**, please **Star �
 ```
 bc1q6lmkuju3kf7f8624fwt5qs7k5mf63mekgcnzf4
 ```
+
+---
+
+## 📸 Screenshots Pt.2 - Remote Web Control Panel (PC Interface)
+
+[![1-Terminal-Tab.png](https://i.postimg.cc/3xKfj64Q/1-Terminal-Tab.png)](https://postimg.cc/VdVFmKWK)
+[![2-Ghost-Tab.png](https://i.postimg.cc/7Zxt1cGy/2-Ghost-Tab.png)](https://postimg.cc/xc4Pn63s)
+[![3-Optics-Tab.png](https://i.postimg.cc/Sxy1L52k/3-Optics-Tab.png)](https://postimg.cc/RNDT4gLD)
+[![4-GPS-Tab.png](https://i.postimg.cc/dVqNRXk1/4-GPS-Tab.png)](https://postimg.cc/JG2QMpQV)
+[![5-Data-Tab.png](https://i.postimg.cc/HkBZ62Xj/5-Data-Tab.png)](https://postimg.cc/fVSfLYHh)
+[![6-Intel-Tab.png](https://i.postimg.cc/CxmPcNkx/6-Intel-Tab.png)](https://postimg.cc/gxLHJ3gC)
+[![7-SMS-Tab.png](https://i.postimg.cc/mg8XmwCD/7-SMS-Tab.png)](https://postimg.cc/BjPB62h9)
+[![8-MMS-Tab.png](https://i.postimg.cc/jSZgMXPw/8-MMS-Tab.png)](https://postimg.cc/xXN3CLsn)
+[![9-Acoustics-Tab.png](https://i.postimg.cc/SxDTgrCC/9-Acoustics-Tab.png)](https://postimg.cc/RWJLFwPZ)
+[![10-Call-Logs-Tab.png](https://i.postimg.cc/XYQHs8dF/10-Call-Logs-Tab.png)](https://postimg.cc/jDn45y8d)
+[![11-Contacts-Tab.png](https://i.postimg.cc/8ztKZHMH/11-Contacts-Tab.png)](https://postimg.cc/RWJLFwP6)
+[![12-Hardware-Tab.png](https://i.postimg.cc/T3C7t9gt/12-Hardware-Tab.png)](https://postimg.cc/zyHFBTdh)
 
 ---
 
