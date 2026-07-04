@@ -1,4 +1,7 @@
 [![Screenshot-2026-07-03-at-2-55-28-AM.png](https://i.postimg.cc/2S1JKdt7/Screenshot-2026-07-03-at-2-55-28-AM.png)](https://postimg.cc/xXStkmnX)
+<p align="center">
+  <a href="https://github.com/K4N3CO-LABS"><img src="https://img.shields.io/badge/K4N3CO.LABS-RAT-red?style=for-the-badge" alt="K4N3CO.LABS"></a>
+</p>
 
 # 🐀 Lab-RATS: Advanced Android Remote Administration Tool (v1.3.2)
 
