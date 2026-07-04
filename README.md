@@ -68,12 +68,12 @@
 ## 📸 Screenshots
 
 <p align="center">
-<b>--- &gt; The APP/APK Building Tool in Terminal &lt; ---</b><br><b>--- &gt; A Built APP/APK Server Running on Android Device &lt; ---</b><br>
+<b>--- &gt; The APP/APK Building Tool in Terminal &lt; ---</b><br><b>--- &gt; A Built APP/APK (C2 Server) Installed on Android Device &lt; ---</b><br>
   <a href='https://postimg.cc/64fbtNKM' target='_blank'><img src='https://i.postimg.cc/64fbtNKM/APK-builder-pic.jpg' border='0' alt='APK-builder-pic'></a> <a href="https://postimg.cc/XXCnWGL2" target="_blank"><img src="https://i.postimg.cc/XXCnWGL2/Android-App-Screen.jpg" alt="Android-App-Screen"></a>
 </p>
 
 <p align="center">
-  <b>--- &gt; Change the App Identity, Name and Icon on Target Device Remotely with One Click &lt; ---</b><br>
+  <b>--- &gt; Remotely Transform Lab-RATS into a working Calculator, Weather App, System Update, or Settings Menu. &lt; ---</b><br>
 <p align="center">
 <a href='https://postimg.cc/hhrzqMBt' target='_blank'><img src='https://i.postimg.cc/hhrzqMBt/Stealth-Icons.jpg' border='0' alt='Stealth-Icons'></a> 
 
