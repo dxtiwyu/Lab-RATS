@@ -6,7 +6,7 @@
 #  GitHub: github.com/Lab-RATS-LABS      #
 #################################################
 
-$ErrorActionPreference = "SilentlyContinue"
+$ErrorActionPreference = "Continue"
 
 # Script paths - Fixed formatting
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -224,15 +224,9 @@ function New-Keystore {
         Write-Host "[OK] Keystore generated successfully!" -ForegroundColor Green
         Write-Host ""
         
-        # Create keystore.properties for Gradle
-        $keystorePropsContent = @"
-# Auto-generated properties
-storeFile=lab-rats-keystore.jks
-storePassword=$keystorePass
-keyAlias=$keyAlias
-keyPassword=$keystorePass
-"@
-        Set-Content -Path $keystorePropsFile -Value $keystorePropsContent
+        # Create keystore.properties for Gradle (ASCII encoding to avoid BOM issues)
+        $keystorePropsContent = "storeFile=lab-rats-keystore.jks`nstorePassword=$keystorePass`nkeyAlias=$keyAlias`nkeyPassword=$keystorePass"
+        Set-Content -Path $keystorePropsFile -Value $keystorePropsContent -Encoding Ascii
         Write-Host "[OK] Created keystore.properties for Gradle" -ForegroundColor Green
         
         # Save config for builder

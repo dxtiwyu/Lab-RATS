@@ -39,6 +39,7 @@ android {
     signingConfigs {
         release {
             if (keystorePropertiesFile.exists()) {
+                println "[BUILD] Keystore config detected: ${keystorePropertiesFile.absolutePath}"
                 storeFile rootProject.file(keystoreProperties['storeFile'] ?: 'lab-rats-keystore.jks')
                 storePassword keystoreProperties['storePassword'] ?: 'lab-rats123'
                 keyAlias keystoreProperties['keyAlias'] ?: 'lab-rats-key'
@@ -107,6 +108,7 @@ project.afterEvaluate {
         }
     }
 }
+
 
 
 
