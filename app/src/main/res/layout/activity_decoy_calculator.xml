@@ -6,15 +6,22 @@
     android:background="#000000"
     android:padding="20dp">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
     <TextView
         android:id="@+id/calcDisplay"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="wrap_content"
+        android:minHeight="120dp"
         android:gravity="bottom|end"
         android:text="0"
         android:textColor="#FFFFFF"
-        android:textSize="70sp"
-        android:padding="20dp"
+        android:textSize="80sp"
+        android:padding="10dp"
+        android:layout_marginBottom="20dp"
         android:fontFamily="sans-serif-light" />
 
     <GridLayout
@@ -22,7 +29,8 @@
         android:layout_height="wrap_content"
         android:columnCount="4"
         android:rowCount="5"
-        android:useDefaultMargins="false">
+        android:useDefaultMargins="false"
+        android:layout_marginBottom="40dp">
 
         <!-- Row 1 -->
         <Button android:text="C" android:backgroundTint="#A5A5A5" android:textColor="#000" style="@style/CalcBtn" />

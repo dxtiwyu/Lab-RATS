@@ -55,6 +55,8 @@
         <item name="android:textColor">#000000</item>
         <item name="android:textSize">17sp</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
     </style>
 
     <style name="SettingsDivider">

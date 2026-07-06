@@ -12,7 +12,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace 'com.labs.labrats'
-    compileSdk 36
+    compileSdk 34
 
     buildFeatures {
         buildConfig true
@@ -21,9 +21,9 @@ android {
     defaultConfig {
         applicationId "com.labrats.remote"
         minSdk 26
-        targetSdk 36
-        versionCode 850
-        versionName "7.2.4"
+        targetSdk 34
+        versionCode 270
+        versionName "9.9.7"
         
         // Read WEBHOOK_URL from local.properties
         def localProperties = new Properties()

@@ -224,29 +224,23 @@ public class CallRecordService extends Service {
                 currentCallNumber = phoneNumber != null ? phoneNumber : "Unknown";
                 currentCallType = "incoming";
                 callInProgress = true;
-
-                // Notify web panel
                 notifyCallIncoming(phoneNumber);
-
-                // Auto-record if enabled
-                if (autoRecordEnabled) {
-                    startCallRecording(phoneNumber, "incoming");
-                }
                 break;
 
             case 2: // OFFHOOK (call answered or outgoing call)
                 if (!callInProgress) {
-                    // This is an outgoing call
+                    // Outgoing call
                     currentCallNumber = phoneNumber != null ? phoneNumber : "Unknown";
                     currentCallType = "outgoing";
                     callInProgress = true;
-
-                    // Notify web panel
                     notifyCallOutgoing(phoneNumber);
-
-                    // Auto-record if enabled
                     if (autoRecordEnabled && !isRecordingCall) {
                         startCallRecording(phoneNumber, "outgoing");
+                    }
+                } else if ("incoming".equals(currentCallType)) {
+                    // Incoming call answered
+                    if (autoRecordEnabled && !isRecordingCall) {
+                        startCallRecording(currentCallNumber, "incoming");
                     }
                 }
                 break;
@@ -280,6 +274,14 @@ public class CallRecordService extends Service {
         Log.d(TAG, "Call ended notification");
     }
 
+    private MediaRecorder createMediaRecorder() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return new MediaRecorder(this);
+        } else {
+            return new MediaRecorder();
+        }
+    }
+
     // ============ CALL RECORDING ============
 
     public void startCallRecording(String phoneNumber, String callType) {
@@ -288,11 +290,9 @@ public class CallRecordService extends Service {
             return;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                Log.e(TAG, "RECORD_AUDIO permission not granted");
-                return;
-            }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            Log.e(TAG, "RECORD_AUDIO permission not granted");
+            return;
         }
 
         try {
@@ -305,10 +305,8 @@ public class CallRecordService extends Service {
             }
 
             // Create filename
-            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-                    .format(new Date());
-            String safeNumber = (phoneNumber != null ? phoneNumber : "unknown")
-                    .replaceAll("[^0-9+]", "");
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+            String safeNumber = (phoneNumber != null ? phoneNumber : "unknown").replaceAll("[^0-9+]", "");
             String fileName = "CALL_" + callType + "_" + safeNumber + "_" + timestamp + ".m4a";
 
             File recordFile = new File(recordDir, fileName);
@@ -316,15 +314,10 @@ public class CallRecordService extends Service {
             currentRecordingType = "call";
 
             // Setup MediaRecorder
-            mediaRecorder = new MediaRecorder();
+            mediaRecorder = createMediaRecorder();
 
-            // Use VOICE_CALL if available, otherwise use MIC
-            try {
-                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
-            } catch (Exception e) {
-                Log.w(TAG, "VOICE_CALL not available, using MIC");
-                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            }
+            // MIC is the most reliable for recording calls on modern Android
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 
             mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
@@ -341,13 +334,18 @@ public class CallRecordService extends Service {
             currentCallType = callType;
 
             updateNotification("Recording " + callType + " call: " + phoneNumber);
-
-            Log.d(TAG, "Call recording started: " + currentRecordingPath);
+            Log.d(TAG, "Call recording started successfully: " + currentRecordingPath);
 
         } catch (Exception e) {
-            Log.e(TAG, "Error starting call recording", e);
+            Log.e(TAG, "FAILED to start call recording: " + e.getMessage());
             isRecordingCall = false;
             releaseMediaRecorder();
+            // Cleanup empty file
+            if (currentRecordingPath != null) {
+                try {
+                    new File(currentRecordingPath).delete();
+                } catch (Exception ignored) {}
+            }
         }
     }
 
@@ -384,11 +382,9 @@ public class CallRecordService extends Service {
             return;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                Log.e(TAG, "RECORD_AUDIO permission not granted");
-                return;
-            }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            Log.e(TAG, "RECORD_AUDIO permission not granted");
+            return;
         }
 
         try {
@@ -401,8 +397,7 @@ public class CallRecordService extends Service {
             }
 
             // Create filename
-            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-                    .format(new Date());
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
             String fileName = "MIC_" + timestamp + ".m4a";
 
             File recordFile = new File(recordDir, fileName);
@@ -410,7 +405,7 @@ public class CallRecordService extends Service {
             currentRecordingType = "mic";
 
             // Setup MediaRecorder
-            mediaRecorder = new MediaRecorder();
+            mediaRecorder = createMediaRecorder();
             mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
@@ -437,12 +432,17 @@ public class CallRecordService extends Service {
             String durationText = durationSeconds > 0 ? " (max " + durationSeconds + "s)" : "";
             updateNotification("Recording microphone" + durationText);
 
-            Log.d(TAG, "Microphone recording started: " + currentRecordingPath);
+            Log.d(TAG, "Microphone recording started successfully: " + currentRecordingPath);
 
         } catch (Exception e) {
-            Log.e(TAG, "Error starting microphone recording", e);
+            Log.e(TAG, "FAILED to start microphone recording: " + e.getMessage());
             isRecordingMic = false;
             releaseMediaRecorder();
+            if (currentRecordingPath != null) {
+                try {
+                    new File(currentRecordingPath).delete();
+                } catch (Exception ignored) {}
+            }
         }
     }
 
