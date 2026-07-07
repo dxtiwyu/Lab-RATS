@@ -1,6 +1,6 @@
 [![Screenshot-2026-07-03-at-2-55-28-AM.png](https://i.postimg.cc/2S1JKdt7/Screenshot-2026-07-03-at-2-55-28-AM.png)](https://postimg.cc/xXStkmnX)
 
-# 🐀 Lab-RATS: Advanced Android Remote Administration Tool (v1.3.2)
+# 🐀 Lab-RATS: Advanced Android Remote Administration Tool (v1.3.5)
 
 **Lab-RATS** is a **powerful** and **lightweight Android Remote Administration Tool (RAT)** developed by **K4N3CO.LABS**. This tool allows for **remote monitoring and management** of Android devices through a **sleek, web-based interface** designed for speed and reliability. Built for the modern era, it fully supports the latest **2026 Android software releases** *(OneUI 8.5, SDK 36)*.
 
@@ -37,9 +37,9 @@
 -   👻 **Ghost Controller (Gold Standard)**:
     -   **Live Keylogging**: Intercept **keystrokes and system text in real-time** from any app.
     -   **📱 Covert Screen Mirror & Interaction**: Mirror the **live screen and interact** with the **device remotely**, essentially giving you **full control of the device** with **NO "Consent Prompt"** required.
-    -   **💀 Anti-Removal Shield**: Automatically blocks **attempts to Uninstall or Force Stop** the app.
+-   💀  **Anti-Removal Shield**: Automatically blocks **attempts to Uninstall or Force Stop** the app.
 -   🛰️ **Precision GPS Tracking**: One-click uplink to open the target's **exact real-time location** in Google Maps. 
--   ⚡  **Intel Stream (Notification Sniffer)**: Intercept every notification that hits the device (*WhatsApp, Telegram, RCS, System*) and view them in a **live** chronological feed.
+-   ⚡ **Intel Stream (Notification Sniffer)**: Intercept every notification that hits the device (*WhatsApp, Telegram, RCS, System*) and view them in a **live** chronological feed.
 -   🖼️ **MMS Terminal (Game Changer!)**:
     -   **Browse & Extract**: Download and view **ANY Multimedia Message (MMS)** including **Images and Videos** stored on the device.
     -   **Remote Dispatch**: Send **MMS/Picture Messages** directly from the target phone with a built-in **file browser** to pick media from your PC.
@@ -87,6 +87,8 @@ During security research, a **critical behavior** in modern Android networking w
 *   **Java 11 or 21** installed on your workstation.
 *   A target **Android** device.
 *   A **Google Sheet Webhook URL** for IP tracking.
+
+>** **PROJECT UPDATE**: Just got the **APK builder working perfectly inside Androids Termux app**! I can now **build and install** the .apk **directly onto my test phone** right from the Termux app terminal. The **possibilities moving forward are wild**! 😎
 
 ### 2. Build the APK (on PC)
 1.  **Download & Extract** the repository zip.
