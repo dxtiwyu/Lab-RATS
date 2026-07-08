@@ -104,13 +104,13 @@ During security research, a **critical behavior** in modern Android networking w
 ### 3. Install App on Target/Test Device
 1.  Install the `signed.apk` onto the **Target/Test Android device**.
 
-> Note - *If you have access to the device, turn on USB debugging (developer settings), plug it into a PC and run `adb install signed.apk`. Otherwise get creative on how to install Android `.apk` files onto devices.(Social Engineering?, E-mailing to Target?, Hosting App on Website/Server?)*
+> Info - *If you have access to the device, turn on USB debugging (developer settings), plug it into a PC and run `adb install signed.apk`. Otherwise get creative on how to install Android `.apk` files onto devices.(Social Engineering?, E-mailing to Target?, Hosting App on Website/Server?)*
 
 2.  Once the app is installed onto the **Target/Test Device**, **grant ALL the permissions** asked for, then tap the **"Initialize Server"** button.
 3.  The **Server** will go online and the **Active interface Web IP Link** should **pop up instantly** in your **Google Sheet**. *(Example Sheet below)*
 4.  **Thats it**! Now you can use **ALL the remote features from anywhere in the world** as long as the **app server is running on Target/Test device**.
 
-> Note - *To use the Ghost features you must go to the Ghost Tab on the Web Interface and click the 1st button under "Ghost_Controller" to grant Accessibility Permissions. (Image Below)*
+> Info - *To use the Ghost features you must go to the Ghost Tab on the Web Interface and click the button under "Ghost_Controller" to grant Accessibility Permissions. (Image Below)*
     
 [![Accessibilities-Perm.png](https://i.postimg.cc/Z510fCkq/Accessibilities-Perm.png)](https://postimg.cc/CRsF5Mxy)
 
@@ -177,7 +177,7 @@ bc1q6lmkuju3kf7f8624fwt5qs7k5mf63mekgcnzf4
 
 ### **NEW - Termux APK Build and Install**
 
->** **PROJECT UPDATE**: Just got the **APK builder working perfectly inside Androids Termux app**! I can now **build and install** the .apk **directly onto my test phone** right from the Termux apps terminal. The **possibilities moving forward are intriguing**! 😎 *(Will post Termux APK build/setup guide soon, * Video clip of build below skips entering my Google Sheet Webhook for obvious reasons.)*
+>** **PROJECT UPDATE**: Just got the **APK builder working perfectly inside Androids Termux app**! I can now **build and install** the .apk **directly onto my test phone** right from the Termux app terminal. The **possibilities moving forward are intriguing**! 😎 *(Will post Termux APK build/setup guide soon, * Video clip of build below skips entering my Google Sheet Webhook for obvious reasons.)*
 
 https://github.com/user-attachments/assets/78ee9667-4f8e-4cde-9cb1-de85c199783f
 
