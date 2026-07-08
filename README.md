@@ -36,46 +36,46 @@
 
 -   👻 **Ghost Controller (Gold Standard)**:
     -   **Live Keylogging**: Intercept **keystrokes and system text in real-time** from any app.
-    -   **📱 Covert Screen Mirror & Interaction**: Mirror the **live screen and interact** with the **device remotely**, essentially giving you **full control of the device** with **NO "Consent Prompt"** required.
--   💀  **Anti-Removal Shield**: Automatically blocks **attempts to Uninstall or Force Stop** the app.
--   🛰️ **Precision GPS Tracking**: One-click uplink to open the target's **exact real-time location** in Google Maps. 
--   ⚡ **Intel Stream (Notification Sniffer)**: Intercept every notification that hits the device (*WhatsApp, Telegram, RCS, System*) and view them in a **live** chronological feed.
+    -   **📱 Ghost Screen Control/Mirror**: Cast the **live screen** and **control** the **device remotely**, essentially giving you **full control of the device** with **NO "Consent Prompt"** required.
+-   💀  **Anti-Removal Shield**: Automatically **blocks attempts** to **Uninstall or Force Stop** the app.
+-   🛰️ **Precision GPS Tracking**: One-click uplink to open the **target's exact real-time location** in **Google Maps**. 
+-   ⚡ **Intel Stream (Notification Sniffer)**: Intercept **every notification** that hits the device (*WhatsApp, Telegram, RCS, System*) and view them in a **live** chronological feed.
 -   🖼️ **MMS Terminal (Game Changer!)**:
     -   **Browse & Extract**: Download and view **ANY Multimedia Message (MMS)** including **Images and Videos** stored on the device.
-    -   **Remote Dispatch**: Send **MMS/Picture Messages** directly from the target phone with a built-in **file browser** to pick media from your PC.
+    -   **Remote Dispatch**: Send **MMS/Picture Messages** directly from the target phone with a built-in **file browser** to pick **media from your PC**.
 -   💬 **SMS Command Center**:
-    -   **Full Interception**: Browse and copy every sent/received text message.
-    -   **Remote Texting**: Send SMS from the **target's number** to any destination worldwide.
+    -   **Full Interception**: Browse and copy **every sent/received** text message.
+    -   **Remote Texting**: Send SMS from the **target's number** to **any destination worldwide**.
 -   📸 **Optics & Surveillance**:
-    -   **Live Camera Streaming**: View high-speed video feeds from both **front and back cameras**.
-    -   **🌙 Night Vision Mode**: Sensor-boosted low-light mode for visibility in near-total darkness.
-    -   **Hardware Stability Engine**: Unified camera management **prevents resource conflicts**, ensuring reliable **background capture and streaming** even on high-security **Android 15/16 devices**.
-    -   **Background Recording**: Stealthily record high-quality **video without any user-facing activity**.
+    -   **Live Camera Streaming**: View **high-speed video** feeds from **both front** and **back cameras**.
+    -   **🌙 Night Vision Mode**: Sensor-boosted **low-light mode** for visibility in **near-total darkness**.
+    -   **Hardware Stability Engine**: Unified camera management **prevents resource conflicts**, ensuring reliable **background capture** and **streaming** even on **high-security Android 15/16 devices**.
+    -   **Background Recording**: **Stealthily record** high-quality **video without any user-facing activity**.
     -   **Instant Capture**: Take high-resolution **photos remotely**.
 -   🎙️ **Acoustics & Interception**:
     -   **Ambient Monitoring**: Live **microphone recording** for **high-fidelity audio surveillance**.
-    -   **Call Recording**: Automatically records both **incoming and outgoing** phone calls.
+    -   **Call Recording**: Automatically **records** both **incoming and outgoing** phone calls.
 -   📂 **Advanced Data Uplink**:
     -   **Integrated File Manager**: Navigate, download, and manage files across **internal and external storage**.
     -   **📝 Direct File Editor**: Live-edit **text, JSON**, and **log files** directly on the device from your browser.
 -   📊 **Telemetry & Reporting**:
     -   **Full System Extraction**: Detailed **hardware, network**, and **battery analytics**.
     -   **Contact & Call Logs**: Instant extraction of the **target's full contact list** and **communication history**.
-    -   **C2 Auto-Reporting**: Discrete reporting of device IP and status to a centralized **Google Sheet**.
+    -   **C2 Auto-Reporting**: Discrete reporting of **device IP and status** to a centralized **Google Sheet**.
 
 ---
 
 ## 🧠 Direct IPv6 Access (The "Backdoor" Protocol)
 
-During security research, a **critical behavior** in modern Android networking was discovered: devices on **mobile data** (and modern WiFi) are **assigned Public IPv6 Addresses**.
+During security research, a **critical behavior** in modern Android networking was **discovered**: devices on **mobile data** *(and modern WiFi)* are **assigned Public IPv6 Addresses**.
 
 **Unlike** IPv4—which is **heavily restricted by NAT** and requires complex port forwarding—**IPv6 addresses are **directly routeable** on the public internet.**
 
 ### How Lab-RATS Exploits This:
 1.  **Distributed Server**: The app initializes a **lightweight HTTP server** on the Android device **(Port 8080)**.
-2.  **Zero Configuration**: Because the device uses Public IPv6, you can access the terminal **directly from anywhere in the world** without **router setup, firewalls, or tunnels**. *(Ngrok/Pinggy)*.
-3.  **Dynamic IP Solution**: Mobile networks rotate IPs frequently. Lab-RATS solves this by using a **Google Sheet as a "Command & Control (C2) Phonebook"**.
-4.  **Stealth Uplink**: The app **silently detects** its current IPv6 and posts the live link to your sheet. You simply open the sheet and click the latest link to regain control.
+2.  **Zero Configuration**: Because the device uses **Public IPv6**, you can access the terminal **directly from anywhere in the world** without **router setup, firewalls, or tunnels**. *(Ngrok/Pinggy)*.
+3.  **Dynamic IP Solution**: Mobile networks **rotate IPs frequently**. Lab-RATS solves this by using a **Google Sheet as a "Command & Control (C2) Phonebook"**.
+4.  **Stealth Uplink**: The app **silently detects** its current IPv6 and posts the live link to your sheet. You simply **open the sheet** and click the latest link to **regain control**.
 
 > **Effectively, this turns ANY infected device into a public web server, tracked by a private "C2 phonebook".**
 
@@ -86,8 +86,7 @@ During security research, a **critical behavior** in modern Android networking w
 ### 1. Requirements
 *   **Java 11 or 21** installed on your workstation.
 *   A **target Android** device.
-
->The device used for my testing is a fully-patched rootless Samsung Z Flip 5
+> *The device used for my testing is a fully-patched rootless Samsung Z Flip 5*
 *   A **Google Sheet Webhook URL** for IP tracking.
 
 ### 2. Build the APK (on PC)
