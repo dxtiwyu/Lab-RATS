@@ -279,7 +279,7 @@ else if ("STOP".equals(action)) {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(contentText)
-                .setSmallIcon(stealth ? R.drawable.ic_sprocket_gear : R.mipmap.ic_launcher)
+                .setSmallIcon(stealth ? R.drawable.ic_sprocket_gear : R.drawable.app_logo)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
