@@ -1,6 +1,9 @@
-<p align="center">
-[![ic-launcher-playstore.png](https://i.postimg.cc/T27bW53C/ic-launcher-playstore.png)](https://postimg.cc/NLXF3MTH)
+<div align="center">
+    
+[![ic-launcher-playstore.png](https://i.postimg.cc/T27bW53C/ic-launcher-playstore.png)](https://postimg.cc/NLXF3MTH) 
 
+</div>
+    
 # 🐀 Lab-RATS: Advanced Android Remote Administration Tool (v1.3.5)
 
 **Lab-RATS** is a **powerful** and **lightweight Android Remote Administration Tool (RAT)** developed by **K4N3CO.LABS**. This tool allows for **remote monitoring and management** of Android devices through a **sleek, web-based interface** designed for speed and reliability. Built for the modern era, it fully supports the latest **2026 Android software releases** *(OneUI 8.5, SDK 36)*.
