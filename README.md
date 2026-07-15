@@ -1,5 +1,8 @@
 <p align="center">
-[![ic-launcher-playstore.png](https://i.postimg.cc/T27bW53C/ic-launcher-playstore.png)](https://postimg.cc/NLXF3MTH)
+  <a href="https://postimg.cc/NLXF3MTH">
+    <img src="https://i.postimg.cc/T27bW53C/ic-launcher-playstore.png" alt="ic-launcher-playstore.png" />
+  </a>
+</p>
 
 # 🐀 Lab-RATS: Advanced Android Remote Administration Tool (v1.4.0)
 
