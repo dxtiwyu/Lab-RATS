@@ -52,6 +52,7 @@
     -   **Live Camera Streaming**: View **high-speed video** from **both front** and **back cameras**.
     -   **Covert Recording**: **Stealthily record** video without any user-facing activity.
 -   🎙️ **Acoustics & Interception**: Live **microphone recording** and automated **call recording** for both incoming and outgoing calls.
+-   📞 **Remote Dialer**: Initiate **phone calls directly from the C2 panel** using the target's SIM card.
 -   📂 **Advanced Data Uplink**:
     -   **Integrated File Manager**: Navigate, download, and manage files. **NEW**: Instant **Search Bar** and **Category Filters** (Images/Video/Docs) for PC-optimized workflows.
     -   **📝 Direct File Editor**: Live-edit **text, JSON**, and **log files** directly on the device.

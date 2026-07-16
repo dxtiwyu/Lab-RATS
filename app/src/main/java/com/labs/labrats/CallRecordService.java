@@ -124,7 +124,7 @@ public class CallRecordService extends Service {
             Log.e(TAG, "Error in onStartCommand: " + e.getMessage(), e);
         }
 
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     private boolean isStealthMode() {

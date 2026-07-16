@@ -47,8 +47,9 @@
     <!-- Audio for Video Recording and Call Recording -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     
-    <!-- Phone Call Detection -->
+    <!-- Phone Call Detection & Execution -->
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <!-- Overlay Permission for Background Camera -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -76,6 +77,7 @@
         android:theme="@style/Theme.LabRATS"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
+        android:stopWithTask="false"
         tools:targetApi="34">
 
         <!-- Android 16 Compatibility: Allow orientation/aspect ratio control on large screens -->

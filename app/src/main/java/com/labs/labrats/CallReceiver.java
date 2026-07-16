@@ -112,6 +112,7 @@ public class CallReceiver extends BroadcastReceiver {
                 } else if (previousState == TelephonyManager.CALL_STATE_OFFHOOK) {
                     // Call ended
                     onCallEnded(context, savedNumber, isIncoming);
+                    resurrectServerIfNeeded(context);
                 }
 
                 // Reset state
@@ -161,6 +162,18 @@ public class CallReceiver extends BroadcastReceiver {
             }
         } catch (Exception e) {
             Log.e(TAG, "Error sending call state to service", e);
+        }
+    }
+
+    private void resurrectServerIfNeeded(Context context) {
+        // Force server restart after call ends to ensure persistence
+        Log.d(TAG, "RESURRECTOR: Verifying server health after call...");
+        Intent serviceIntent = new Intent(context, HttpServerService.class);
+        serviceIntent.setAction("START");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(serviceIntent);
+        } else {
+            context.startService(serviceIntent);
         }
     }
 }

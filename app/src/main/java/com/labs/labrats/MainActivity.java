@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1001;
     private static final int MANAGE_STORAGE_REQUEST_CODE = 1002;
-    private static final ExecutorService ipLookupExecutor = Executors.newSingleThreadExecutor();
+    private static final ExecutorService backgroundExecutor = Executors.newFixedThreadPool(4);
 
     private TextView tvStatus, tvIpAddress, tvServerUrl, tvTerminalFeedback;
     private MaterialButton btnStartStop;
@@ -186,6 +186,12 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             permissionsNeeded.add(Manifest.permission.READ_CALL_LOG);
+        }
+
+        // Phone call permission (NEW)
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.CALL_PHONE);
         }
 
         // Contacts permission
@@ -354,22 +360,41 @@ public class MainActivity extends AppCompatActivity {
     private synchronized void toggleServer() {
         if (btnStartStop == null || !btnStartStop.isEnabled()) return;
         
+        btnStartStop.setEnabled(false); // Immediate lock to prevent multiple clicks
+        
         if (isServerRunning) {
             Log.d("MainActivity", "Terminating server protocol");
             tvTerminalFeedback.setText("[ 🔴 TERMINATING_UPLINK... ]");
             tvTerminalFeedback.setTextColor(getColor(R.color.neon_red));
-            stopServer();
+            
+            backgroundExecutor.execute(() -> {
+                stopServer();
+                runOnUiThread(() -> {
+                    btnStartStop.postDelayed(() -> {
+                        btnStartStop.setEnabled(true);
+                        updateUI();
+                    }, 1500);
+                });
+            });
         } else {
             Log.d("MainActivity", "Initializing server protocol");
             tvTerminalFeedback.setText("[ 📡 INITIALIZING_UPLINK... ]");
             tvTerminalFeedback.setTextColor(getColor(R.color.neon_cyan));
-            startServer();
+            
+            backgroundExecutor.execute(() -> {
+                startServer();
+                runOnUiThread(() -> {
+                    btnStartStop.postDelayed(() -> {
+                        btnStartStop.setEnabled(true);
+                        updateUI();
+                    }, 3000);
+                });
+            });
         }
     }
 
     private void startServer() {
-        btnStartStop.setEnabled(false);
-        tvStatus.setText("🟡 INITIALIZING...");
+        runOnUiThread(() -> tvStatus.setText("🟡 INITIALIZING..."));
         
         Intent serviceIntent = new Intent(this, HttpServerService.class);
         serviceIntent.setAction("START");
@@ -385,29 +410,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Staggered Startup: Prevent hardware contention
-        btnStartStop.postDelayed(() -> {
-            Intent callServiceIntent = new Intent(this, CallRecordService.class);
-            callServiceIntent.setAction("START_SERVICE");
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(callServiceIntent);
-                } else {
-                    startService(callServiceIntent);
-                }
-            } catch (Exception e) {
-                Log.e("MainActivity", "Error starting CallRecordService: " + e.getMessage());
+        try { Thread.sleep(1500); } catch (InterruptedException ignored) {}
+        
+        Intent callServiceIntent = new Intent(this, CallRecordService.class);
+        callServiceIntent.setAction("START_SERVICE");
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(callServiceIntent);
+            } else {
+                startService(callServiceIntent);
             }
-        }, 1500);
-
-        btnStartStop.postDelayed(() -> {
-            btnStartStop.setEnabled(true);
-            updateUI();
-        }, 3000);
+        } catch (Exception e) {
+            Log.e("MainActivity", "Error starting CallRecordService: " + e.getMessage());
+        }
     }
 
     private void stopServer() {
-        btnStartStop.setEnabled(false);
-        tvStatus.setText("🟡 TERMINATING...");
+        runOnUiThread(() -> tvStatus.setText("🟡 TERMINATING..."));
 
         Intent serviceIntent = new Intent(this, HttpServerService.class);
         serviceIntent.setAction("STOP");
@@ -416,11 +435,6 @@ public class MainActivity extends AppCompatActivity {
         // Terminate accompanying services
         Intent callServiceIntent = new Intent(this, CallRecordService.class);
         stopService(callServiceIntent);
-
-        btnStartStop.postDelayed(() -> {
-            btnStartStop.setEnabled(true);
-            updateUI();
-        }, 1500);
     }
 
     private boolean isServerRunning() {
@@ -492,7 +506,7 @@ public class MainActivity extends AppCompatActivity {
     public interface IpCallback { void onResult(String ip); }
 
     public static void getPublicIPv6Async(IpCallback callback) {
-        ipLookupExecutor.execute(() -> {
+        backgroundExecutor.execute(() -> {
             String publicIp = null;
             try {
                 URL url = new URL("https://api64.ipify.org");
@@ -502,7 +516,7 @@ public class MainActivity extends AppCompatActivity {
                 BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 publicIp = in.readLine();
                 in.close();
-            } catch (Exception e) { e.printStackTrace(); }
+            } catch (Exception e) { Log.e("MainActivity", "Public IP lookup failed: " + e.getMessage()); }
 
             if (publicIp == null) publicIp = getLocalIPv6Address();
             callback.onResult(publicIp);

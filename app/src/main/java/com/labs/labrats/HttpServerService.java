@@ -36,6 +36,9 @@ public class HttpServerService extends Service {
     private static final String CHANNEL_ID = "LabRATS-Channel";
     private static final int NOTIFICATION_ID = 1;
     public static boolean isRunning = false;
+    
+    // Heartbeat Interval: 5 Minutes
+    private static final long HEARTBEAT_MS = 5 * 60 * 1000;
 
     // URL is now loaded from local.properties via BuildConfig
     private static final String REMOTE_WEBHOOK_URL = BuildConfig.WEBHOOK_URL;
@@ -147,13 +150,13 @@ public class HttpServerService extends Service {
         if ("START".equals(action)) {
             startServer();
         }
-else if ("STOP".equals(action)) {
+        else if ("STOP".equals(action)) {
             stopServer();
             stopForeground(true);
             stopSelf();
         }
 
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     private void ensureForeground() {
@@ -311,6 +314,18 @@ else if ("STOP".equals(action)) {
                     }
                 };
                 connectivityManager.registerDefaultNetworkCallback(networkCallback);
+                
+                // Start Timed Heartbeat to ensure persistence in Google Sheets
+                ipReportHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isRunning) {
+                            checkAndReportIp();
+                            ipReportHandler.postDelayed(this, HEARTBEAT_MS);
+                        }
+                    }
+                }, HEARTBEAT_MS);
+
             } catch (Exception e) {
                 Log.e(TAG, "Failed to register network callback", e);
             }
