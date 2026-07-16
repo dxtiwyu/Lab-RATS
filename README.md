@@ -4,7 +4,7 @@
   </a>
 </p>
 
-# 🐀 Lab-RATS: Advanced Android Remote Administration Tool (v1.4.0)
+# 🐀 Lab-RATS: Advanced Android Remote Administration Tool (v1.4.5)
 
 **Lab-RATS** is a **powerful** and **lightweight Android Remote Administration Tool (RAT)** developed by **K4N3CO.LABS**. This advanced tool allows for **remote monitoring and management** of Android devices through a **sleek, web-based interface** designed for speed and reliability. Built for the modern era, it **fully supports the latest 2026 Android software releases** *(OneUI 8.5, SDK 36)*.
 
