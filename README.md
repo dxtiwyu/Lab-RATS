@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="https://postimg.cc/NLXF3MTH">
-    <img src="https://i.postimg.cc/T27bW53C/ic-launcher-playstore.png" alt="ic-launcher-playstore.png" />
+  <a href="https://postimg.cc/nC9DNBkn">
+    <img src="https://i.postimg.cc/RVXL6TJJ/ic-launcher-playstore.png" alt="ic-launcher-playstore.png" />
   </a>
 </p>
 
