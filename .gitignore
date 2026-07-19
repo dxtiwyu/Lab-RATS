@@ -53,9 +53,9 @@ lab-rats-keystore.jks
 keystore.properties
 
 # Builder config (contains passwords)
-app-builder/build_config.txt
-app-builder/build_config.json
-app-builder/output/*.apk
+apk-builder/build_config.txt
+apk-builder/build_config.json
+apk-builder/output/*.apk
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild

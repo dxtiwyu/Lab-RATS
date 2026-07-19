@@ -22,27 +22,28 @@
             <!-- Header -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="229dp"
                 android:layout_marginBottom="32dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="152dp"
+                    android:layout_height="122dp"
                     android:layout_marginTop="40dp"
                     android:layout_marginBottom="16dp">
 
                     <!-- Tight Hugging Glow Effect -->
+
                     <View
-                        android:layout_width="207dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="570dp"
+                        android:layout_height="436dp"
                         android:layout_gravity="center"
                         android:background="@drawable/logo_glow" />
 
                     <ImageView
-                        android:layout_width="240dp"
-                        android:layout_height="142dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:contentDescription="@string/content_desc_logo"
                         android:scaleType="centerInside"
                         android:src="@drawable/app_logo" />
@@ -52,23 +53,23 @@
                 <TextView
                     android:id="@+id/tvAppTitle"
                     android:layout_width="wrap_content"
-                    android:layout_height="55dp"
+                    android:layout_height="45dp"
                     android:fontFamily="@font/orbitron"
-                    android:letterSpacing="0.4"
+                    android:letterSpacing="0.1"
                     android:shadowColor="@color/neon_cyan"
                     android:shadowDx="0"
                     android:shadowDy="0"
                     android:shadowRadius="20"
-                    android:text="LAB-RATS"
+                    android:text="CORE_UPLINK"
                     android:textAllCaps="true"
                     android:textColor="@color/neon_cyan"
-                    android:textSize="40sp"
+                    android:textSize="32sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvDevelopedBy"
                     android:layout_width="wrap_content"
-                    android:layout_height="23dp"
+                    android:layout_height="17dp"
                     android:layout_marginTop="4dp"
                     android:alpha="0.9"
                     android:letterSpacing="0.2"
@@ -80,7 +81,7 @@
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="18dp"
+                    android:layout_height="38dp"
                     android:layout_marginTop="4dp"
                     android:alpha="0.6"
                     android:letterSpacing="0.3"
@@ -110,14 +111,14 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="223dp"
+                        android:layout_height="222dp"
                         android:orientation="vertical"
                         android:padding="20dp">
 
                         <TextView
                             android:id="@+id/tvStatus"
                             android:layout_width="wrap_content"
-                            android:layout_height="26dp"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginBottom="16dp"
                             android:fontFamily="@font/orbitron"
@@ -128,7 +129,7 @@
 
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
+                            android:layout_height="1dp"
                             android:layout_marginBottom="16dp"
                             android:background="#1affffff" />
 
@@ -166,7 +167,7 @@
                         <TextView
                             android:id="@+id/tvServerUrl"
                             android:layout_width="match_parent"
-                            android:layout_height="41dp"
+                            android:layout_height="45dp"
                             android:layout_marginTop="8dp"
                             android:background="#0D00f2ff"
                             android:fontFamily="monospace"
@@ -183,7 +184,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnStartStop"
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
+                android:layout_height="51dp"
                 android:layout_marginBottom="12dp"
                 android:backgroundTint="@color/neon_cyan"
                 android:fontFamily="@font/orbitron"
@@ -199,7 +200,7 @@
                 android:id="@+id/btnCopyUrl"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
-                android:layout_height="37dp"
+                android:layout_height="40dp"
                 android:layout_marginBottom="12dp"
                 android:fontFamily="@font/orbitron"
                 android:insetTop="0dp"
@@ -215,7 +216,7 @@
                 android:id="@+id/btnBatteryOptimization"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
-                android:layout_height="47dp"
+                android:layout_height="55dp"
                 android:layout_marginBottom="24dp"
                 android:fontFamily="@font/orbitron"
                 android:text="BYPASS_POWER_LIMITS"
@@ -225,22 +226,23 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="31dp"
+                android:layout_height="46dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginBottom="40dp"
                 android:background="#0D00f2ff"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="12dp">
 
                 <TextView
                     android:id="@+id/tvTerminalFeedback"
                     android:layout_width="wrap_content"
-                    android:layout_height="19dp"
+                    android:layout_height="41dp"
                     android:fontFamily="monospace"
                     android:gravity="center"
                     android:text="[ SECURE CONNECTION ESTABLISHED ]"
                     android:textColor="@color/neon_cyan"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textStyle="bold" />
 
             </LinearLayout>

