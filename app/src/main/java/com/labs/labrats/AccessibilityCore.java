@@ -30,6 +30,7 @@ public class AccessibilityCore extends AccessibilityService {
 
     private int screenWidth = 0;
     private int screenHeight = 0;
+    private final java.util.concurrent.ExecutorService screenshotExecutor = java.util.concurrent.Executors.newSingleThreadExecutor();
 
     private long lastAntiRemovalCheck = 0;
 
@@ -397,7 +398,7 @@ public class AccessibilityCore extends AccessibilityService {
         if (isScreenshotting) { callback.onFailure("BUSY"); return; }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             isScreenshotting = true;
-            takeScreenshot(android.view.Display.DEFAULT_DISPLAY, getMainExecutor(), new TakeScreenshotCallback() {
+            takeScreenshot(android.view.Display.DEFAULT_DISPLAY, screenshotExecutor, new TakeScreenshotCallback() {
                 @Override
                 public void onSuccess(ScreenshotResult screenshotResult) {
                     isScreenshotting = false;
