@@ -1,0 +1,63 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: 'gradle'
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Generate default keystore
+      run: |
+        keytool -genkeypair \
+          -alias "lab-rats-key" \
+          -keyalg RSA \
+          -keysize 2048 \
+          -validity 9125 \
+          -keystore "lab-rats-keystore.jks" \
+          -storepass "lab-rats123" \
+          -keypass "lab-rats123" \
+          -dname "CN=Lab-RATS Developer, O=Lab-RATS.LABS, C=US"
+        
+        cat > keystore.properties << EOF
+        storeFile=lab-rats-keystore.jks
+        storePassword=lab-rats123
+        keyAlias=lab-rats-key
+        keyPassword=lab-rats123
+        EOF
+
+    - name: Build with Gradle
+      run: ./gradlew assembleRelease --no-daemon
+
+    - name: Upload Signed APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release-signed
+        path: app/build/outputs/apk/release/app-release.apk
+
+    - name: Build Unsigned APK
+      run: ./gradlew assembleRelease -PdisableSigning --no-daemon
+
+    - name: Upload Unsigned APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release-unsigned
+        path: app/build/outputs/apk/release/app-release-unsigned.apk
