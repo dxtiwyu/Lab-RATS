@@ -406,16 +406,15 @@ public class AccessibilityCore extends AccessibilityService {
                         android.graphics.Bitmap bitmap = android.graphics.Bitmap.wrapHardwareBuffer(hardwareBuffer, screenshotResult.getColorSpace());
                         if (bitmap != null) {
                             // --- REFINED OPTIMIZATION: SCALE DOWN ---
-                            // Reduced to 480px for significantly faster processing and streaming
-                            int targetWidth = 480;
+                            // Increased to 720px for better clarity on PC while maintaining speed
+                            int targetWidth = 720;
                             int targetHeight = (int) (bitmap.getHeight() * (targetWidth / (float) bitmap.getWidth()));
-                            // Use false for filter to dramatically speed up scaling
-                            android.graphics.Bitmap scaledBitmap = android.graphics.Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, false);
+                            android.graphics.Bitmap scaledBitmap = android.graphics.Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true);
                             
                             java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
                             // --- REFINED OPTIMIZATION: QUALITY ---
-                            // 40% provides a massive speedup in JPEG encoding and network transfer
-                            scaledBitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 40, out);
+                            // 60% provides a sharper image with fewer artifacts around text
+                            scaledBitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 60, out);
                             callback.onSuccess(out.toByteArray());
                             
                             bitmap.recycle();

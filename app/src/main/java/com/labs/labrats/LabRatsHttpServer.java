@@ -3883,7 +3883,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("  };");
         
         html.append("  buffer.onerror = () => {");
-        html.append("    if (ghostScreenActive) setTimeout(refreshGhostScreen, 50);");
+        html.append("    if (ghostScreenActive) setTimeout(refreshGhostScreen, 300);");
         html.append("  };");
         html.append("}");
         html.append("var ghostDragStart = null;");
