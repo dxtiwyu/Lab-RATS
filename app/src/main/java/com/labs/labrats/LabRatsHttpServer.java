@@ -3778,7 +3778,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("<div class=\"phone-frame\">");
         html.append("<div class=\"phone-notch\"></div>");
         html.append("<div id=\"ghost-screen-container\" class=\"phone-screen\" style=\"cursor: crosshair;\">");
-        html.append("<img id=\"ghost-screen-stream\" src=\"\" style=\"width: 100%; height: auto; display: block; user-select: none; -webkit-user-drag: none;\" onmousedown=\"startGhostDrag(event)\" onmouseup=\"endGhostDrag(event)\" />");
+        html.append("<img id=\"ghost-screen-stream\" src=\"\" style=\"width: 100%; height: auto; display: block; user-select: none; -webkit-user-drag: none; touch-action: none;\" onmousedown=\"startGhostDrag(event)\" onmouseup=\"endGhostDrag(event)\" ontouchstart=\"startGhostDrag(event)\" ontouchend=\"endGhostDrag(event)\" />");
         html.append("<div id=\"ghost-screen-status\" style=\"color: #444; font-size: 0.7rem; font-weight: bold; letter-spacing: 2px;\">OLED_STANDBY</div>");
         html.append("</div></div></div>");
 
@@ -3879,7 +3879,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("    if (!ghostScreenActive) return;");
         html.append("    img.src = buffer.src;"); // Instant swap from memory
         html.append("    if (status) status.style.display = 'none';");
-        html.append("    setTimeout(refreshGhostScreen, 200);");
+        html.append("    setTimeout(refreshGhostScreen, 30);");
         html.append("  };");
         
         html.append("  buffer.onerror = () => {");
@@ -3892,9 +3892,10 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("function startGhostDrag(e) {");
         html.append("  const img = document.getElementById('ghost-screen-stream');");
         html.append("  const rect = img.getBoundingClientRect();");
+        html.append("  const evt = e.changedTouches ? e.changedTouches[0] : e;");
         html.append("  ghostDragStart = {");
-        html.append("    x: ((e.clientX - rect.left) / rect.width) * 100,");
-        html.append("    y: ((e.clientY - rect.top) / rect.height) * 100,");
+        html.append("    x: ((evt.clientX - rect.left) / rect.width) * 100,");
+        html.append("    y: ((evt.clientY - rect.top) / rect.height) * 100,");
         html.append("    t: Date.now()");
         html.append("  };");
         html.append("}");
@@ -3907,8 +3908,9 @@ public class LabRatsHttpServer extends NanoHTTPD {
 
         html.append("  const img = document.getElementById('ghost-screen-stream');");
         html.append("  const rect = img.getBoundingClientRect();");
-        html.append("  const endX = ((e.clientX - rect.left) / rect.width) * 100;");
-        html.append("  const endY = ((e.clientY - rect.top) / rect.height) * 100;");
+        html.append("  const evt = e.changedTouches ? e.changedTouches[0] : e;");
+        html.append("  const endX = ((evt.clientX - rect.left) / rect.width) * 100;");
+        html.append("  const endY = ((evt.clientY - rect.top) / rect.height) * 100;");
         html.append("  const duration = now - ghostDragStart.t;");
         html.append("  const dist = Math.sqrt(Math.pow(endX - ghostDragStart.x, 2) + Math.pow(endY - ghostDragStart.y, 2));");
         html.append("  if (dist < 2) {");
