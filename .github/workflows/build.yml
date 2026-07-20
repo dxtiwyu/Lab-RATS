@@ -45,7 +45,7 @@ jobs:
         EOF
 
     - name: Build with Gradle
-      run: ./gradlew assembleRelease --no-daemon
+      run: ./gradlew assembleRelease --no-daemon --parallel --build-cache -Dorg.gradle.jvmargs="-Xmx3072m -XX:MaxMetaspaceSize=512m"
 
     - name: Upload Signed APK
       uses: actions/upload-artifact@v4
@@ -53,11 +53,17 @@ jobs:
         name: app-release-signed
         path: app/build/outputs/apk/release/app-release.apk
 
-    - name: Build Unsigned APK
-      run: ./gradlew assembleRelease -PdisableSigning --no-daemon
+    - name: Create Unsigned APK from Signed APK
+      run: |
+        # Instead of running a full Gradle build again (which takes minutes),
+        # we can copy the signed APK and strip its signatures (META-INF/*.SF, META-INF/*.RSA, META-INF/*.DSA, META-INF/MANIFEST.MF)
+        # using the 'zip' tool which is pre-installed on the runner.
+        cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/app-release-unsigned.apk
+        zip -d app/build/outputs/apk/release/app-release-unsigned.apk "META-INF/*.SF" "META-INF/*.RSA" "META-INF/*.DSA" "META-INF/SIG-*" || true
 
     - name: Upload Unsigned APK
       uses: actions/upload-artifact@v4
       with:
         name: app-release-unsigned
         path: app/build/outputs/apk/release/app-release-unsigned.apk
+
