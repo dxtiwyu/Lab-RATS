@@ -3890,6 +3890,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("var lastInteractionTime = 0;");
         
         html.append("function startGhostDrag(e) {");
+        html.append("  if (e.cancelable) e.preventDefault();");
         html.append("  const img = document.getElementById('ghost-screen-stream');");
         html.append("  const rect = img.getBoundingClientRect();");
         html.append("  const evt = e.changedTouches ? e.changedTouches[0] : e;");
@@ -3901,6 +3902,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         html.append("}");
         
         html.append("function endGhostDrag(e) {");
+        html.append("  if (e.cancelable) e.preventDefault();");
         html.append("  if (!ghostDragStart) return;");
         html.append("  const now = Date.now();");
         html.append("  if (now - lastInteractionTime < 150) return;");
