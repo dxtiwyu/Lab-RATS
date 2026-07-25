@@ -918,7 +918,7 @@ public class LabRatsHttpServer extends NanoHTTPD {
         // Port
         html.append("<div style=\"padding: 20px; background: rgba(0, 242, 255, 0.05); border: 1px solid var(--neon-cyan); border-left-width: 5px; box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);\">");
         html.append("<div class=\"info-label\">ACCESS_PORT</div>");
-        html.append("<div style=\"font-size: 1.5rem; font-weight: bold; color: var(--neon-cyan); text-shadow: 0 0 5px var(--neon-cyan);\">8080</div>");
+        html.append("<div style=\"font-size: 1.5rem; font-weight: bold; color: var(--neon-cyan); text-shadow: 0 0 5px var(--neon-cyan);\">8888</div>");
         html.append("</div>");
         
         // IP

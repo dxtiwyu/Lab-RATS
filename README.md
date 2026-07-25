@@ -150,7 +150,7 @@ function handleRequest(e) {
       data.device || "Unknown",
       data.network || "Unknown",
       data.ip || "Unknown",
-      data.port || "8080",
+      data.port || "8888",
       data.link || "Unknown",
       data.battery || "Unknown",
       (data.stealth === true || data.stealth === "true") ? "ACTIVE" : "OFF"

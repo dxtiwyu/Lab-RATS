@@ -503,7 +503,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 tvIpAddress.setText(ipText.toString());
                 String displayIp = (localIp != null) ? localIp : publicIp;
-                String formattedUrl = isIPv6(displayIp) ? "http://[" + displayIp + "]:8080" : "http://" + displayIp + ":8080";
+                String formattedUrl = isIPv6(displayIp) ? "http://[" + displayIp + "]:8888" : "http://" + displayIp + ":8888";
                 tvServerUrl.setText(formattedUrl);
             }
         });
