@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/successRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1C1C1C">
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@id/buttonContainer"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#161819">
+
+
+            <!-- GHOST_BACKDOOR: Positioned centrally over the update icon area -->
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="384dp"
+                android:layout_height="457dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="188dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/update3" />
+
+            <View
+                android:id="@+id/ivSuccessBackdoor"
+                android:layout_width="210dp"
+                android:layout_height="92dp"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="@id/imageView3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/imageView3"
+                app:layout_constraintVertical_bias="0.512" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- Fixed Action Button at Bottom -->
+    <FrameLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#161819"
+        android:elevation="15dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCheckForUpdate"
+            android:layout_width="222dp"
+            android:layout_height="59dp"
+            android:layout_gravity="center"
+            android:backgroundTint="#3274F0"
+            android:fontFamily="@font/assistant"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:letterSpacing="0.02"
+            android:text="Check for updates"
+            android:textAllCaps="false"
+            android:textColor="#F2F2F2"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:cornerRadius="100dp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/loadingLayoutSuccess"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/dot1_success"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:src="@drawable/loading_dot"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/dot2_success"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:src="@drawable/loading_dot"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/dot3_success"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:src="@drawable/loading_dot"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/dot4_success"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:src="@drawable/loading_dot"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/pseudoToast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="160dp"
+        android:background="@drawable/toast_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="12dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/pseudoToastText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone has been updated"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

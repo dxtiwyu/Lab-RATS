@@ -3,117 +3,223 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4A90E2">
+    android:background="#050505">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center_horizontal"
+        android:orientation="vertical"
         android:padding="24dp">
 
         <LinearLayout
             android:id="@+id/weatherMainInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/weatherCity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/orbitron"
                 android:text="New York"
                 android:textColor="#FFFFFF"
-                android:textSize="34sp"
-                android:layout_marginTop="32dp" />
+                android:textSize="32sp" />
 
             <TextView
+                android:id="@+id/weatherTemp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="72°"
+                android:fontFamily="@font/orbitron"
+                android:text=" 72°"
                 android:textColor="#FFFFFF"
-                android:textSize="110sp"
-                android:fontFamily="sans-serif-thin" />
+                android:textSize="80sp" />
 
             <TextView
+                android:id="@+id/weatherStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mostly Sunny"
+                android:alpha="0.8"
+                android:text=" Mostly Sunny"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                android:alpha="0.8" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/weather_icon" />
+            android:layout_width="140dp"
+            android:layout_height="134dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_weather" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:background="?android:attr/selectableItemBackground"
+            android:orientation="horizontal"
             android:padding="15dp">
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="High: 78°" android:textColor="#FFF" android:textSize="16sp" />
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Low: 65°" android:textColor="#FFF" android:textSize="16sp" android:gravity="end" />
+
+            <TextView
+                android:id="@+id/weatherHighLow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="High: 78°  Low: 65°"
+                android:textColor="#FFF"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="#FFFFFF"
-            android:alpha="0.3" />
+            android:alpha="0.3"
+            android:background="#FFFFFF" />
 
         <!-- 10-Day Forecast List Style -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="#1AFFFFFF"
             android:orientation="vertical"
-            android:layout_marginTop="20dp"
-            android:background="#20FFFFFF"
             android:padding="16dp">
 
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingVertical="8dp">
-                <TextView android:layout_width="80dp" android:layout_height="wrap_content" android:text="Today" android:textColor="#FFF" android:textStyle="bold" />
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="☀️" android:gravity="center" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="78° 65°" android:textColor="#FFF" />
-            </LinearLayout>
-            <View android:layout_width="match_parent" android:layout_height="0.3dp" android:background="#FFF" android:alpha="0.2" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp">
 
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingVertical="8dp">
-                <TextView android:layout_width="80dp" android:layout_height="wrap_content" android:text="Tue" android:textColor="#FFF" />
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="🌤️" android:gravity="center" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="75° 63°" android:textColor="#FFF" />
-            </LinearLayout>
-            <View android:layout_width="match_parent" android:layout_height="0.3dp" android:background="#FFF" android:alpha="0.2" />
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="Today"
+                    android:textColor="#FFF"
+                    android:textStyle="bold" />
 
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingVertical="8dp">
-                <TextView android:layout_width="80dp" android:layout_height="wrap_content" android:text="Wed" android:textColor="#FFF" />
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="☁️" android:gravity="center" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="72° 60°" android:textColor="#FFF" />
-            </LinearLayout>
-            <View android:layout_width="match_parent" android:layout_height="0.3dp" android:background="#FFF" android:alpha="0.2" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="☀️" />
 
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingVertical="8dp">
-                <TextView android:layout_width="80dp" android:layout_height="wrap_content" android:text="Thu" android:textColor="#FFF" />
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="🌧️" android:gravity="center" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="68° 58°" android:textColor="#FFF" />
+                <TextView
+                    android:id="@+id/forecastToday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="78° 65°"
+                    android:textColor="#FFF" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.3dp"
+                android:alpha="0.2"
+                android:background="#FFF" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp">
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="Tue"
+                    android:textColor="#FFF" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="🌤️" />
+
+                <TextView
+                    android:id="@+id/forecastTue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="75° 63°"
+                    android:textColor="#FFF" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.3dp"
+                android:alpha="0.2"
+                android:background="#FFF" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp">
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="Wed"
+                    android:textColor="#FFF" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="☁️" />
+
+                <TextView
+                    android:id="@+id/forecastWed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="72° 60°"
+                    android:textColor="#FFF" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.3dp"
+                android:alpha="0.2"
+                android:background="#FFF" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp">
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:text="Thu"
+                    android:textColor="#FFF" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="🌧️" />
+
+                <TextView
+                    android:id="@+id/forecastThu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="68° 58°"
+                    android:textColor="#FFF" />
             </LinearLayout>
         </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="30dp"
+            android:alpha="0.5"
+            android:gravity="center"
             android:text="Weather data provided by Precision Analytics. Localized forecast active."
             android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            android:layout_marginTop="30dp"
-            android:gravity="center"
-            android:alpha="0.5" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 </ScrollView>

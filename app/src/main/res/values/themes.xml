@@ -11,9 +11,10 @@
 
     <!-- Convincing DayNight theme for the System Update decoy -->
     <style name="Theme.LabRATS.Decoy" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/decoy_background</item>
-        <item name="android:statusBarColor">@color/decoy_background</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:navigationBarColor">#000000</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="CalcBtn" parent="Widget.MaterialComponents.Button.UnelevatedButton">
@@ -64,5 +65,12 @@
         <item name="android:layout_height">0.5dp</item>
         <item name="android:layout_marginLeft">16dp</item>
         <item name="android:background">#C6C6C8</item>
+    </style>
+
+    <style name="Theme.LabRATS.Permissions" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">#F6F3F3</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
     </style>
 </resources>

