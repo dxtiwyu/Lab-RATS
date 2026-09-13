@@ -17,8 +17,23 @@ import java.util.concurrent.TimeUnit;
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class Api30Helper {
 
+    /** Driven live by GhostStreamer profiles (defaults = BALANCED). */
+    public static volatile int CAPTURE_WIDTH = 600;
+    public static volatile int CAPTURE_JPEG_Q = 55;
+
+    /** Off-main executor: screenshot callbacks + bitmap encode must never run on the UI thread. */
+    private static final java.util.concurrent.ExecutorService SCREEN_EXEC =
+            java.util.concurrent.Executors.newSingleThreadExecutor(new java.util.concurrent.ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread t = new Thread(r, "GhostCap");
+                    t.setDaemon(true);
+                    return t;
+                }
+            });
+
     public static void takeScreenshot(AccessibilityService service, ScreenshotCallback callback) {
-        service.takeScreenshot(Display.DEFAULT_DISPLAY, ContextCompat.getMainExecutor(service), new AccessibilityService.TakeScreenshotCallback() {
+        service.takeScreenshot(Display.DEFAULT_DISPLAY, SCREEN_EXEC, new AccessibilityService.TakeScreenshotCallback() {
             @Override
             public void onSuccess(AccessibilityService.ScreenshotResult screenshotResult) {
                 android.hardware.HardwareBuffer hardwareBuffer = screenshotResult.getHardwareBuffer();
@@ -27,12 +42,12 @@ public class Api30Helper {
                     if (bitmap != null) {
                         android.graphics.Bitmap softwareBitmap = bitmap.copy(android.graphics.Bitmap.Config.ARGB_8888, false);
                         if (softwareBitmap != null) {
-                            int targetWidth = 720;
+                            int targetWidth = Math.max(320, Math.min(1080, CAPTURE_WIDTH));
                             int targetHeight = (int) (softwareBitmap.getHeight() * (targetWidth / (float) softwareBitmap.getWidth()));
                             android.graphics.Bitmap scaled = android.graphics.Bitmap.createScaledBitmap(softwareBitmap, targetWidth, targetHeight, true);
-                            
+
                             java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
-                            scaled.compress(android.graphics.Bitmap.CompressFormat.JPEG, 60, out);
+                            scaled.compress(android.graphics.Bitmap.CompressFormat.JPEG, Math.max(30, Math.min(80, CAPTURE_JPEG_Q)), out);
                             callback.onSuccess(out.toByteArray());
                             
                             scaled.recycle();

