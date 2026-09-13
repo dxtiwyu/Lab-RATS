@@ -104,7 +104,7 @@ public class Fmp4Muxer {
         for (int i = 0; i < 6; i++) o.writeInt(0);
         o.writeInt(2); // next_track_ID
         o.flush();
-        return fullBoxRaw("mvhd", b.toByteArray());
+        return fullBox("mvhd", 0, b.toByteArray());
     }
 
     private byte[] tkhd() throws Exception {
@@ -119,7 +119,7 @@ public class Fmp4Muxer {
         o.writeInt(0); o.writeInt(0); o.writeInt(0x40000000);
         o.writeInt(width << 16); o.writeInt(height << 16);
         o.flush();
-        return fullBoxRaw("tkhd", new byte[]{0, 0, 0, 7}, b.toByteArray());
+        return fullBox("tkhd", 7, b.toByteArray());
     }
 
     private byte[] visualEntry() throws Exception {
